@@ -1,0 +1,17 @@
+.img {
+  max-width: '100%'; 
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.a {
+  display: inline-block; 
+  padding: 10px 20px; 
+  margin-top: 15px;
+  background-color: #ff4081;
+  color: #fff; 
+  text-decoration: none;
+  border-radius: 5px;
+}

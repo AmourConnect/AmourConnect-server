@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+
+
+  postgres-amourconnect:
+    image: postgres:latest
+    container_name: postgres-amourconnect
+    restart: on-failure:5
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - pgdata-amourconnect:/var/lib/postgresql/data:rw
+      - ./src/models/sql/user.sql:/docker-entrypoint-initdb.d/user.sql:ro
+    networks:
+      - amour_connect
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: '0.6'
+          memory: 10G
+
+
+  pgadmin-amourconnect:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-amourconnect
+    restart: on-failure:5
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "127.0.0.1:9091:80"
+    depends_on:
+      - postgres-amourconnect
+    networks:
+      - amour_connect
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+
+  backend-amourconnect:
+    depends_on:
+      - postgres-amourconnect
+    restart: on-failure:5
+    build:
+      context: .
+      dockerfile: Dockerfile.node_backend
+    ports:
+      - "5002:${PORT_API_BACK_IN_DOCKER}"
+    volumes:
+      - ./:/app/site/backend
+    command: sh -c "npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm install -g sequelize-cli && sequelize db:migrate && npm start"
+    networks:
+      - amour_connect
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+
+networks:
+    amour_connect:
+
+volumes:
+  pgdata-amourconnect:

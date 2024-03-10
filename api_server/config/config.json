@@ -1,0 +1,14 @@
+{
+  "development": {
+    "url": "postgres://tchoulo:123tchoulo123@postgres-amourconnect:5432/amourconnect_dev",
+    "dialect": "postgres"
+  },
+  "test": {
+    "url": "postgres://tchoulo:123tchoulo123@postgres-amourconnect:5432/amourconnect_test",
+    "dialect": "postgres"
+  },
+  "production": {
+    "url": "postgres://tchoulo:123tchoulo123@postgres-amourconnect:5432/amourconnect_prod",
+    "dialect": "postgres"
+  }
+}

@@ -1,0 +1,16 @@
+stages:
+  - NodeAudit
+
+cache:
+  paths:
+    - /node_modules
+
+
+node_audit:
+  stage: NodeAudit
+  image: node:alpine
+  before_script:
+    - npm install
+  script:
+    - npm audit
+  allow_failure: false

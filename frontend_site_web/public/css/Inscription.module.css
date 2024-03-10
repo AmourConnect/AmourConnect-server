@@ -1,0 +1,12 @@
+.label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}

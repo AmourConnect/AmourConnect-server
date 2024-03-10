@@ -1,0 +1,7 @@
+# Dockerfile.node_backend
+FROM node:alpine
+
+WORKDIR /app/site/backend
+
+# empêcher le conteneur de mourrir 
+CMD [ "tail", "-f", "/dev/null" ]
