@@ -9,7 +9,7 @@
 # PARTIE AUTHENTIFICATION | Connexion - Inscription - Accueil - Valider Inscription - Etat Session
 
 
-**Teste de l'API /GET**
+## Teste de l'API /GET
 
 -Objectif de faire un teste sur l'API
 
@@ -29,7 +29,7 @@ http://localhost:5002/amourconnect/api/auth/get/testo
 
 
 
-**Connaître l'état de session de l'utilisateur /GET**
+## Connaître l'état de session de l'utilisateur /GET
 
 http://localhost:5002/amourconnect/api/auth/get/etat_session
 
@@ -54,7 +54,7 @@ OU
 { status: 500, message: 'Erreur interne du serveur -_-' }
 
 
-**Traiter le formulaire de pré-inscription /POST**
+## Traiter le formulaire de pré-inscription /POST
 
 http://localhost:5002/amourconnect/api/auth/post/inscrire
 
@@ -95,7 +95,7 @@ BODY {
 { status: 500, message: 'Erreur interne du serveur -_-' }
 
 
-**Traiter la validation du formulaire pré-inscription /POST**
+## Traiter la validation du formulaire pré-inscription /POST
 
 http://localhost:5002/amourconnect/api/auth/post/valider_inscription
 
@@ -127,7 +127,7 @@ BODY {
 { status: 500, message: 'Erreur interne du serveur -_-' }
 
 
-**Traiter le formulaire connexion /POST**
+## Traiter le formulaire connexion /POST
 
 http://localhost:5002/amourconnect/api/auth/post/connexion
 
@@ -159,7 +159,7 @@ BODY {
 
 # PARTIE Membre ROUTE PRIVE (Faut être connectée) | Accueil Membre - Profil
 
-**Afficher page Accueil Membre /GET**
+## Afficher page Accueil Membre /GET
 
 http://localhost:5002/amourconnect/api/membre/get/page_accueil
 
