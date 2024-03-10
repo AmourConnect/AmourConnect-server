@@ -6,26 +6,26 @@ Site de rencontre pour match avec un homme VS femme et rechercher son amour❤�
 
 
 
-<!-- PORT_API_BACK_IN_DOCKER="3005"
+PORT_API_BACK_IN_DOCKER="3005"
 NODE_ENV="development"
 
-# identifiant pour nodemailer
+#identifiant pour nodemailer
 EMAIL_USER=""
 EMAIL_MDP=""
 
-# IP pour l'envoye du lien du mail
+#IP pour l'envoye du lien du mail
 IP_NOW_FRONTEND="http://192.168.1.21:3000/"
 
-# page administration base de données
+#page administration base de données
 PGADMIN_DEFAULT_PASSWORD="123soleil123"
 PGADMIN_DEFAULT_EMAIL="soleil@gmail.com"
 
-# Base de données
+#Base de données
 DB_HOST="postgres-amourconnect"
 DB_USER="tchoulo"
 DB_PASSWORD="123tchoulo123"
 DB_DATABASE="amourconnect_dev"
-DIALECT_SQL="postgres"  -->
+DIALECT_SQL="postgres" 
 
 
 
