@@ -115,7 +115,7 @@ export async function getServerSideProps(context?: any) {
       const { req, res } = context;
       const cookieValues = await AuthentificationPerso.recup_session_user(req);
       // on récup les données de l'API
-      const apiResponse = await fetchDataFromAPI('/auth/get/etat_session', 'GET', null, cookieValues);
+      const apiResponse = await fetchDataFromAPI('/get/SessionStatus', 'GET', null, cookieValues);
 
       if (apiResponse && apiResponse.status === 200 && apiResponse.message === "Utilisateur connectée") { // l'utiliisateur est déjà connectée
         // on lui affiche la page d'accueil

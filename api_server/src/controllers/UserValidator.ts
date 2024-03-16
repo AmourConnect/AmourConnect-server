@@ -13,9 +13,15 @@ import { Body } from './Interface';
             this.checkAdresse(body.ville);
         }
 
-        public checkRegexLogin(body: Body): void
+        public checkRegexValidateRegister(body: Body): void
         {
             this.checkEmail(body.email);
             this.checkTokenSession(body.Token_validation_email);
+        }
+
+        public checkRegexLogin(body :Body): void
+        {
+            this.checkEmail(body.email);
+            this.checkPassword(body.mot_de_passe);
         }
     }

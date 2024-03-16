@@ -10,9 +10,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const cookieValues = await AuthentificationPerso.recup_session_user(req);
   
         // On fait la requête à l'API Privé en utilisant la clé API
-        const responseAPI = await fetchDataFromAPI('/auth/post/connexion', 'POST', formData, cookieValues);
+        const responseAPI = await fetchDataFromAPI('/auth/post/login', 'POST', formData, cookieValues);
   
-        if(responseAPI && responseAPI.status === 200 && responseAPI.message === "Connexion effectuée avec succès") {
+        if(responseAPI && responseAPI.status === 200 && responseAPI.message === "Connection completed successfully") {
 
           // on créer le cookie de session
         const new_session =  await AuthentificationPerso.creer_cookie(responseAPI);

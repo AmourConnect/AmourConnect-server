@@ -95,9 +95,9 @@ BODY {
 
 BODY { "status": 401, "message": "User not found" }
 
-<!-- ## Traiter le formulaire connexion /POST
+## Process the connection form /POST
 
-http://localhost:5002/amourconnect/api/auth/post/connexion
+http://localhost:5002/amourconnect/api/auth/post/login
 
 
 HEADER {
@@ -112,14 +112,14 @@ BODY {
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Connexion effectuée avec succès', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
+{ status: 200, message: 'Connection completed successfully', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
 
 *- The possible error message :*
 
-{ status: 401, message: error.message }
+{ "status": 403, "message": "User Already connected" }
 
 
-# PARTIE Membre ROUTE PRIVE (Faut être connectée) | Accueil Membre - Profil
+<!-- # PARTIE Membre ROUTE PRIVE (Faut être connectée) | Accueil Membre - Profil
 
 ## Afficher page Accueil Membre /GET
 

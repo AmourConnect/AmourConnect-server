@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const cookieValues = await AuthentificationPerso.recup_session_user(req);
   
         // On fait la requête à l'API Privé en utilisant la clé API
-        const responseAPI = await fetchDataFromAPI('/auth/post/valider_inscription', 'POST', formData, cookieValues);
+        const responseAPI = await fetchDataFromAPI('/auth/post/validate_registration', 'POST', formData, cookieValues);
   
         res.status(200).json(responseAPI);
       } catch (error) {

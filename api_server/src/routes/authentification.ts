@@ -69,7 +69,7 @@ authentification.get('/get/SessionStatus', authMiddleware.verif_user_connect_coo
 authentification.post('/post/validate_registration', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
   try {
 
-    await user_validator.checkRegexLogin(req.body);
+    await user_validator.checkRegexValidateRegister(req.body);
 
     const userInscription = await user_check.getUserToValideInscription(req.body);
 
@@ -89,13 +89,24 @@ authentification.post('/post/validate_registration', authMiddleware.verif_user_n
 
 
 
-// /**
-//  * POST CONNEXION
-//  * Route POST pour traiter le formulaire de la page connexion
-//  */
-// authentification.post('/post/connexion', MiddlewareAuth.verif_user_no_connect_cookie, async (req, res) => {
-//   await Authentification.connexion_final(req, res);
-// });
+/**
+ * POST LOGIN
+ * POST route to process the login page form
+ */
+authentification.post('/post/login', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req, res) => {
+  try 
+  {
+    await user_validator.checkRegexLogin(req.body);
+    const user_password_hash = await user_check.getUser(req.body);
+    await user_check.checkCompareHashMdp(req.body, user_password_hash);
+    const value_cookie = await UserCreate.UpdateSessionUser(req.body);
+    res.status(200).json({ status: 200, message: 'Connection completed successfully', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration});
+  }
+  catch (error)
+  {
+    res.status(401).json({ status: 401, message: error.message });
+  }
+});
 
 
 export default authentification;

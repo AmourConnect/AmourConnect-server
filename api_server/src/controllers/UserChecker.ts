@@ -3,7 +3,7 @@ import Utilisateur from '../models/shema_migration/utilisateur';
 import { Op } from 'sequelize';
 import UserInscription from '../models/shema_migration/user_inscription';
 import { ModelStatic } from 'sequelize';
-
+import bcrypt from 'bcrypt';
 
 
 export class UserChecker
@@ -86,13 +86,38 @@ export class UserChecker
             return userInscription;
     }
 
-    public checkDateTokenValidationEmailRegistrer(userInscription: UserInscriptionInstance)
+    public checkDateTokenValidationEmailRegistrer(userInscription: UserInscriptionInstance): void
     {
       const expirationDate = new Date();
       if(userInscription.date_token_expiration_email < expirationDate) 
       {
         userInscription.destroy();
         throw new Error('Token expired');
+      }
+    }
+
+    public async getUser(body: Body): Promise<UserInstance | null> 
+    {
+      const utilisateur = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
+        attributes: ['utilisateur_id', 'password_hash'],
+        where: {
+          [Op.or]: [{ email: body.email }]
+        }
+      });
+  
+      if (!utilisateur)
+      {
+        throw new Error('User No Found');
+      }
+      return utilisateur;
+    }
+
+    public async checkCompareHashMdp(body: Body, user: UserInstance)
+    {
+      const resultat = await bcrypt.compare(body.mot_de_passe, user.password_hash);
+      if(!resultat)
+      {
+        throw new Error('Incorrect password');
       }
     }
 }

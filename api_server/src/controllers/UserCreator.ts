@@ -44,4 +44,14 @@ export class UserCreator
 
       return value_cookie;
     }
+
+    public async UpdateSessionUser(body: Body): Promise<Session>
+    {
+      const value_cookie = await new FunctionSession().create_cookie_send_client(7);
+      await Utilisateur.update(
+        { token_session_user: value_cookie.key_secret, token_session_expiration: value_cookie.date_expiration },
+        { where: { email: body.email } }
+      )
+      return value_cookie;
+    }
 }
