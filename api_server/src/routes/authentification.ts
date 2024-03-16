@@ -77,7 +77,7 @@ authentification.post('/post/validate_registration', authMiddleware.verif_user_n
 
     const value_cookie = await UserCreate.FinishRegister(userInscription);
 
-    await send_mail.SendMailFinishRegister(value_cookie, req.body);
+    await send_mail.SendMailFinishRegister(userInscription);
 
     res.status(200).json({ status: 200, message: 'Registration completed successfully :)' , key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration});
   }
