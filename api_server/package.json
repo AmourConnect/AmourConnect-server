@@ -1,7 +1,7 @@
 {
     "name": "amour-connect-backend",
     "version": "1.0.0",
-    "description": "Serveur HTTP pour API REST AmourConnect",
+    "description": "Serveur HTTP for API REST AmourConnect",
     "main": "server.ts",
     "scripts": {
         "testo": "echo \"Error: no test specified\" && exit 1",

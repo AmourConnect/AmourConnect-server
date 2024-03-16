@@ -1,7 +1,7 @@
 import express from 'express';
 import routes_authentification from'./authentification';
 import routes_membre from'./membre';
-import { MiddlewareAuth } from '../middlewares/AuthAPi';
+import { MiddlewareAuth } from '../middlewares/AuthAPI';
 
 
 const routage = express.Router();

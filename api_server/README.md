@@ -1,26 +1,26 @@
 # Projet AmourConnect - BackEND - API PRIVE
 
-Site de rencontre pour match avec un homme VS femme et rechercher son amour❤️
+Dating site to match with a man VS woman and look for his love❤️
 
-# Configuration du .env à la racine du projet
+# Config .env at the root of the project
 
 
 
 PORT_API_BACK_IN_DOCKER="3005"
 NODE_ENV="development"
 
-#identifiant pour nodemailer
+#identifier for nodemailer
 EMAIL_USER=""
 EMAIL_MDP=""
 
-#IP pour l'envoye du lien du mail
+#IP for sending the email link
 IP_NOW_FRONTEND="http://192.168.1.21:3000/"
 
-#page administration base de données
+#database administration page
 PGADMIN_DEFAULT_PASSWORD="123soleil123"
 PGADMIN_DEFAULT_EMAIL="soleil@gmail.com"
 
-#Base de données
+#Database
 DB_HOST="postgres-amourconnect"
 DB_USER="tchoulo"
 DB_PASSWORD="123tchoulo123"
@@ -29,32 +29,33 @@ DIALECT_SQL="postgres"
 
 
 
-# Pour lancer l'API
+# To start API
 
-Si vous avez Docker
+*If you have Docker*
 
 docker-compose -f .\compose.yaml up -d
 
 
-**Nettoyez les caches si ça marche pas :**
+**Clean the caches if that doesn't work :**
 docker builder prune --force
 docker image prune --force
 
-docker exec -it amourconnect-backend-amourconnect-1 /bin/sh
+docker exec -it api_server-backend-amourconnect-1 /bin/sh
 
-**Sinon faite cela manuellement**
-
-
-npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm install -g sequelize-cli && sequelize db:create && sequelize db:migrate && npm start
+**Otherwise do this manually if you don't have Docker**
 
 
-sequelize db:seed:all // générer des données si besoin
-sequelize db:migrate:undo:all // annuler une migration si besoin
+npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm install -g sequelize-cli && sequelize db:migrate && npm start
 
 
-*Faire un `rs` pour redémarrer le serveur manuellement si besoin*
+*Generate data if necessary*
+sequelize db:seed:all
+
+*cancel a migration if necessary*
+sequelize db:migrate:undo:all
 
 
-# Pour la production :
+*Do an `rs` to restart the server manually if necessary*
 
-npm install --omit=dev // pour la production
+
+# For production :

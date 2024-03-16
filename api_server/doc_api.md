@@ -1,35 +1,30 @@
-# Exemple de route / Postman / PS : Les réponses serveurs sont en JSON
+# Example route / Postman / PS: Server responses are in JSON
 
 
 ![Exemple GET](./assets/get_accueil_membre.png)
 
-![Exemple POST](./assets/post_inscrire.png)
+![Exemple POST](./assets/post_register.png)
 
 
-# PARTIE AUTHENTIFICATION | Connexion - Inscription - Accueil - Valider Inscription - Etat Session
+# AUTH| Login - Register - Welcome - Validate Registration - Session Status
 
 
-## Teste de l'API /GET
+## Test API /GET
 
--Objectif de faire un teste sur l'API
+-Objective of testing the API
 
 
 http://localhost:5002/amourconnect/api/auth/get/testo
 
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
-{ status: 200, message: 'Bienvenu sur l'API de AmourConnect' }
-
-
-*- Le message d'erreur possible :*
+{ status: 200, message: 'Welcome to the AmourConnect API' }
 
 
-{ status: 500, message: 'Erreur interne du serveur -_-' }
+*- The possible error message :*
 
-
-
-## Connaître l'état de session de l'utilisateur /GET
+<!-- ## Connaître l'état de session de l'utilisateur /GET
 
 http://localhost:5002/amourconnect/api/auth/get/etat_session
 
@@ -38,7 +33,7 @@ HEADER {
     KEY => Cookie-user-AmourConnect, Value => 'le cookie'
 }
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
 { status: 200, message: 'Utilisateur connectée' }
 
@@ -49,14 +44,14 @@ OU
 { status: 404, message: 'Vous n'êtes pas connectée' }
 { status: 403, message: 'Cookie Utilisateur expiré' }
 
-*- Le message d'erreur possible :*
+*- The possible error message :*
 
-{ status: 500, message: 'Erreur interne du serveur -_-' }
+{ status: 500, message: 'Erreur interne du serveur -_-' } -->
 
 
 ## Traiter le formulaire de pré-inscription /POST
 
-http://localhost:5002/amourconnect/api/auth/post/inscrire
+http://localhost:5002/amourconnect/api/auth/post/register
 
 
 HEADER {
@@ -72,30 +67,14 @@ BODY {
   "sexe": "Feminin"
 }
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
-{ status: 200, message: 'Pré-Inscription fini avec succès et envoie du mail pour valider l'inscription' }
+{ status: 200, message: 'Pre-Registration completed successfully and send email to validate registration' }
 
-*- Le message d'erreur possible :*
-
-{ status: 400, message:'le paramètre email est manquant (null ou undefined)' }
-{ status: 400, message:'regex L'email n'est pas correcte' }
-{ status: 400, message:'le paramètre pseudo est manquant (null ou undefined)' }
-{ status: 400, message:'la regex Pseudo n'est pas correcte, un pseudo de 3 à 10 caractères (A-z-0-9)' }
-{ status: 400, message:'le paramètre mot_de_passe est manquant (null ou undefined)' }
-{ status: 400, message:'la regex mot_de_passe n'est pas correcte un mot de passe de 4 à 99 caractères est requis' }
-{ status: 400, message: 'le paramètre sexe est manquant (null ou undefined)' }
-{ status: 400, message:'la regex sexe n'est pas valide Masculin|Feminin' }
-{ status: 400, message: 'le paramètre date de naissance est manquant (null ou undefined)' }
-{ status: 400, message:'la regex date de naissance n'est pas valide (YYYY-MM-DD)' }
-{ status: 400, message: 'le paramètre ville est manquant (null ou undefined)' }
-{ status: 400, message:'la regex ville n'est pas valide (3, 50 caractères)' }
-{ status: 401, message: 'Email ou Pseudo Existe déjà dans la table inscription' }
-{ status: 401, message: 'Email ou Pseudo Existe déjà dans la table utilisateur' }
-{ status: 500, message: 'Erreur interne du serveur -_-' }
+*- The possible error message :*
 
 
-## Traiter la validation du formulaire pré-inscription /POST
+<!-- ## Traiter la validation du formulaire validation inscription /POST
 
 http://localhost:5002/amourconnect/api/auth/post/valider_inscription
 
@@ -111,11 +90,11 @@ BODY {
 }
 
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
 { status: 200, message: 'Inscription finie avec succès :)' , cle_secret: value_cookie.cle_secret, date_expiration: value_cookie.date_expiration}
 
-*- Le message d'erreur possible :*
+*- The possible error message :*
 
 { status: 400, message: 'Token expiré'}
 { status: 400, message:'le paramètre email est manquant (null ou undefined)' }
@@ -124,10 +103,10 @@ BODY {
 { status: 400, message:'la regex token n'est pas valide' }
 { status: 404, message: 'Email ou Token invalide pour valider l'inscription' }
 { status: 500, message: 'Une erreur serveur' }
-{ status: 500, message: 'Erreur interne du serveur -_-' }
+{ status: 500, message: 'Erreur interne du serveur -_-' } -->
 
 
-## Traiter le formulaire connexion /POST
+<!-- ## Traiter le formulaire connexion /POST
 
 http://localhost:5002/amourconnect/api/auth/post/connexion
 
@@ -142,11 +121,11 @@ BODY {
 }
 
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
 { status: 200, message: 'Connexion effectuée avec succès', cle_secret: value_cookie.cle_secret, date_expiration: value_cookie.date_expiration}
 
-*- Le message d'erreur possible :*
+*- The possible error message :*
 
 { status: 400, message:'le paramètre email est manquant (null ou undefined)' }
 { status: 400, message:'regex L'email n'est pas correcte' }
@@ -167,7 +146,7 @@ HEADER {
     KEY => Cookie-user-AmourConnect, Value => 'le cookie'
 }
 
-*- Le message positif du serveur :*
+*- The positive message from the server:*
 
 {
 status: 200,
@@ -183,9 +162,9 @@ status: 200,
 message: `Utilisateur bien connecté. Malheureusement, aucun utilisateur trouvé en fonction du sexe opposé, ville, date de naissance (entre moins ou plus de 5 ans) :/`
 }
 
-*- Le message d'erreur possible :*
+*- The possible error message :*
 
 { status: 500, message: 'Erreur interne du serveur -_-' }
 { status: 403, message: 'Cookie Utilisateur expiré' }
 { status: 404, message: 'Vous n\'êtes pas connectée' }
-{ status: 401, message: 'Cookie AmourConnect n\'existe pas' }
+{ status: 401, message: 'Cookie AmourConnect n\'existe pas' } -->
