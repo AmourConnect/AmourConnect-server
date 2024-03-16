@@ -1,7 +1,7 @@
 # Example route / Postman / PS: Server responses are in JSON
 
 
-![Exemple GET](./assets/get_accueil_membre.png)
+![Exemple GET](./assets/get_user_to_match.png)
 
 ![Exemple POST](./assets/post_register.png)
 
