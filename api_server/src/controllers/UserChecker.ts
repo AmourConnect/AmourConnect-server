@@ -1,7 +1,8 @@
-import { Body } from './Interface';
+import { Body, UserInstance } from './Interface';
 import Utilisateur from '../models/shema_migration/utilisateur';
 import { Op } from 'sequelize';
 import UserInscription from '../models/shema_migration/user_inscription';
+import { ModelStatic } from 'sequelize';
 
 
 
@@ -34,5 +35,28 @@ export class UserChecker
         {
           throw new Error('User already exists');
         }
+    }
+
+    public async getUserBySessionToken(cookie_user: string): Promise<UserInstance | null> 
+    {
+      const user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
+        attributes: ['token_session_user', 'token_session_expiration'],
+        where: {
+          token_session_user: cookie_user
+        }
+      });
+      if (!user) {
+        throw new Error('User not connected');
+      }
+      return user;
+    }
+
+    public checkSessionDateExpiration(date_session_expiration: Date)
+    {
+      const currentDate = new Date();
+      if (date_session_expiration < currentDate) 
+      {
+        throw new Error('Session expired');
+      }
     }
 }

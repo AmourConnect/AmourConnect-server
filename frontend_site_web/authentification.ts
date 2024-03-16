@@ -9,7 +9,7 @@ export namespace AuthentificationPerso {
    */
   export const creer_cookie = async (responseAPI: any) => {
   
-    const session = await responseAPI.cle_secret;
+    const session = await responseAPI.key_secret;
     const expires = responseAPI.date_expiration;
 
     // Convertir la date d'expiration en objet Date

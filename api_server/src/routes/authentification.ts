@@ -1,5 +1,5 @@
 import express from 'express';
-import { MiddlewareAuth } from '../middlewares/AuthAPI';
+import { AuthMiddleware } from '../middlewares/AuthAPI';
 import { UserValidator } from '../controllers/UserValidator';
 import { Request, Response } from 'express';
 import { UserChecker } from '../controllers/UserChecker';
@@ -8,12 +8,13 @@ import { SendEmail } from '../controllers/Email/SendEmail';
 
 const authentification = express.Router();
 
+const authMiddleware = new AuthMiddleware();
 
 /**
  * GET Welcome
  * Public test route to find out if the API works
  */
-authentification.get('/get/testo', async (res: Response) => {
+authentification.get('/get/testo', async (req: Request, res: Response) => {
   res.status(200).json({ status: 200, message: 'Welcome to the AmourConnect API' });
 });
 
@@ -24,7 +25,7 @@ authentification.get('/get/testo', async (res: Response) => {
  * It will send an email to the user to confirm inscription and if no account already exists in the registration and user table
  * The Middleware first check if the user is already connected, if this is the case we reject the registration because they are already connected
  */
-authentification.post('/post/register', MiddlewareAuth.verif_user_no_connect_cookie, async (req: Request, res: Response) => {
+authentification.post('/post/register', authMiddleware.verif_user_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
   try 
   {
     await new UserValidator().checkRegexRegister(req.body);
@@ -43,13 +44,13 @@ authentification.post('/post/register', MiddlewareAuth.verif_user_no_connect_coo
 
 
 
-// /**
-//  * GET Etat de session
-//  * Pour savoir si l'utilisateur est connectée ou pas
-//  */
-// authentification.get('/get/etat_session', MiddlewareAuth.verif_user_connect_cookie, async (res: Response) => {
-//   return res.status(200).json({ status: 200, message: 'Utilisateur connectée' });
-// });
+/**
+ * GET Session Status
+ * To know if the user is connected or not
+ */
+authentification.get('/get/SessionStatus', authMiddleware.verif_user_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
+  return res.status(200).json({ status: 200, message: 'User connected' });
+});
 
 
 // /**

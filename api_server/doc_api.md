@@ -24,9 +24,11 @@ http://localhost:5002/amourconnect/api/auth/get/testo
 
 *- The possible error message :*
 
-<!-- ## Connaître l'état de session de l'utilisateur /GET
+{ status: 401, message: error.message }
 
-http://localhost:5002/amourconnect/api/auth/get/etat_session
+## To know if the user is connected or not /GET
+
+http://localhost:5002/amourconnect/api/auth/get/SessionStatus
 
 
 HEADER {
@@ -35,18 +37,12 @@ HEADER {
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Utilisateur connectée' }
-
-OU
-
-{ status: 403, message: `L'utilisateur n'est pas connecté` }
-{ status: 401, message: 'Cookie AmourConnect n'existe pas' }
-{ status: 404, message: 'Vous n'êtes pas connectée' }
-{ status: 403, message: 'Cookie Utilisateur expiré' }
+{ status: 200, message: 'User connected' }
 
 *- The possible error message :*
 
-{ status: 500, message: 'Erreur interne du serveur -_-' } -->
+{ status: 401, message: Session expired }
+{ status: 401, message: User not connected }
 
 
 ## Traiter le formulaire de pré-inscription /POST
@@ -73,6 +69,7 @@ BODY {
 
 *- The possible error message :*
 
+{ status: 401, message: error.message }
 
 <!-- ## Traiter la validation du formulaire validation inscription /POST
 
@@ -96,14 +93,7 @@ BODY {
 
 *- The possible error message :*
 
-{ status: 400, message: 'Token expiré'}
-{ status: 400, message:'le paramètre email est manquant (null ou undefined)' }
-{ status: 400, message:'regex L'email n'est pas correcte' }
-{ status: 400, message: 'paramètre Token manquant (null ou undefined)' }
-{ status: 400, message:'la regex token n'est pas valide' }
-{ status: 404, message: 'Email ou Token invalide pour valider l'inscription' }
-{ status: 500, message: 'Une erreur serveur' }
-{ status: 500, message: 'Erreur interne du serveur -_-' } -->
+{ status: 401, message: error.message } -->
 
 
 <!-- ## Traiter le formulaire connexion /POST
@@ -127,13 +117,7 @@ BODY {
 
 *- The possible error message :*
 
-{ status: 400, message:'le paramètre email est manquant (null ou undefined)' }
-{ status: 400, message:'regex L'email n'est pas correcte' }
-{ status: 400, message:'le paramètre mot_de_passe est manquant (null ou undefined)' }
-{ status: 400, message:'la regex mot_de_passe n'est pas correcte un mot de passe de 4 à 99 caractères est requis' }
-{ status: 401, message: 'Mot de passe incorrecte' }
-{ status: 404, message: 'L'utilisateur n'existe pas' }
-{ status: 500, message: 'Erreur interne du serveur -_-' }
+{ status: 401, message: error.message }
 
 
 # PARTIE Membre ROUTE PRIVE (Faut être connectée) | Accueil Membre - Profil
@@ -164,7 +148,4 @@ message: `Utilisateur bien connecté. Malheureusement, aucun utilisateur trouvé
 
 *- The possible error message :*
 
-{ status: 500, message: 'Erreur interne du serveur -_-' }
-{ status: 403, message: 'Cookie Utilisateur expiré' }
-{ status: 404, message: 'Vous n\'êtes pas connectée' }
-{ status: 401, message: 'Cookie AmourConnect n\'existe pas' } -->
+{ status: 401, message: error.message } -->

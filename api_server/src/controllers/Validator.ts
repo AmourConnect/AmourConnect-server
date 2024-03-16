@@ -11,6 +11,8 @@ export class Validator
     private regexDate = /^(?!0000)[0-9]{4}-(?!00)(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
 
     private regexAdresse = /^[A-Za-z\s]{3,50}$/;
+
+    private token_regex = /^[a-f0-9]{128}$/;
     
 
     protected checkEmail(email: string): void 
@@ -59,5 +61,13 @@ export class Validator
         {
           throw new Error('Invalid adresse');
         }
+    }
+
+    protected checkTokenSession(token: string): void
+    {
+      if (!this.token_regex.test(token))
+      {
+        throw new Error('Invalid token');
+      }
     }
 }
