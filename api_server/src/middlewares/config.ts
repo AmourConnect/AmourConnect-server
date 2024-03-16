@@ -28,6 +28,11 @@ export class ConfigExpressMiddlewares
       }
     };
 
+    protected errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+      console.error(err.message);
+      res.status(500).json({ status: 500, message: 'Internal server error' });
+    }
+
   }
 
 
@@ -62,6 +67,8 @@ export class ConfigApp extends ConfigExpressMiddlewares
         app.use(bodyParser.json());
         
         app.use(this.handleJsonError);
+
+        app.use(this.errorHandler);
 
     }
 

@@ -1,4 +1,4 @@
-import { Body, UserInstance } from './Interface';
+import { Body, UserInstance, UserInscriptionInstance } from './Interface';
 import Utilisateur from '../models/shema_migration/utilisateur';
 import { Op } from 'sequelize';
 import UserInscription from '../models/shema_migration/user_inscription';
@@ -57,6 +57,42 @@ export class UserChecker
       if (date_session_expiration < currentDate) 
       {
         throw new Error('Session expired');
+      }
+    }
+
+
+    public async getUserByNoHaveSessionToken(cookie_user: string): Promise<UserInstance | null> 
+    {
+      const user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
+        attributes: ['token_session_user', 'token_session_expiration'],
+        where: {
+          token_session_user: cookie_user
+        }
+      });
+      return user;
+    }
+
+    public async getUserToValideInscription(body: Body): Promise<UserInscriptionInstance | null> 
+    {
+            const userInscription = await (UserInscription as ModelStatic<UserInscriptionInstance>).findOne<UserInscriptionInstance>({
+              where: {
+                email: body.email,
+                token_validation_email: body.Token_validation_email
+              }
+            });
+            if (!userInscription) {
+              throw new Error('User not found');
+            }
+            return userInscription;
+    }
+
+    public checkDateTokenValidationEmailRegistrer(userInscription: UserInscriptionInstance)
+    {
+      const expirationDate = new Date();
+      if(userInscription.date_token_expiration_email < expirationDate) 
+      {
+        userInscription.destroy();
+        throw new Error('Token expired');
       }
     }
 }

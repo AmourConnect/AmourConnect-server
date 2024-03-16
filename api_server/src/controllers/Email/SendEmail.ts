@@ -11,4 +11,9 @@ export class SendEmail extends ConfigEmail
         await this.sendEmail(body.email, 'Valider Inscription AmourConnect ❤️', corps);
     }
 
+    public async SendMailFinishRegister(value_cookie: Session, body: Body): Promise<void>
+    {
+        const corps = await AuthMail.corps_inscription_temporaire(body.pseudo, value_cookie.key_secret);
+        await this.sendEmail(body.email, 'Inscription Finie AmourConnect ❤️', corps);
+    }
 }

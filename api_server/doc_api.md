@@ -6,7 +6,7 @@
 ![Exemple POST](./assets/post_register.png)
 
 
-# AUTH| Login - Register - Welcome - Validate Registration - Session Status
+# AUTH | Login - Register - Welcome - Validate Registration - Session Status
 
 
 ## Test API /GET
@@ -71,9 +71,9 @@ BODY {
 
 { status: 401, message: error.message }
 
-<!-- ## Traiter la validation du formulaire validation inscription /POST
+## Process the validation of the registration validation form /POST
 
-http://localhost:5002/amourconnect/api/auth/post/valider_inscription
+http://localhost:5002/amourconnect/api/auth/post/validate_registration
 
 
 HEADER {
@@ -83,18 +83,17 @@ HEADER {
 
 BODY {
   "email": "pvd@gmail.com",
-  "Token_validation_email":"TOKEN_RECU par email ou regarder dans la base de données dans phpmyadmin"
+  "Token_validation_email":"TOKEN_RECU par email ou regarder dans la base de données dans pgadmin"
 }
 
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Inscription finie avec succès :)' , cle_secret: value_cookie.cle_secret, date_expiration: value_cookie.date_expiration}
+{ status: 200, message: 'Registration completed successfully :)' , key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
 
 *- The possible error message :*
 
-{ status: 401, message: error.message } -->
-
+BODY { "status": 401, "message": "User not found" }
 
 <!-- ## Traiter le formulaire connexion /POST
 
@@ -113,7 +112,7 @@ BODY {
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Connexion effectuée avec succès', cle_secret: value_cookie.cle_secret, date_expiration: value_cookie.date_expiration}
+{ status: 200, message: 'Connexion effectuée avec succès', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
 
 *- The possible error message :*
 

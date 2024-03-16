@@ -1,14 +1,11 @@
-import express from "express"; // le framework, on utilise Express
+import express from "express";
 import routage from '../routes/index';
 import { ConfigApp } from './config';
 
 const app = express();
 
-// 1) Configuration de Express Middelwares
-
 new ConfigApp().configureAppExpress(app);
 
-// 2) LES ROUTES
-app.use('/amourconnect/api', routage); // src/routes/
+app.use('/amourconnect/api', routage);
 
 export default app;

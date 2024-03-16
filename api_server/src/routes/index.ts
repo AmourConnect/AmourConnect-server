@@ -1,16 +1,14 @@
 import express from 'express';
-import routes_authentification from'./authentification';
+import routes_auth from'./authentification';
 // import routes_membre from'./membre';
 
 
 const routage = express.Router();
 
 
-// importation des routes et middlewares
 
-
-// 1) | Route PUBLIC Authentification | Connexion - Inscription - Accueil - Valider Inscription - Etat Session
-routage.use('/auth', routes_authentification);
+// 1) | Route PUBLIC AUTH | Login - Register - Welcome - Validate Registration - Session Status
+routage.use('/auth', routes_auth);
 
 
 // 2) | Route PRIVE Membre |  Accueil Membre - Profil -

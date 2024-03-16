@@ -10,6 +10,16 @@ const authentification = express.Router();
 
 const authMiddleware = new AuthMiddleware();
 
+const user_validator = new UserValidator();
+
+const user_check = new UserChecker();
+
+const UserCreate = new UserCreator();
+
+const send_mail = new SendEmail();
+
+
+
 /**
  * GET Welcome
  * Public test route to find out if the API works
@@ -25,15 +35,14 @@ authentification.get('/get/testo', async (req: Request, res: Response) => {
  * It will send an email to the user to confirm inscription and if no account already exists in the registration and user table
  * The Middleware first check if the user is already connected, if this is the case we reject the registration because they are already connected
  */
-authentification.post('/post/register', authMiddleware.verif_user_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
+authentification.post('/post/register', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
   try 
   {
-    await new UserValidator().checkRegexRegister(req.body);
-    const user_check = await new UserChecker();
+    await user_validator.checkRegexRegister(req.body);
     await user_check.checkIfUserExistsInBDUser(req.body);
     await user_check.CheckIfUserExistsInDBInscription(req.body);
-    const value_cookie = await new UserCreator().createUser(req.body);
-    await new SendEmail().SendUserMailInscriptionConfirmation(value_cookie, req.body);
+    const value_cookie = await UserCreate.createUser(req.body);
+    await send_mail.SendUserMailInscriptionConfirmation(value_cookie, req.body);
     res.status(200).json({ status: 200, message: 'Pre-Registration completed successfully and send email to validate registration' });
   }
   catch (error)
@@ -53,12 +62,30 @@ authentification.get('/get/SessionStatus', authMiddleware.verif_user_connect_coo
 });
 
 
-// /**
-//  * POST Traiter le formulaire de valider inscription
-//  */
-// authentification.post('/post/valider_inscription', MiddlewareAuth.verif_user_no_connect_cookie, async (req, res) => {
-//   await Authentification.inscription_final(req, res);
-// });
+/**
+ * POST
+ * Process the form to validate registration
+ */
+authentification.post('/post/validate_registration', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
+  try {
+
+    await user_validator.checkRegexLogin(req.body);
+
+    const userInscription = await user_check.getUserToValideInscription(req.body);
+
+    await user_check.checkDateTokenValidationEmailRegistrer(userInscription);
+
+    const value_cookie = await UserCreate.FinishRegister(userInscription);
+
+    await send_mail.SendMailFinishRegister(value_cookie, req.body);
+
+    res.status(200).json({ status: 200, message: 'Registration completed successfully :)' , key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration});
+  }
+  catch (error)
+  {
+    res.status(401).json({ status: 401, message: error.message });
+  }
+});
 
 
 

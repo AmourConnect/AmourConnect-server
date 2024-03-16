@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
-import { Body, Session } from './Interface';
+import { Body, Session, UserInscriptionInstance } from './Interface';
 import { FunctionSession } from './Session';
 import UserInscription from '../models/shema_migration/user_inscription';
+import Utilisateur from '../models/shema_migration/utilisateur';
 
 export class UserCreator
 {
@@ -20,6 +21,27 @@ export class UserCreator
         date_naissance: body.date_naissance,
         ville: body.ville
       });
+      return value_cookie;
+    }
+
+    public async FinishRegister(userInscription: UserInscriptionInstance): Promise<Session> 
+    {
+      const value_cookie = await new FunctionSession().create_cookie_send_client(7);
+
+      await Utilisateur.create({
+        email: userInscription.email,
+        pseudo: userInscription.pseudo,
+        password_hash: userInscription.mot_de_passe,
+        grade: 'User',
+        token_session_user: value_cookie.key_secret,
+        token_session_expiration: value_cookie.date_expiration,
+        sexe: userInscription.sexe,
+        date_naissance: userInscription.date_naissance,
+        ville: userInscription.ville
+      });
+              
+      await userInscription.destroy();
+
       return value_cookie;
     }
 }

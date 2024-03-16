@@ -12,4 +12,10 @@ import { Body } from './Interface';
             this.checkDate(body.date_naissance);
             this.checkAdresse(body.ville);
         }
+
+        public checkRegexLogin(body: Body): void
+        {
+            this.checkEmail(body.email);
+            this.checkTokenSession(body.Token_validation_email);
+        }
     }
