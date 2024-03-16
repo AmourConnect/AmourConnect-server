@@ -62,8 +62,8 @@ docker exec -it api_server-backend-amourconnect-1 /bin/sh
 **Otherwise do this manually if you don't have Docker**
 
 
-```npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm install -g sequelize-cli && sequelize db:create && sequelize db:migrate && npm start
-```
+`npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm install -g sequelize-cli && sequelize db:create && sequelize db:migrate && npm start
+`
 
 
 *Generate data if necessary*

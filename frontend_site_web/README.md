@@ -1,24 +1,43 @@
 # Projet AmourConnect - Frontend
 
-Site de rencontre pour match avec un homme VS femme et rechercher son amour❤️
+Dating site to match with a man VS woman and look for his love❤️
 
-# Pour lancer le front
+# To start front
 
-Si vous avez Docker
+*If you have Docker*
 
+```
 docker-compose -f .\compose.yaml up -d
+```
 
 
-**Nettoyez les caches si ça marche pas :**
+**Clean the caches if that doesn't work :**
+
+```
 docker builder prune --force
+```
+
+```
 docker image prune --force
+```
 
+```
 docker exec -it amourconnect_frontend-frontend-amourconnect-1 /bin/sh
+```
 
-**Sinon faite cela manuellement**
+**Otherwise do this manually if you don't have Docker**
 
+```
 npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm run dev
+```
 
-# Pour la prod
+
+# For production :
+
+```
 npm run build
+```
+
+```
 npm start
+```
