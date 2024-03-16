@@ -60,7 +60,7 @@ export async function getServerSideProps(context?: any) {
     // on récup les données de l'API
     const apiResponse = await fetchDataFromAPI('/auth/get/testo', 'GET', null, cookieValues);
 
-    if (apiResponse && apiResponse.status === 200 && apiResponse.message === "Bienvenu sur l'API de AmourConnect") {
+    if (apiResponse && apiResponse.status === 200 && apiResponse.message === "Welcome to the AmourConnect API") {
       // Si la réponse de l'API est 200, affiche la page accueil (route public)
       return {
         props: {

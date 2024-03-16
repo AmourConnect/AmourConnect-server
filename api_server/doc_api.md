@@ -45,7 +45,7 @@ HEADER {
 { status: 401, message: User not connected }
 
 
-## Traiter le formulaire de pré-inscription /POST
+## Process the pre-registration form /POST
 
 http://localhost:5002/amourconnect/api/auth/post/register
 
@@ -119,11 +119,11 @@ BODY {
 { "status": 403, "message": "User Already connected" }
 
 
-<!-- # PARTIE Membre ROUTE PRIVE (Faut être connectée) | Accueil Membre - Profil
+# PRIVATE ROUTE Member PART (Must be connected) | Home Member - Profil
 
-## Afficher page Accueil Membre /GET
+## Get user to match /GET
 
-http://localhost:5002/amourconnect/api/membre/get/page_accueil
+http://localhost:5002/amourconnect/api/membre/get/user_to_match
 
 HEADER {
     KEY => Cookie-user-AmourConnect, Value => 'le cookie'
@@ -131,20 +131,12 @@ HEADER {
 
 *- The positive message from the server:*
 
-{
-status: 200,
-message: `Utilisateur bien connecté, affiche la page accueil membre. Voici des utilisateurs pour matcher => `,
-user_to_match: user_to_match,
-donnees_utilisateur_connecte: donnees_utilisateur_connecte
-}
+{ status: 200, message: `Here are users to match =>`, user_to_match: data_to_match, donnees_utilisateur_connecte: data_user }
 
-OU
 
-{
-status: 200,
-message: `Utilisateur bien connecté. Malheureusement, aucun utilisateur trouvé en fonction du sexe opposé, ville, date de naissance (entre moins ou plus de 5 ans) :/`
-}
+OR
+
+
+{ status: 200, message: `Unfortunately, no users found based on opposite gender, city, date of birth (between less or more than 5 years old) :/` }
 
 *- The possible error message :*
-
-{ status: 401, message: error.message } -->

@@ -31,4 +31,10 @@ export class FunctionSession extends Validator
       return cookie;
     }
 
+    public get_no_cookie(req: any): any
+    {
+      const cookie = req.header('Cookie-user-AmourConnect');
+      return cookie;
+    }
+
 }

@@ -130,7 +130,7 @@ export async function getServerSideProps(context?: any) {
       const { req, res } = context;
       const cookieValues = await AuthentificationPerso.recup_session_user(req);
       // on récup les données de l'API
-      const apiResponse = await fetchDataFromAPI('/membre/get/page_accueil', 'GET', null, cookieValues);
+      const apiResponse = await fetchDataFromAPI('/membre/get/user_to_match', 'GET', null, cookieValues);
   
       if (apiResponse && apiResponse.status === 200) { // l'utiliisateur est connectée
         // on lui affiche la page d'accueil

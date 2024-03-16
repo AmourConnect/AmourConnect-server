@@ -120,4 +120,46 @@ export class UserChecker
         throw new Error('Incorrect password');
       }
     }
+
+    public async getDataUser(cookie_user: string)
+    {
+      const user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
+        attributes: ['date_naissance', 'ville', 'sexe', 'pseudo', 'photo_profil'],
+        where: {
+          token_session_user: cookie_user
+        }
+      });
+      return user;
+    }
+
+
+    /**
+     * Algo SQL query that takes care of returning users from the same city, opposite genders
+     *(if the user who is connected is of Male gender then return of Female gender
+     * otherwise we do the opposite)
+     * if the connected user is a man, return women less than 1 to 10 years old than their age, otherwise
+     * if the connected user is a woman, return men 1 to 10 years older than her age.
+     * @param user_data 
+     * @returns 
+     */
+      public async AlgoUserToMatch(user_data: UserInstance): Promise<UserInstance[]> {
+        const user_to_match = await (Utilisateur as ModelStatic<UserInstance>).findAll<UserInstance>({
+          attributes: ['utilisateur_id', 'pseudo', 'photo_profil', 'sexe', 'centre_interet', 'date_naissance'],
+          where: {
+              ville: user_data.ville,
+              sexe: user_data.sexe === 'Masculin' ? 'Feminin' : 'Masculin',
+              date_naissance: {
+                  [Op.between]: [
+                      user_data.sexe === 'Feminin' ?
+                          new Date(user_data.date_naissance).setFullYear(new Date(user_data.date_naissance).getFullYear() - 10):
+                          new Date(user_data.date_naissance).setFullYear(new Date(user_data.date_naissance).getFullYear() - 1),
+                      user_data.sexe === 'Masculin' ?
+                          new Date(user_data.date_naissance).setFullYear(new Date(user_data.date_naissance).getFullYear() + 10):
+                          new Date(user_data.date_naissance).setFullYear(new Date(user_data.date_naissance).getFullYear() + 1),
+                  ]
+              }
+          },
+        });
+        return user_to_match;
+      }      
 }

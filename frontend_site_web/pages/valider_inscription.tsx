@@ -63,7 +63,7 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
 
         const responseData = await response.json();
         setResponseData(responseData); // on met à jour l'affiche du message
-        if (responseData && responseData.status === 200 && responseData.message === "Inscription finie avec succès :)") {
+        if (responseData && responseData.status === 200 && responseData.message === "Registration completed successfully :)") {
             router.push('/connexion');
           } else {
             console.error('Échec de la connexion:', responseData.message);
@@ -115,9 +115,9 @@ export async function getServerSideProps(context?: any) {
       const { req, res } = context;
       const cookieValues = await AuthentificationPerso.recup_session_user(req);
       // on récup les données de l'API
-      const apiResponse = await fetchDataFromAPI('/get/SessionStatus', 'GET', null, cookieValues);
+      const apiResponse = await fetchDataFromAPI('/auth/get/SessionStatus', 'GET', null, cookieValues);
 
-      if (apiResponse && apiResponse.status === 200 && apiResponse.message === "Utilisateur connectée") { // l'utiliisateur est déjà connectée
+      if (apiResponse && apiResponse.status === 200 && apiResponse.message === "User connected") { // l'utiliisateur est déjà connectée
         // on lui affiche la page d'accueil
         return {
           redirect: {
