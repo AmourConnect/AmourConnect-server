@@ -43,7 +43,7 @@ export class AuthMiddleware
       {
         const session = new FunctionSession();
 
-        const cookie_user = session.get_no_cookie(req);
+        const cookie_user = session.get_cookie(req);
 
         if(!cookie_user) {
           return next();

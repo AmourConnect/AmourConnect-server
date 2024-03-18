@@ -15,9 +15,15 @@ import Section_assaut from '../src/features/layout/Section_assaut';
 import Main_1 from '@/src/features/layout/Main_1';
 import FormulaireContainer from '@/src/features/layout/FormulaireContainer';
 import Button_1 from '@/src/features/layout/Button_1';
+import { ConnexionForm } from '../src/class/connexion';
 export default function Connexion({ apiResponse }: { apiResponse: { message: string } }) {
 
   const controls = useAnimation();
+  const router = useRouter();
+  const [responseData, setResponseData] = useState({
+    message: '', // pour afficher un message d'erreur en temps réels
+  });
+  const Connexionfo = new  ConnexionForm(router, setResponseData);
   
   useEffect(() => {
     controls.start({
@@ -26,39 +32,6 @@ export default function Connexion({ apiResponse }: { apiResponse: { message: str
       transition: { duration: 0.5 },
     });
   }, []); // Le tableau vide signifie que cet effet ne dépend d'aucune dépendance  
-
-  const router = useRouter();
-
-  const [responseData, setResponseData] = useState({
-    message: '', // pour afficher un message d'erreur en temps réels
-  });
-  
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault(); // éviter de recharger la page
-  
-      try {
-        const formDataToSend = new FormData(e.currentTarget);
-        const formDataObject = Object.fromEntries(formDataToSend.entries());
-        const response = await fetch('/api/connexion_traitement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formDataObject),
-        });
-
-        const responseData = await response.json();
-        setResponseData(responseData);
-  
-        if (responseData && responseData.status === 200 && responseData.message === "Connection completed successfully") {
-          router.push('/accueil');
-        } else {
-          console.error('Échec de la connexion:', responseData.message);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire:', error);
-      }
-    };
 
       return (
       <>
@@ -76,7 +49,7 @@ export default function Connexion({ apiResponse }: { apiResponse: { message: str
                 {responseData && responseData.message && (
                   <p style={{color:"red"}} className={styles.message}>{responseData.message}</p>
                   )}
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={Connexionfo.handleSubmit}>
                     <label htmlFor="email" className={styles.label}></label>
                     <input type="email" id="email" 
                     className={styles.input} 

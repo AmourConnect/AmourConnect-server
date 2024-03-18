@@ -27,13 +27,6 @@ export class FunctionSession extends Validator
     public get_cookie (req: any): string
     {
       const cookie = req.header('Cookie-user-AmourConnect');
-      this.checkTokenSession(cookie);
-      return cookie;
-    }
-
-    public get_no_cookie(req: any): any
-    {
-      const cookie = req.header('Cookie-user-AmourConnect');
       return cookie;
     }
 

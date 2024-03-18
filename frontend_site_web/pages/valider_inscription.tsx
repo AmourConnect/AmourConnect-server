@@ -3,8 +3,6 @@ import { fetchDataFromAPI } from './api/function';
 import Head from 'next/head';
 import styles from '../public/css/Valider_inscription.module.css';
 import React, { useState, useEffect } from 'react';
-import cookie from 'cookie'; // cookie serveur
-import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router';
 import 'tailwindcss/tailwind.css'; // pour que le kit fonctionne
 import { motion, useAnimation } from 'framer-motion';
@@ -16,9 +14,12 @@ import Section_assaut from '../src/features/layout/Section_assaut';
 import Main_1 from '@/src/features/layout/Main_1';
 import FormulaireContainer from '@/src/features/layout/FormulaireContainer';
 import Button_1 from '@/src/features/layout/Button_1';
+import {  ValiderInscriptionForm } from '../src/class/valider_inscription';
 export default function ValiderInscription({ apiResponse }: { apiResponse: { message: string } }) {
-
+  const [responseData, setResponseData] = useState({ message: '' });
   const controls = useAnimation();
+  const router = useRouter();
+  const { token_verif_email } = router.query;
   
   useEffect(() => {
     controls.start({
@@ -28,50 +29,11 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
     });
   }, []); // Le tableau vide signifie que cet effet ne dépend d'aucune dépendance  
   
-    const router = useRouter();
 
-    const { token_verif_email } = router.query;
-
-  const [formData, setFormData] = useState({
-    email: '',
-    Token_validation_email: token_verif_email
-  });
-
-  const [responseData, setResponseData] = useState({
-    message: '', // pour afficher un message d'erreur en temps réels
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ // on met à jour formData pour l'INPUT
-      ...prevData,
-      [name]: value,
-    }));
-  };
-  
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault(); // éviter de recharger la page
-  
-      try {
-        const response = await fetch('/api/valider_inscription_traitement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-
-        const responseData = await response.json();
-        setResponseData(responseData); // on met à jour l'affiche du message
-        if (responseData && responseData.status === 200 && responseData.message === "Registration completed successfully :)") {
-            router.push('/connexion');
-          } else {
-            console.error('Échec de la connexion:', responseData.message);
-          }
-      } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire:', error);
-      }
-    };
+  const inscriptionForm = new  ValiderInscriptionForm(router, setResponseData);
+  if (token_verif_email) {
+    inscriptionForm.getFormData().Token_validation_email = token_verif_email;
+  }
 
       return (
       <>
@@ -85,21 +47,21 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
           <Main_1>
           <motion.div animate={controls} initial={{ opacity: 0, y: -50 }}>
                 <h1 style={{ fontFamily: 'serif', fontSize: '2rem', fontWeight: 'bold' }}>Valider l'inscription à notre site de rencontre ❤️</h1>
-              <FormulaireContainer>
-                {responseData.message && (
-                  <p style={{color:"red"}} className={styles.message}>{responseData.message}</p>
-                  )}
-            <form onSubmit={handleSubmit}>
+            <FormulaireContainer>
+            {responseData.message && (
+              <p style={{color:"red"}} className={styles.message}>{responseData.message}</p>
+            )}
+              <form onSubmit={inscriptionForm.handleSubmit}>
                 <label htmlFor="email" className={styles.label}></label>
-                <input type="email" id="email" 
-                className={styles.input} 
-                name="email"
-                placeholder='Email'
-                value={formData.email}
-                onChange={handleInputChange}
-                required/>
+                <input type="email" id="email"
+                  className={styles.input}
+                  name="email"
+                  placeholder='Email'
+                  defaultValue={inscriptionForm.getFormData().email}
+                  onChange={inscriptionForm.handleInputChange}
+                  required/>
                 <Button_1>Valider l'inscription</Button_1>
-            </form>
+              </form>
             </FormulaireContainer>
                     </motion.div>
             </Main_1>

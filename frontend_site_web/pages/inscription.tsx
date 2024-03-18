@@ -8,16 +8,22 @@ import 'tailwindcss/tailwind.css'; // pour que le kit fonctionne
 import Link from 'next/link';
 import { motion, useAnimation } from 'framer-motion';
 import Header_1 from '@/src/features/layout/Header_1';
-import Footer_1 from '@/src/features/layout/Footer_1';
 import { ThemeProvider } from 'next-themes';
 import Section_assaut from '../src/features/layout/Section_assaut';
 import { AuthentificationPerso } from '../authentification'; //  côté serveur
 import Main_1 from '@/src/features/layout/Main_1';
 import FormulaireContainer from '@/src/features/layout/FormulaireContainer';
 import Button_1 from '@/src/features/layout/Button_1';
+import { InscriptionForm } from '../src/class/inscription';
 export default function Inscription({ apiResponse }: { apiResponse: { message: string } }) {
 
   const controls = useAnimation();
+
+  const [responseData, setResponseData] = useState({
+    message: '', // pour afficher un message d'erreur en temps réels
+  });
+
+  const inscriptionForm = new  InscriptionForm(setResponseData);
   
   useEffect(() => {
     controls.start({
@@ -26,31 +32,6 @@ export default function Inscription({ apiResponse }: { apiResponse: { message: s
       transition: { duration: 0.5 },
     });
   }, []); // Le tableau vide signifie que cet effet ne dépend d'aucune dépendance  
-
-  const [responseData, setResponseData] = useState({
-    message: '', // pour afficher un message d'erreur en temps réels
-  });
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault(); // éviter de recharger la page
-  
-      try {
-        const formDataToSend = new FormData(e.currentTarget);
-        const formDataObject = Object.fromEntries(formDataToSend.entries());
-        const response = await fetch('/api/inscription_traitement', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formDataObject),
-        });
-
-        const responseData = await response.json();
-        setResponseData(responseData); // on met à jour l'affiche du message
-      } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire:', error);
-      }
-    };
 
       return (
       <>
@@ -68,7 +49,7 @@ export default function Inscription({ apiResponse }: { apiResponse: { message: s
             {responseData.message && (
               <p style={{color:'red'}} className={styles.message}>{responseData.message}</p>
             )}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={inscriptionForm.handleSubmit}>
                 <label htmlFor="email" className={styles.label}></label>
                 <input type="email" id="email" 
                 className={styles.input} 

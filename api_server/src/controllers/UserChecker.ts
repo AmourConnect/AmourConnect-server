@@ -142,7 +142,7 @@ export class UserChecker
      * @param user_data 
      * @returns 
      */
-      public async AlgoUserToMatch(user_data: UserInstance): Promise<UserInstance[]> {
+      public async GetAlgoUserToMatch(user_data: UserInstance): Promise<UserInstance[]> {
         const user_to_match = await (Utilisateur as ModelStatic<UserInstance>).findAll<UserInstance>({
           attributes: ['utilisateur_id', 'pseudo', 'photo_profil', 'sexe', 'centre_interet', 'date_naissance'],
           where: {

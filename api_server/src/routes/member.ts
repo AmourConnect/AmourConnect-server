@@ -18,7 +18,7 @@ membre.get('/get/user_to_match', async (req: Request, res: Response) =>
 {
     const cookie_user = await session.get_cookie(req);
     const data_user = await user_check.getDataUser(cookie_user);
-    const data_to_match = await user_check.AlgoUserToMatch(data_user);
+    const data_to_match = await user_check.GetAlgoUserToMatch(data_user);
     if (data_to_match.length > 0) {
         res.status(200).json({
             status: 200,
