@@ -117,7 +117,7 @@ export class UserChecker
       const resultat = await bcrypt.compare(body.mot_de_passe, user.password_hash);
       if(!resultat)
       {
-        throw new Error('Incorrect password');
+        throw new Error('User No Found'); // Because we don't want to show the user that the password is incorrect as a security measure
       }
     }
 
@@ -142,7 +142,7 @@ export class UserChecker
      * @param user_data 
      * @returns 
      */
-      public async GetAlgoUserToMatch(user_data: UserInstance): Promise<UserInstance[]> {
+      public async GetAlgoAllUsersToMatch(user_data: UserInstance): Promise<UserInstance[]> {
         const user_to_match = await (Utilisateur as ModelStatic<UserInstance>).findAll<UserInstance>({
           attributes: ['utilisateur_id', 'pseudo', 'photo_profil', 'sexe', 'centre_interet', 'date_naissance'],
           where: {

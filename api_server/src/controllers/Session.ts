@@ -1,18 +1,17 @@
 import crypto from 'crypto';
-import { Validator } from './Validator';
 import { Session } from './Interface';
 
 
-export class FunctionSession extends Validator
+export class FunctionSession
 
 {
     /**
      * Purpose of creating a user session to send to the client side
      * @returns 
      */
-    public create_cookie_send_client = async (x_days: number): Promise<Session> => 
+    public generate_session_client = async (x_days: number, length_session: number): Promise<Session> => 
     {
-        const key_secret = await crypto.randomBytes(64).toString('hex'); // token session
+        const key_secret = await crypto.randomBytes(length_session).toString('hex'); // token session
 
         // Calculate expiration date in X days
         const date_expiration = new Date();

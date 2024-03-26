@@ -9,7 +9,7 @@ export class UserCreator
     public async createUser(body: Body): Promise<Session> 
     {
       const hashedPassword = await bcrypt.hash(body.mot_de_passe, 10);
-      const value_cookie = await new FunctionSession().create_cookie_send_client(7);
+      const value_cookie = await new FunctionSession().generate_session_client(7, 64);
   
       await UserInscription.create({
         email: body.email,
@@ -26,7 +26,7 @@ export class UserCreator
 
     public async FinishRegister(userInscription: UserInscriptionInstance): Promise<Session> 
     {
-      const value_cookie = await new FunctionSession().create_cookie_send_client(7);
+      const value_cookie = await new FunctionSession().generate_session_client(7, 64);
 
       await Utilisateur.create({
         email: userInscription.email,
@@ -47,7 +47,7 @@ export class UserCreator
 
     public async UpdateSessionUser(body: Body): Promise<Session>
     {
-      const value_cookie = await new FunctionSession().create_cookie_send_client(7);
+      const value_cookie = await new FunctionSession().generate_session_client(7, 64);
       await Utilisateur.update(
         { token_session_user: value_cookie.key_secret, token_session_expiration: value_cookie.date_expiration },
         { where: { email: body.email } }

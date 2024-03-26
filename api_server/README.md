@@ -1,4 +1,4 @@
-# Projet AmourConnect - BackEND - API PRIVE
+# Projet AmourConnect - BackEND - API PRIVATE
 
 Dating site to match with a man VS woman and look for his love❤️
 
