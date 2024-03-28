@@ -1,5 +1,15 @@
+import { CustomError } from "./CustomError";
+
 export abstract class Validator
 {
+    private undefinied (data: any)
+    {
+      if(typeof data === "undefined")
+      {
+        return false;
+      }
+      return true;
+    }
     private emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     private pseudoRegex = /^[a-zA-Z0-9_-]{3,10}$/;
@@ -17,57 +27,57 @@ export abstract class Validator
 
     protected checkEmail(email: string): void 
     {
-        if (!this.emailRegex.test(email))
+        if (!this.undefinied(email) || !this.emailRegex.test(email))
         {
-          throw new Error('Invalid email');
+          throw new CustomError('Invalid email', 400);
         }
     }
 
     protected checkPseudo(pseudo: string): void
     {
-        if (!this.pseudoRegex.test(pseudo))
+        if (!this.undefinied(pseudo) || !this.pseudoRegex.test(pseudo))
         {
-          throw new Error('Invalid pseudo');
+          throw new CustomError('Invalid pseudo', 400);
         }
     }
 
     protected checkPassword(password: string): void
     {
-        if (!this.PASSWORD_REGEX.test(password))
+        if (!this.undefinied(password) || !this.PASSWORD_REGEX.test(password))
         {
-          throw new Error('Invalid password');
+          throw new CustomError('Invalid password', 400);
         }
     }
 
     protected checkSexe(sexe: string): void
     {
-        if (!this.regexSexe.test(sexe))
+        if (!this.undefinied(sexe) || !this.regexSexe.test(sexe))
         {
-          throw new Error('Invalid sexe');
+          throw new CustomError('Invalid sexe', 400);
         }
     }
 
     protected checkDate(date: string): void
     {
-        if (!this.regexDate.test(date))
+        if (!this.undefinied(date) || !this.regexDate.test(date))
         {
-          throw new Error('Invalid date');
+          throw new CustomError('Invalid date', 400);
         }
     }
 
     protected checkAdresse(adresse: string): void
     {
-        if (!this.regexAdresse.test(adresse))
+        if (!this.undefinied(adresse) || !this.regexAdresse.test(adresse))
         {
-          throw new Error('Invalid adresse');
+          throw new CustomError('Invalid adresse', 400);
         }
     }
 
     protected checkTokenSession(token: string): void
     {
-      if (!this.token_regex.test(token))
+      if (!this.undefinied(token) || !this.token_regex.test(token))
       {
-        throw new Error('Invalid token');
+        throw new CustomError('Invalid token', 400);
       }
     }
 }

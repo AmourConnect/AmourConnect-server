@@ -24,7 +24,7 @@ namespace AppAmourConnect
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

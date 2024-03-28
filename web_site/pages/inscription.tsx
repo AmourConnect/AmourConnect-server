@@ -15,7 +15,7 @@ import Main_1 from '@/src/features/layout/Main_1';
 import FormulaireContainer from '@/src/features/layout/FormulaireContainer';
 import Button_1 from '@/src/features/layout/Button_1';
 import { InscriptionForm } from '../src/class/inscription';
-export default function Inscription({ apiResponse }: { apiResponse: { message: string } }) {
+export default function Inscription({ apiResponse }: { apiResponse: { message: any } }) {
 
   const controls = useAnimation();
 
@@ -46,7 +46,7 @@ export default function Inscription({ apiResponse }: { apiResponse: { message: s
           <motion.div animate={controls} initial={{ opacity: 0, y: -50 }}>
                 <h1 style={{ fontFamily: 'serif', fontSize: '2rem', fontWeight: 'bold' }}>S'inscrire à notre site de rencontre ❤️</h1>
               <FormulaireContainer>
-            {responseData.message && (
+            {responseData && responseData.message && (
               <p style={{color:'red'}} className={styles.message}>{responseData.message}</p>
             )}
             <form onSubmit={inscriptionForm.handleSubmit}>

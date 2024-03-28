@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 import UserInscription from '../models/shema_migration/user_inscription';
 import { ModelStatic } from 'sequelize';
 import bcrypt from 'bcrypt';
-
+import { CustomError } from "./CustomError";
 
 export class UserChecker
 {
@@ -19,7 +19,7 @@ export class UserChecker
   
       if (utilisateur)
       {
-        throw new Error('User already exists');
+        throw new CustomError('User already exists', 400);
       }
     }
 
@@ -33,7 +33,7 @@ export class UserChecker
         });
         if (userInscription) 
         {
-          throw new Error('User already exists');
+          throw new CustomError('User already exists', 400);
         }
     }
 
@@ -46,7 +46,7 @@ export class UserChecker
         }
       });
       if (!user) {
-        throw new Error('User not connected');
+        throw new CustomError('User not connected', 403);
       }
       return user;
     }
@@ -56,7 +56,7 @@ export class UserChecker
       const currentDate = new Date();
       if (date_session_expiration < currentDate) 
       {
-        throw new Error('Session expired');
+        throw new CustomError('Session expired', 403);
       }
     }
 
@@ -81,7 +81,7 @@ export class UserChecker
               }
             });
             if (!userInscription) {
-              throw new Error('User not found');
+              throw new CustomError('User not found', 404);
             }
             return userInscription;
     }
@@ -92,7 +92,7 @@ export class UserChecker
       if(userInscription.date_token_expiration_email < expirationDate) 
       {
         userInscription.destroy();
-        throw new Error('Token expired');
+        throw new CustomError('Token expired', 403);
       }
     }
 
@@ -107,7 +107,7 @@ export class UserChecker
   
       if (!utilisateur)
       {
-        throw new Error('User No Found');
+        throw new CustomError('User no found', 403);
       }
       return utilisateur;
     }
@@ -117,7 +117,7 @@ export class UserChecker
       const resultat = await bcrypt.compare(body.mot_de_passe, user.password_hash);
       if(!resultat)
       {
-        throw new Error('User No Found'); // Because we don't want to show the user that the password is incorrect as a security measure
+        throw new CustomError('Password or Pseudo incorrect', 403); // in true, it's only password 
       }
     }
 

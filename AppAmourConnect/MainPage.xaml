@@ -9,6 +9,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <NavigationView x:Name="NavigationViewControl" PaneTitle="Amour Connect">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Tag="home" Icon="Home" Content="Accueil" />
+                <NavigationViewItem Tag="login" Icon="Home" Content="Connexion" />
+                <NavigationViewItem Tag="register" Icon="Home" Content="Inscription" />
+            </NavigationView.MenuItems>
+        </NavigationView>
 
+        <!-- <ScrollViewer>
+            <Frame x:Name="ContentFrame" Padding="10" IsTabStop="True" />
+        </ScrollViewer> -->
+        
     </Grid>
 </Page>

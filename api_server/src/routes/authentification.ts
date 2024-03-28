@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { UserChecker } from '../controllers/UserChecker';
 import { UserCreator } from '../controllers/UserCreator';
 import { SendEmail } from '../controllers/Email/SendEmail';
+import { error_msg_api } from "../controllers/CustomError";
 
 const authentification = express.Router();
 
@@ -26,29 +27,6 @@ const send_mail = new SendEmail();
  */
 authentification.get('/get/testo', async (req: Request, res: Response) => {
   res.status(200).json({ status: 200, message: 'Welcome to the AmourConnect API' });
-});
-
-
-
-/**
- * POST PRE-REGISTER
- * It will send an email to the user to confirm inscription and if no account already exists in the registration and user table
- * The Middleware first check if the user is already connected, if this is the case we reject the registration because they are already connected
- */
-authentification.post('/post/register', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) => {
-  try 
-  {
-    await user_validator.checkRegexRegister(req.body);
-    await user_check.checkIfUserExistsInBDUser(req.body);
-    await user_check.CheckIfUserExistsInDBInscription(req.body);
-    const value_cookie = await UserCreate.createUser(req.body);
-    await send_mail.SendUserMailInscriptionConfirmation(value_cookie, req.body);
-    res.status(200).json({ status: 200, message: 'Pre-Registration completed successfully and send email to validate registration' });
-  }
-  catch (error)
-  {
-    res.status(401).json({ status: 401, message: error.message });
-  }
 });
 
 
@@ -83,17 +61,38 @@ authentification.post('/post/validate_registration', authMiddleware.verif_user_n
   }
   catch (error)
   {
-    res.status(401).json({ status: 401, message: error.message });
+    error_msg_api(error, res);
   }
 });
 
-
+/**
+ * POST PRE-REGISTER
+ * It will send an email to the user to confirm inscription and if no account already exists in the registration and user table
+ * The Middleware first check if the user is already connected, if this is the case we reject the registration because they are already connected
+ */
+authentification.post('/post/register', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) =>
+  {
+    try 
+    {
+      await user_validator.checkRegexRegister(req.body);
+      await user_check.checkIfUserExistsInBDUser(req.body);
+      await user_check.CheckIfUserExistsInDBInscription(req.body);
+      const value_cookie = await UserCreate.createUser(req.body);
+      await send_mail.SendUserMailInscriptionConfirmation(value_cookie, req.body);
+      res.status(200).json({ status: 200, message: 'Pre-Registration completed successfully and send email to validate registration' });
+    }
+    catch (error)
+    {
+      error_msg_api(error, res);
+    }
+  });
 
 /**
  * POST LOGIN
  * POST route to process the login page form
  */
-authentification.post('/post/login', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req, res) => {
+authentification.post('/post/login', authMiddleware.verif_user_no_connect_cookie.bind(authMiddleware), async (req: Request, res: Response) =>
+{
   try 
   {
     await user_validator.checkRegexLogin(req.body);
@@ -104,7 +103,7 @@ authentification.post('/post/login', authMiddleware.verif_user_no_connect_cookie
   }
   catch (error)
   {
-    res.status(401).json({ status: 401, message: error.message });
+    error_msg_api(error, res);
   }
 });
 
