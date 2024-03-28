@@ -45,7 +45,7 @@ export namespace AuthMail
       <body>\
         <div class=\'container\'>\
           <p class=\'header\'>Salut ' + pseudo + ' 😎</p>\
-          <p class=\'signature\'>Cordialement, <a class=\'link\' href=\'' + process.env.IP_NOW_FRONTEND + 'valider_inscription?token_verif_email=' + tokenVerifEmail + '\'>Clique ici pour valider l\'inscription 🫀</a></p>\
+          <p class=\'signature\'>Cordialement, Voici ton code pour valider ton inscription ' + tokenVerifEmail + ' 🫀</p>\
         </div>\
       </body>\
     </html>';

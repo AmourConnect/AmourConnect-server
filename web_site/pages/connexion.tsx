@@ -72,6 +72,10 @@ export default function Connexion({ apiResponse }: { apiResponse: { message: str
                 <Link href="/" className={styles.a}>
                     Page Accueil
                 </Link>
+                <br></br>
+                <Link href="/valider_inscription" className={styles.a}>
+                    Page Valider Inscription
+                </Link>
                 </form>
                     </FormulaireContainer>
                     </motion.div>

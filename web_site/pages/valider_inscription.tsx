@@ -19,7 +19,6 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
   const [responseData, setResponseData] = useState({ message: '' });
   const controls = useAnimation();
   const router = useRouter();
-  const { token_verif_email } = router.query;
   
   useEffect(() => {
     controls.start({
@@ -31,9 +30,6 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
   
 
   const inscriptionForm = new  ValiderInscriptionForm(router, setResponseData);
-  if (token_verif_email) {
-    inscriptionForm.getFormData().Token_validation_email = token_verif_email;
-  }
 
       return (
       <>
@@ -60,7 +56,19 @@ export default function ValiderInscription({ apiResponse }: { apiResponse: { mes
                   defaultValue={inscriptionForm.getFormData().email}
                   onChange={inscriptionForm.handleInputChange}
                   required/>
+
+
+                <label htmlFor="Token_validation_email" className={styles.label}></label>
+                <input type="Token_validation_email" id="Token_validation_email"
+                  className={styles.input}
+                  name="Token_validation_email"
+                  placeholder='Token validation Email'
+                  defaultValue={inscriptionForm.getFormData().Token_validation_email}
+                  onChange={inscriptionForm.handleInputChange}
+                  required/>
                 <Button_1>Valider l'inscription</Button_1>
+
+
               </form>
             </FormulaireContainer>
                     </motion.div>

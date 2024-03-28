@@ -9,7 +9,7 @@ export class UserCreator
     public async createUser(body: Body): Promise<Session> 
     {
       const hashedPassword = await bcrypt.hash(body.mot_de_passe, 10);
-      const value_cookie = await new FunctionSession().generate_session_client(7, 64);
+      const value_cookie = await new FunctionSession().generate_session_client(7, 6);
   
       await UserInscription.create({
         email: body.email,

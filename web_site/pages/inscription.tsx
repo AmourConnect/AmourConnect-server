@@ -15,7 +15,7 @@ import Main_1 from '@/src/features/layout/Main_1';
 import FormulaireContainer from '@/src/features/layout/FormulaireContainer';
 import Button_1 from '@/src/features/layout/Button_1';
 import { InscriptionForm } from '../src/class/inscription';
-export default function Inscription({ apiResponse }: { apiResponse: { message: any } }) {
+export default function Inscription({ apiResponse }: { apiResponse: { message: string } }) {
 
   const controls = useAnimation();
 
@@ -106,6 +106,10 @@ export default function Inscription({ apiResponse }: { apiResponse: { message: a
                 <Link href="/connexion" className={styles.a}>
                 Page Connecter
             </Link>
+            <br></br>
+                <Link href="/valider_inscription" className={styles.a}>
+                    Page Valider Inscription
+                </Link>
             </form>
             </FormulaireContainer>
                     </motion.div>

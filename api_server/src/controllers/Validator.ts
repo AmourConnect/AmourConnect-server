@@ -22,7 +22,7 @@ export abstract class Validator
 
     private regexAdresse = /^[A-Za-z\s]{3,50}$/;
 
-    private token_regex = /^[a-f0-9]{128}$/;
+    private token_regex = /^[a-f0-9]{6,128}$/i;
     
 
     protected checkEmail(email: string): void 
