@@ -80,4 +80,14 @@ export abstract class Validator
         throw new CustomError('Invalid token', 400);
       }
     }
+
+    protected checkDateExpired(date : Date): boolean
+    {
+      const expirationDate = new Date();
+      if(date < expirationDate) 
+      {
+        return false;
+      }
+      return true;
+    }
 }

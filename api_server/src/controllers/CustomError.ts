@@ -4,11 +4,14 @@ import dotenv from 'dotenv';
 const envPath = path.resolve(__dirname, '..','..', '..','.env');
 dotenv.config({ path: envPath });
 
-export class CustomError extends Error {
-  constructor(
+export class CustomError extends Error 
+{
+  constructor
+  (
     message: string,
     public statusCode: number
-  ) {
+  ) 
+  {
     super(message);
   }
 }

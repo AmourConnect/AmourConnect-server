@@ -1,5 +1,5 @@
-import { Validator } from "./Validator";
-import { Body } from './Interface';
+import { Validator } from "../Validator";
+import { Body } from '../Interface';
 
     export class UserValidator extends Validator
     {

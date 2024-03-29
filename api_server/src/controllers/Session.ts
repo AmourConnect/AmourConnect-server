@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import { Session } from './Interface';
+import { Validator } from './Validator';
 
 
-export class FunctionSession
-
+export class FunctionSession extends Validator
 {
     /**
      * Purpose of creating a user session to send to the client side
@@ -11,8 +11,7 @@ export class FunctionSession
      */
     public generate_session_client = async (x_days: number, length_session: number): Promise<Session> => 
     {
-        const key_secret = await crypto.randomBytes(length_session).toString('hex'); // token session
-
+        const key_secret = await crypto.randomBytes(length_session).toString('hex');
         // Calculate expiration date in X days
         const date_expiration = new Date();
         date_expiration.setDate(date_expiration.getDate() + x_days);
@@ -26,6 +25,7 @@ export class FunctionSession
     public get_cookie (req: any): string
     {
       const cookie = req.header('Cookie-user-AmourConnect');
+      this.checkTokenSession(cookie);
       return cookie;
     }
 

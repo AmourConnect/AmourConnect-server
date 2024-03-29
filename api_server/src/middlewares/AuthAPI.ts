@@ -1,66 +1,76 @@
 import { NextFunction, Response } from "express";
 import { FunctionSession } from '../controllers/Session';
-import { UserChecker } from '../controllers/UserChecker';
+import { UserChecker } from '../controllers/User/UserChecker';
+import { error_msg_api } from "../controllers/CustomError";
+import { Validator } from "../controllers/Validator";
+import { UserGet } from "../controllers/User/UserGet";
 
 
-export class AuthMiddleware
+import Utilisateur from '../models/shema_migration/utilisateur';
+import { Body, UserInstance, UserInscriptionInstance } from '../controllers/Interface';
+import { ModelStatic } from 'sequelize';
+
+
+const user_get = new UserGet();
+
+const user_check = new UserChecker();
+
+export class AuthMiddleware extends Validator
 
 {
 
   public async verif_user_connect_cookie(req: Request, res: Response, next: NextFunction)
   {
-
     try {
-
       const session = new FunctionSession();
 
       const cookie_user = session.get_cookie(req);
 
-      const user_checker = new UserChecker();
+      const db_user = await user_get.UserGetData(['token_session_user', 'token_session_expiration'], { token_session_user: cookie_user });
 
-      const db_user = user_checker.getUserBySessionToken(cookie_user);
+      user_check.checkUserGet(db_user, "User no found", 404);
 
-      user_checker.checkSessionDateExpiration((await db_user).token_session_expiration);
+      user_check.checkSessionDateExpiration((await db_user).token_session_expiration);
 
       next();
 
     }
     catch (error)
     {
-      res.status(401).json({ status: 401, message: error.message });
+      error_msg_api(error, res);
     }
   }
 
   /**
+   * TODO GET RID OF THIS MIDDLEWARE (PROFESSIONALLY BY USING THE RES.COOKIE)
    * Be careful, this middleware is true if the user is not connected
    * @param req 
    * @param res 
    * @param next 
    */
-  public async verif_user_no_connect_cookie(req: Request, res: Response, next: NextFunction)
+  public async verif_user_no_connect_cookie(req: any, res: Response, next: NextFunction)
   {
       try 
       {
-        const session = new FunctionSession();
-
-        const cookie_user = session.get_cookie(req);
+        const cookie_user = req.header('Cookie-user-AmourConnect');
 
         if(!cookie_user) {
           return next();
         }
 
-        const user_checker = new UserChecker();
-
-        const db_user = await user_checker.getUserByNoHaveSessionToken(cookie_user);
+        const db_user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
+          attributes: ['token_session_user', 'token_session_expiration'],
+          where: {
+            token_session_user: cookie_user
+          }
+        });
 
         if (!db_user) {
           return next();
         }
     
-        const date_session_expiration = db_user.token_session_expiration;
-    
-        const currentDate = new Date();
-        if (date_session_expiration < currentDate) {
+        if (!this.checkDateExpired(db_user.token_session_expiration)) 
+        {
           return next();
         }
     
@@ -69,7 +79,7 @@ export class AuthMiddleware
       }
       catch (error)
       {
-        res.status(401).json({ status: 401, message: error.message });
+        error_msg_api(error, res);
       }
   }
 }

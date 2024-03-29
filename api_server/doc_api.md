@@ -24,7 +24,7 @@ http://localhost:5002/amourconnect/api/auth/get/testo
 
 *- The possible error message :*
 
-{ status: 401, message: error.message }
+{ status: 500, message: 'Internal Server Error' }
 
 ## To know if the user is connected or not /GET
 
@@ -41,9 +41,8 @@ HEADER {
 
 *- The possible error message :*
 
-{ status: 401, message: Session expired }
-{ status: 401, message: User not connected }
-
+{ status: 403, message: Session expired }
+{ status: 500, message: 'Internal Server Error' }
 
 ## Process the pre-registration form /POST
 
@@ -69,7 +68,7 @@ BODY {
 
 *- The possible error message :*
 
-{ status: 401, message: error.message }
+{ status: 500, message: 'Internal Server Error' }
 
 ## Process the validation of the registration validation form /POST
 
@@ -93,7 +92,7 @@ BODY {
 
 *- The possible error message :*
 
-BODY { "status": 401, "message": "User not found" }
+{ status: 500, message: 'Internal Server Error' }
 
 ## Process the connection form /POST
 
@@ -117,7 +116,7 @@ BODY {
 *- The possible error message :*
 
 { "status": 403, "message": "User Already connected" }
-
+{ status: 500, message: 'Internal Server Error' }
 
 # PRIVATE ROUTE Member PART (Must be connected) | Home Member - Profil
 
@@ -140,3 +139,5 @@ OR
 { status: 200, message: `Unfortunately, no users found based on opposite gender, city, date of birth (between less or more than 5 years old) :/` }
 
 *- The possible error message :*
+
+{ status: 500, message: 'Internal Server Error' }

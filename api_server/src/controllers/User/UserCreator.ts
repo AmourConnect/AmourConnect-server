@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import { Body, Session, UserInscriptionInstance } from './Interface';
-import { FunctionSession } from './Session';
-import UserInscription from '../models/shema_migration/user_inscription';
-import Utilisateur from '../models/shema_migration/utilisateur';
+import { Body, Session, UserInscriptionInstance } from '../Interface';
+import { FunctionSession } from '../Session';
+import UserInscription from '../../models/shema_migration/user_inscription';
+import Utilisateur from '../../models/shema_migration/utilisateur';
 
 export class UserCreator
 {

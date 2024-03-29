@@ -6,9 +6,8 @@ dotenv.config({ path: envPath });
 export namespace AuthMail
 {
 
-  export const corps_inscription_temporaire = async (pseudo: string, tokenVerifEmail: string) =>
+  export const corps_inscription_temporaire = (pseudo: string, tokenVerifEmail: string) =>
   {
-  
       const corps = 
       '<html>\
       <head>\
@@ -55,7 +54,7 @@ export namespace AuthMail
   
   
   
-    export const corps_inscription_validation = async (pseudo: string) =>
+    export const corps_inscription_validation = (pseudo: string) =>
     {
       const corps = 
       '<html>\
@@ -100,6 +99,5 @@ export namespace AuthMail
     </html>';
     
       return corps;
-  
     }
 }
