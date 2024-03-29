@@ -1,3 +1,7 @@
 /.vs
-/bin
-/obj
+/AppAmourConnect/bin/
+/AppAmourConnect/obj/
+/AppAmourConnect.Android/bin/
+/AppAmourConnect.Android/obj/
+/AppAmourConnect.iOS/obj/
+/AppAmourConnect.iOS/bin/

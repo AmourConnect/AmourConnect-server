@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const hashedPassword = await bcrypt.hash('kaka123@', 10);
-    const cle_secret = await crypto.randomBytes(64).toString('hex'); // token générer
+    const cle_secret = await crypto.randomBytes(64).toString('hex'); // token session
     await queryInterface.bulkInsert('user_inscription', [{
       pseudo: 'sded',
       email: 'cddd@gmail.com',
