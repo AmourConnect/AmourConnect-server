@@ -4,6 +4,7 @@ Dating site to match with a man VS woman and look for his love❤️
 
 # Config .env at the root of the project
 
+```
 PORT_API_BACK_IN_DOCKER="3005"
 
 NODE_ENV="development"
@@ -35,7 +36,7 @@ DB_PASSWORD="123tchoulo123"
 DB_DATABASE="amourconnect_dev"
 
 DIALECT_SQL="postgres" 
-
+```
 
 # To start API
 

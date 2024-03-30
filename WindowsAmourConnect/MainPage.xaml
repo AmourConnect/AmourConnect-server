@@ -1,0 +1,27 @@
+﻿<Page
+    x:Class="WindowsAmourConnect.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WindowsAmourConnect"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <NavigationView x:Name="NavigationViewControl" 
+                        PaneTitle="Amour Connect"
+                        ItemInvoked="NavigationViewControl_ItemInvoked">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Tag="home" Icon="Home" Content="Accueil" />
+                <NavigationViewItem Tag="login" Icon="Home" Content="Connexion" />
+                <NavigationViewItem Tag="register" Icon="Home" Content="Inscription" />
+            </NavigationView.MenuItems>
+        </NavigationView>
+
+        <!-- <ScrollViewer>
+            <Frame x:Name="ContentFrame" Padding="10" IsTabStop="True" />
+        </ScrollViewer> -->
+
+    </Grid>
+</Page>
