@@ -1,6 +1,6 @@
 import express from 'express';
 import { AuthMiddleware } from '../middlewares/AuthAPI';
-import AuthUser from '../controllers/Auth/AuthUser';
+import AuthUser from '../controllers/route/AuthUser';
 
 const authentification = express.Router();
 

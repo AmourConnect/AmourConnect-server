@@ -28,12 +28,11 @@ export class AuthMiddleware extends Validator
 
       const db_user = await user_get.UserGetData(['token_session_user', 'token_session_expiration'], { token_session_user: cookie_user });
 
-      user_check.checkUserGet(db_user, "User no found", 404);
+      user_check.checkUserGet(db_user, "User no connected", 403);
 
       user_check.checkSessionDateExpiration((await db_user).token_session_expiration);
 
       next();
-
     }
     catch (error)
     {
@@ -42,7 +41,6 @@ export class AuthMiddleware extends Validator
   }
 
   /**
-   * TODO GET RID OF THIS MIDDLEWARE (PROFESSIONALLY BY USING THE RES.COOKIE)
    * Be careful, this middleware is true if the user is not connected
    * @param req 
    * @param res 

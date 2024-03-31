@@ -1,5 +1,5 @@
 import express from 'express';
-import MemberUser from '../controllers/Member/MemberUser';
+import MemberUser from '../controllers/route/MemberUser';
 
 const membre = express.Router();
 
