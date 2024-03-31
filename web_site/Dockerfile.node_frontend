@@ -1,8 +1,6 @@
 # Dockerfile.node_frontend
 FROM node:alpine
 
-# répertoir de travail
 WORKDIR /app/site/frontend/
 
-# empêcher le conteneur de mourrir 
 CMD [ "tail", "-f", "/dev/null" ]

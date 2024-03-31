@@ -45,7 +45,7 @@ export abstract class Validator
     {
         if (!this.undefinied(password) || !this.PASSWORD_REGEX.test(password))
         {
-          throw new CustomError('Invalid password', 400);
+          throw new CustomError('The password must contain at least 8 characters.', 400);
         }
     }
 

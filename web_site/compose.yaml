@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile.node_frontend
     ports:
-      - "5003:${PORT_API_FRONT_IN_DOCKER}"
+      - "5003:${PORT_FRONT_IN_DOCKER}"
     volumes:
       - ./:/app/site/frontend
     command: sh -c "npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm run dev"
