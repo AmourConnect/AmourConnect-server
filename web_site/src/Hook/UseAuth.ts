@@ -1,11 +1,11 @@
-import { Account } from "./type.ts";
-import { useAccountStore } from "../store.ts";
-import { useCallback } from "react";
-import { apiFetch } from "../utils/api.ts";
+import { Account, AuthStatus } from "./type";
+import { useCallback, useState } from "react";
+import { apiFetch } from "./apiFetch";
 
 export function useAuth() {
-  const { account, setAccount } = useAccountStore();
+  const [account, setAccount] = useState<Account | null | undefined>(null);
   let status;
+
   switch (account) {
     case null:
       status = AuthStatus.Guest;
@@ -19,25 +19,16 @@ export function useAuth() {
   }
 
   const authenticate = useCallback(() => {
-    apiFetch<Account>("/me")
-      .then(setAccount)
+    console.log('Authenticating...');
+    apiFetch<Account>("/auth/get/SessionStatus")
+      .then(response => setAccount(response))
       .catch(() => setAccount(null));
   }, []);
-
-  const login = useCallback((username: string, password: string) => {
-    apiFetch<Account>("/login", { json: { username, password } }).then(
-      setAccount
-    );
-  }, []);
-
-  const logout = useCallback(() => {
-    apiFetch<Account>("/logout", { method: "DELETE" }).then(setAccount);
-  }, []);
+  
 
   return {
     status,
-    authenticate,
-    login,
-    logout,
+    account,
+    authenticate
   };
 }

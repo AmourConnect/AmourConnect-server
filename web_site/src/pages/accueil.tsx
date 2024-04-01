@@ -1,23 +1,36 @@
+import { AuthStatus } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
+import { useAuth } from "@/Hook/UseAuth";
+import { useEffect } from "react";
 
 export default function Accueil() {
-    // const { user_to_match } = userToMatchResponse;
 
+    const { status, authenticate } = useAuth();
 
-    if(true) {
+    useEffect(() => authenticate(), [])
+
+    if(status === AuthStatus.Unknown) {
         return (
             <Loader1 />
         );
     }
 
-    if(false) {
+    if(status === AuthStatus.Guest) {
         return (
             <div>
-                coucou
+                pas connectée
             </div>
         );
     }
 
+    return (
+        <>
+        coucou
+        </>
+    );
+}
+
+    // const { user_to_match } = userToMatchResponse;
 
     // return (
     //   <div className="flex flex-col">
@@ -42,7 +55,6 @@ export default function Accueil() {
     //   )}
     //   </div>
     // );
-}
 
 // export async function getServerSideProps(context?: any) {
 

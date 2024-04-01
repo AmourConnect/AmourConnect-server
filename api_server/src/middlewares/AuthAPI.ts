@@ -4,17 +4,17 @@ import { UserChecker } from '../controllers/User/UserChecker';
 import { error_msg_api } from "../controllers/CustomError";
 import { Validator } from "../controllers/Validator";
 import { UserGet } from "../controllers/User/UserGet";
-import cookies from 'cookies';
 
 import Utilisateur from '../models/shema_migration/utilisateur';
 import { Body, UserInstance, UserInscriptionInstance } from '../controllers/Interface';
 import { ModelStatic } from 'sequelize';
-import { parse } from "dotenv";
 
 
 const user_get = new UserGet();
 
 const user_check = new UserChecker();
+
+const session = new FunctionSession();
 
 export class AuthMiddleware extends Validator
 
@@ -23,9 +23,10 @@ export class AuthMiddleware extends Validator
   public async verif_user_connect_cookie(req: Request, res: Response, next: NextFunction)
   {
     try {
-      const session = new FunctionSession();
 
       const cookie_user = session.get_cookie(req);
+
+      this.checkTokenSession(cookie_user);
 
       const db_user = await user_get.UserGetData(['token_session_user', 'token_session_expiration'], { token_session_user: cookie_user });
 
@@ -51,12 +52,13 @@ export class AuthMiddleware extends Validator
   {
       try 
       {
-        const cookies = parse(req.headers.cookie || '');
-        const cookie_user = cookies['Cookie-user-AmourConnect'] || null;
+        const cookie_user = session.get_cookie(req);
 
         if(!cookie_user) {
           return next();
         }
+
+        this.checkTokenSession(cookie_user);
 
         const db_user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
           attributes: ['token_session_user', 'token_session_expiration'],

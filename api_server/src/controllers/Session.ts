@@ -27,7 +27,6 @@ export class FunctionSession extends Validator
     {
       const cookies = parse(req.headers.cookie || '');
       const cookie_user = cookies['Cookie-user-AmourConnect'] || null;
-      this.checkTokenSession(cookie_user);
       return cookie_user;
     }
 
