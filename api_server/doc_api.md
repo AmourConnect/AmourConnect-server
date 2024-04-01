@@ -3,7 +3,7 @@
 
 ![Exemple GET](./assets/get_user_to_match.png)
 
-![Exemple POST](./assets/post_register.png)
+![Exemple POST](./assets/post_login.png)
 
 
 # AUTH | Login - Register - Welcome - Validate Registration - Session Status
@@ -31,9 +31,9 @@ http://localhost:5002/amourconnect/api/auth/get/testo
 http://localhost:5002/amourconnect/api/auth/get/SessionStatus
 
 
-HEADER {
-    KEY => Cookie-user-AmourConnect, Value => 'le cookie'
-}
+fetch('https://domain', {
+  credentials: 'include',
+})
 
 *- The positive message from the server:*
 
@@ -49,9 +49,9 @@ HEADER {
 http://localhost:5002/amourconnect/api/auth/post/register
 
 
-HEADER {
-    KEY => Cookie-user-AmourConnect, Value => 'le cookie'
-}
+fetch('https://domain', {
+  credentials: 'include',
+})
 
 BODY {
   "pseudo": "djgang",
@@ -75,9 +75,9 @@ BODY {
 http://localhost:5002/amourconnect/api/auth/post/validate_registration
 
 
-HEADER {
-    KEY => Cookie-user-AmourConnect, Value => 'le cookie'
-}
+fetch('https://domain', {
+  credentials: 'include',
+})
 
 
 BODY {
@@ -88,7 +88,7 @@ BODY {
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Registration completed successfully :)' , key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
+{ status: 200, message: 'Registration completed successfully :)'}
 
 *- The possible error message :*
 
@@ -99,9 +99,9 @@ BODY {
 http://localhost:5002/amourconnect/api/auth/post/login
 
 
-HEADER {
-    KEY => Cookie-user-AmourConnect, Value => 'le cookie'
-}
+fetch('https://domain', {
+  credentials: 'include',
+})
 
 BODY {
   "email":"zbe@gmail.com",
@@ -111,7 +111,7 @@ BODY {
 
 *- The positive message from the server:*
 
-{ status: 200, message: 'Connection completed successfully', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration}
+{ status: 200, message: 'Connection completed successfully'}
 
 *- The possible error message :*
 
@@ -124,9 +124,9 @@ BODY {
 
 http://localhost:5002/amourconnect/api/membre/get/user_to_match
 
-HEADER {
-    KEY => Cookie-user-AmourConnect, Value => 'le cookie'
-}
+fetch('https://domain', {
+  credentials: 'include',
+})
 
 *- The positive message from the server:*
 

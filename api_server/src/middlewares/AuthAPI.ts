@@ -4,11 +4,12 @@ import { UserChecker } from '../controllers/User/UserChecker';
 import { error_msg_api } from "../controllers/CustomError";
 import { Validator } from "../controllers/Validator";
 import { UserGet } from "../controllers/User/UserGet";
-
+import cookies from 'cookies';
 
 import Utilisateur from '../models/shema_migration/utilisateur';
 import { Body, UserInstance, UserInscriptionInstance } from '../controllers/Interface';
 import { ModelStatic } from 'sequelize';
+import { parse } from "dotenv";
 
 
 const user_get = new UserGet();
@@ -50,7 +51,8 @@ export class AuthMiddleware extends Validator
   {
       try 
       {
-        const cookie_user = req.header('Cookie-user-AmourConnect');
+        const cookies = parse(req.headers.cookie || '');
+        const cookie_user = cookies['Cookie-user-AmourConnect'] || null;
 
         if(!cookie_user) {
           return next();

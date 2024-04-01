@@ -1,134 +1,81 @@
-import Cookie_Session from '../lib/Cookie_Session';
-import Head from 'next/head';
-import 'tailwindcss/tailwind.css';
-import { handleSubmit } from '../lib/TreatmentForm';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Button_1 from '../app/components/Button_1';
+// import Cookie_Session from '../lib/Cookie_Session';
+// import Head from 'next/head';
+// import 'tailwindcss/tailwind.css';
+// import { handleSubmit } from '../lib/TreatmentForm';
+// import React, { useState, useEffect } from 'react';
+// import { useRouter } from 'next/router';
+// import styles from '../../public/css/form.module.css';
+// import Button_1 from '../app/components/Button_1';
 
-export default function Login() {
+// export default function Login() {
 
-  const router = useRouter();
+//   const router = useRouter();
 
-  const [responseData, setResponseData] = useState({
-    message: '',
-  });
+//   const [responseData, setResponseData] = useState({
+//     message: '',
+//   });
 
-    return (
-      <div className="flex flex-col">
-       <Head>
-        <title>Connexion AmourConnect❤️</title>
-        <link rel="icon" type="image/png" href="/assets/images/amour_connect_logo.jpg"/>
-      </Head>
-
-
-<div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-  <div className="mx-auto max-w-lg text-center">
-    <h1 className="text-2xl font-bold sm:text-3xl">AmourConnect❤️</h1>
-
-    <p className="mt-4 text-grey-500">
-      Connectez-vous vite pour rencontrer votre amour 😘😻!
-    </p>
-  </div>
-
-
-  {responseData && responseData.message && (
-                  <p style={{color:"red"}} >{responseData.message}</p>
-  )}
-  <form onSubmit={(e) => handleSubmit(e, setResponseData, router, '/api/login')} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
-    <div>
-      <label htmlFor="email" className="sr-only">Email</label>
-
-      <div className="relative">
-        <input
-          type="email"
-          name='email'
-          className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
-          placeholder="Enter email"
-        />
-
-        <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-          <svg
-            className="size-4 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-            />
-          </svg>
-        </span>
-      </div>
-    </div>
-
-    <div>
-      <label htmlFor="password" className="sr-only">Password</label>
-
-      <div className="relative">
-        <input
-          type="password"
-          name='mot_de_passe'
-          className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
-          placeholder="Enter password"
-        />
-
-        <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-          <svg
-            className="size-4 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-          </svg>
-        </span>
-      </div>
-    </div>
-
-    <div className="flex items-center justify-between">
-      <p className="text-sm text-gray-500">
-        No account?
-        <a className="underline" href="register">Sign up</a>
-      </p>
-      <Button_1 className="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">Sign in</Button_1>
-    </div>
-  </form>
-</div>
+//     return (
+//       <div className="flex flex-col" style={{ backgroundColor: 'pink' }}>
+//        <Head>
+//         <title>Login AmourConnect❤️</title>
+//         <link rel="icon" type="image/png" href="/assets/images/amour_connect_logo.jpg"/>
+//       </Head>
 
 
 
-      </div>
-    );
-}
+//       <div className="min-h-screen flex items-center justify-center w-full dark:bg-gray-950">
+// 	<div className="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
+// 		<h1 className="text-2xl font-bold text-center mb-4 dark:text-black-200">Connectez-vous vite pour rencontrez votre amour😻❤️!</h1>
+//     {responseData && responseData.message && (
+//                   <p style={{color:"red"}} >{responseData.message}</p>
+//   )}
+// 		<form onSubmit={(e) => handleSubmit(e, setResponseData, router, '/api/login')} >
+// 			<div className="mb-4">
+// 				<label htmlFor="email" >Email Address</label>
+// 				<input type="email" id="email" name='email' className={styles.customInput} placeholder="your@email.com" required/>
+// 			</div>
+// 			<div className="mb-4">
+// 				<label htmlFor="password">Password</label>
+// 				<input type="password" id="password" name='mot_de_passe' className={styles.customInput} placeholder="Enter your password" required/>
+// 				<a href="ask_reset_password"
+// 					className="text-xs text-gray-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Forgot
+// 					Password?</a>
+// 			</div>
+// 			<div className="flex items-center justify-between mb-4">
+// 				<div className="flex items-center">
+// 				<a href="register"
+// 					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create your account</a>
+// 				</div>
+// 				<a href="valide_account"
+// 					className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Valide your
+// 					Account</a>
+// 			</div>
+//       <Button_1 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign in</Button_1>
+
+// 		</form>
+// 	</div>
+// </div>
 
 
-export async function getServerSideProps(context?: any) {
 
-  const session = new Cookie_Session();
-  const sessionResponse = await session.RedirectUserIfConnectInRouteSession(context);
+//       </div>
+//     );
+// }
 
-  if ('redirect' in sessionResponse) {
-      return sessionResponse;
-  }
+
+// export async function getServerSideProps(context?: any) {
+
+//   const session = new Cookie_Session();
+//   const sessionResponse = await session.RedirectUserIfConnectInRouteSession(context);
+
+//   if ('redirect' in sessionResponse) {
+//       return sessionResponse;
+//   }
 
   
-  return {
-      props: {
-      },
-    };
-}
+//   return {
+//       props: {
+//       },
+//     };
+// }

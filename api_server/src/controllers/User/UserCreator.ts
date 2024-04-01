@@ -3,6 +3,13 @@ import { Body, Session, UserInscriptionInstance } from '../Interface';
 import { FunctionSession } from '../Session';
 import UserInscription from '../../models/shema_migration/user_inscription';
 import Utilisateur from '../../models/shema_migration/utilisateur';
+import path from 'path';
+import dotenv from 'dotenv';
+
+
+const envPath = path.resolve(__dirname, '..', '..', '..', '.env');
+dotenv.config({ path: envPath });
+
 
 export class UserCreator
 {
@@ -53,5 +60,19 @@ export class UserCreator
         { where: { email: body.email } }
       )
       return value_cookie;
+    }
+
+    public send_cookie(value_cookie: Session, res: any)
+    {
+      const expirationDate = new Date(value_cookie.date_expiration);
+
+      const maxAgeInSeconds = Math.floor((expirationDate.getTime() - Date.now()) / 1000);
+      res.cookie('Cookie-user-AmourConnect', value_cookie.key_secret, {
+        path: '/',
+        maxAge: maxAgeInSeconds,
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+      });
     }
 }

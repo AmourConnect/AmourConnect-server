@@ -37,9 +37,11 @@ export default class AuthUser
         
             const value_cookie = await UserCreate.FinishRegister(userInscription);
 
+            await send_mail.SendUserMailInscriptionConfirmation(value_cookie, req.body);
+
             await send_mail.SendMailFinishRegister(userInscription);
         
-            res.status(200).json({ status: 200, message: 'Registration completed successfully :)' , key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration});
+            res.status(200).json({ status: 200, message: 'Registration completed successfully :)'});
           }
           catch (error)
           {
@@ -79,12 +81,13 @@ export default class AuthUser
     {
         try 
         {
-          await user_validator.checkRegexLogin(req.body);
+          user_validator.checkRegexLogin(req.body);
           const user_password_hash = await user_get.UserGetData(['utilisateur_id', 'password_hash'], { email: req.body.email });
-          await user_check.checkUserGet(user_password_hash, "User no found", 404);
+          user_check.checkUserGet(user_password_hash, "Password or Pseudo incorrect", 404);
           await user_check.checkCompareHashMdp(req.body, user_password_hash);
           const value_cookie = await UserCreate.UpdateSessionUser(req.body);
-          res.status(200).json({ status: 200, message: 'Connection completed successfully', key_secret: value_cookie.key_secret, date_expiration: value_cookie.date_expiration});
+          UserCreate.send_cookie(value_cookie, res);
+          res.status(200).json({ status: 200, message: 'Connection completed successfully' });
         }
         catch (error)
         {

@@ -50,6 +50,7 @@ export class ConfigApp extends ConfigExpressMiddlewares
       app.use(function (req: Request, res: Response, next: NextFunction) {
         res.header('Strict-Transport-Security', 'max-age=31536000');
         res.header('Access-Control-Allow-Origin', process.env.NOM_DE_DOMAINE_FRONTEND);
+        res.header('Access-Control-Allow-Credentials', 'true');
         res.header('X-XSS-Protection', '1; mode=block');
         res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH, DELETE');
         res.header('X-Frame-Options', 'DENY');

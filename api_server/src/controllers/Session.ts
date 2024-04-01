@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { Session } from './Interface';
 import { Validator } from './Validator';
+import { parse } from 'dotenv';
 
 
 export class FunctionSession extends Validator
@@ -24,9 +25,10 @@ export class FunctionSession extends Validator
 
     public get_cookie (req: any): string
     {
-      const cookie = req.header('Cookie-user-AmourConnect');
-      this.checkTokenSession(cookie);
-      return cookie;
+      const cookies = parse(req.headers.cookie || '');
+      const cookie_user = cookies['Cookie-user-AmourConnect'] || null;
+      this.checkTokenSession(cookie_user);
+      return cookie_user;
     }
 
 }
