@@ -4,7 +4,7 @@ import 'tailwindcss/tailwind.css';
 import { handleSubmit } from '../lib/TreatmentForm';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
+import Button_1 from '../app/components/Button_1';
 
 export default function Login() {
 
@@ -105,13 +105,7 @@ export default function Login() {
         No account?
         <a className="underline" href="register">Sign up</a>
       </p>
-
-      <button
-        type="submit"
-        className="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
-      >
-        Sign in
-      </button>
+      <Button_1 className="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white">Sign in</Button_1>
     </div>
   </form>
 </div>
