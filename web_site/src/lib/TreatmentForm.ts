@@ -1,15 +1,12 @@
-export default class TreatmentForm
-{
-    private setResponseData: any;
-    private router: any;
-
-    public handleSubmitLogin = async (e: React.FormEvent<HTMLFormElement>) => 
+    export const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, setResponse: any, useCustomRouter: any, url_api: string) =>
     {
+      const setResponseData = setResponse;
+      const router = useCustomRouter;
         e.preventDefault();
         try {
           const formDataToSend = new FormData(e.currentTarget);
           const formDataObject = Object.fromEntries(formDataToSend.entries());
-          const response = await fetch('/api/tratmentform', {
+          const response = await fetch(url_api, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -18,13 +15,11 @@ export default class TreatmentForm
           });
   
           const responseData = await response.json();
-          this.setResponseData(responseData);
-          if (responseData && responseData.status === 200 && responseData.message === "Connection completed successfully") {
-            this.router.push('/accueil');
+          setResponseData(responseData);
+          if (responseData && responseData.status === 200) {
+            router.reload();
           }
         } catch (error) {
           console.error('Erreur lors de la soumission du formulaire:', error);
         }
-      };
-
-}
+    };

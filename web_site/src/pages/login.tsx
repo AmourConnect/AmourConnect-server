@@ -1,16 +1,19 @@
 import Cookie_Session from '../lib/Cookie_Session';
 import Head from 'next/head';
 import 'tailwindcss/tailwind.css';
-import TreatmentForm from '../lib/TreatmentForm';
-import { useRouter } from 'next/router';
+import { handleSubmit } from '../lib/TreatmentForm';
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+
 
 export default function Login() {
+
   const router = useRouter();
+
   const [responseData, setResponseData] = useState({
     message: '',
   });
-  const treatment = new TreatmentForm(router, setResponseData);
+
     return (
       <div className="flex flex-col">
        <Head>
@@ -28,16 +31,18 @@ export default function Login() {
     </p>
   </div>
 
+
   {responseData && responseData.message && (
-                  <p style={{color:"red"}}>{responseData.message}</p>
+                  <p style={{color:"red"}} >{responseData.message}</p>
   )}
-  <form onSubmit={treatment.handleSubmitLogin} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
+  <form onSubmit={(e) => handleSubmit(e, setResponseData, router, '/api/login')} className="mx-auto mb-0 mt-8 max-w-md space-y-4">
     <div>
       <label htmlFor="email" className="sr-only">Email</label>
 
       <div className="relative">
         <input
           type="email"
+          name='email'
           className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
           placeholder="Enter email"
         />
@@ -66,6 +71,7 @@ export default function Login() {
       <div className="relative">
         <input
           type="password"
+          name='mot_de_passe'
           className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
           placeholder="Enter password"
         />
