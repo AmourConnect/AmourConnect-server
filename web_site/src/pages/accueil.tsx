@@ -1,4 +1,4 @@
-import Cookie_Session from '../Auth/Cookie_Session';
+import Cookie_Session from '../lib/Cookie_Session';
 
 export default function Accueil({ userToMatchResponse }: { userToMatchResponse: Record<string, any> }) {
     const { user_to_match } = userToMatchResponse;
@@ -9,10 +9,10 @@ export default function Accueil({ userToMatchResponse }: { userToMatchResponse: 
     user_to_match.map((user: Record<string, any>) => (
         <div key={user.utilisateur_id}>
             {user.sexe === 'Feminin' && user.photo_profil === null && (
-                <img src="/assets/femme_anonyme.jpg" width="100" height="100" alt={user.pseudo} />
+                <img src="/assets/images/femme_anonyme.png" width="100" height="100" alt={user.pseudo} />
             )}
             {user.sexe === 'Masculin' && user.photo_profil === null && (
-                <img src="/assets/homme_bg.png" width="100" height="100" alt={user.pseudo} />
+                <img src="/assets/images/homme_bg.png" width="100" height="100" alt={user.pseudo} />
             )}
             {user.photo_profil !== null && (
                 <img src={user.photo_profil} width="100" height="100" alt={user.pseudo} />

@@ -71,8 +71,6 @@ export default class Cookie_Session
     {
         const apiResponse = await this.RequestApi(context.req,"/auth/get/SessionStatus", 'GET', null);
 
-        console.log(apiResponse);
-
         if (apiResponse && apiResponse.status === 200) {
             return {
               props: {
@@ -88,5 +86,26 @@ export default class Cookie_Session
               },
             };
         }
+    }
+
+    public async RedirectUserIfConnectInRouteSession(context : any)
+    {
+      const apiResponse = await this.RequestApi(context.req,"/auth/get/SessionStatus", 'GET', null);
+
+      if (apiResponse && apiResponse.status === 200) {
+          return {
+            redirect: {
+              destination: '/accueil',
+              permanent: false,
+            },
+          };
+      } 
+      else {
+          return {
+            props: {
+              apiResponse,
+            },
+          };
+      }
     }
 }
