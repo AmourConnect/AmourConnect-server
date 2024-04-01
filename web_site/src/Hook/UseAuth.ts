@@ -24,11 +24,19 @@ export function useAuth() {
       .then(response => setAccount(response))
       .catch(() => setAccount(null));
   }, []);
+
+
+  const login = useCallback((email: string, mot_de_passe: string) => {
+    apiFetch<Account>("/auth/post/login", { json: { email, mot_de_passe } }).then(
+      setAccount
+    );
+  }, []);
   
 
   return {
     status,
     account,
-    authenticate
+    authenticate,
+    login
   };
 }

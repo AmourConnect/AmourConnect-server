@@ -2,12 +2,16 @@ import { AuthStatus } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
 import { useAuth } from "@/Hook/UseAuth";
 import { useEffect } from "react";
+import Login from '../app/components/Home/login';
+import { useAccount } from "@/Hook/UseAccount";
 
 export default function Accueil() {
 
+    // const { account } = useAccount();
+
     const { status, authenticate } = useAuth();
 
-    useEffect(() => authenticate(), [])
+    useEffect(() => authenticate(), []);
 
     if(status === AuthStatus.Unknown) {
         return (
@@ -18,7 +22,7 @@ export default function Accueil() {
     if(status === AuthStatus.Guest) {
         return (
             <div>
-                pas connectée
+                <Login />
             </div>
         );
     }
@@ -28,14 +32,11 @@ export default function Accueil() {
         coucou
         </>
     );
-}
-
-    // const { user_to_match } = userToMatchResponse;
 
     // return (
     //   <div className="flex flex-col">
-    //     {user_to_match && user_to_match.length > 0 ? (
-    // user_to_match.map((user: Record<string, any>) => (
+    //     {account && account.length > 0 ? (
+    // account.map((user: Record<string, any>) => (
     //     <div key={user.utilisateur_id}>
     //         {user.sexe === 'Feminin' && user.photo_profil === null && (
     //             <img src="/assets/images/femme_anonyme.png" width="100" height="100" alt={user.pseudo} />
@@ -56,20 +57,4 @@ export default function Accueil() {
     //   </div>
     // );
 
-// export async function getServerSideProps(context?: any) {
-
-//     const session = new Cookie_Session();
-//     const sessionResponse = await session.CheckSessionUser(context);
-  
-//     if ('redirect' in sessionResponse) {
-//         return sessionResponse;
-//     }
-
-    
-//     const userToMatchResponse = await session.RequestApi(context.req,"/membre/get/user_to_match", 'GET', null);
-//     return {
-//         props: {
-//           userToMatchResponse,
-//         },
-//       };
-// }
+}
