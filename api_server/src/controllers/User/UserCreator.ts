@@ -64,12 +64,12 @@ export class UserCreator
 
     public send_cookie(value_cookie: Session, res: any)
     {
-      const expirationDate = new Date(value_cookie.date_expiration);
-
-      const maxAgeInSeconds = Math.floor((expirationDate.getTime() - Date.now()) / 1000);
+      const dateObject = new Date(value_cookie.date_expiration);
+      const currentDate = new Date();
+      const maxAgeInMilliseconds = dateObject.getTime() - currentDate.getTime();
       res.cookie('Cookie-user-AmourConnect', value_cookie.key_secret, {
         path: '/',
-        maxAge: maxAgeInSeconds,
+        maxAge: maxAgeInMilliseconds,
         httpOnly: true,
         sameSite: 'strict',
         secure: process.env.NODE_ENV === 'production',

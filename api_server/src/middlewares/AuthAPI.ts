@@ -58,8 +58,6 @@ export class AuthMiddleware extends Validator
           return next();
         }
 
-        this.checkTokenSession(cookie_user);
-
         const db_user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
           attributes: ['token_session_user', 'token_session_expiration'],
           where: {
