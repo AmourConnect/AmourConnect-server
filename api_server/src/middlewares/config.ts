@@ -49,7 +49,7 @@ export class ConfigApp extends ConfigExpressMiddlewares
 
       app.use(function (req: Request, res: Response, next: NextFunction) {
         res.header('Strict-Transport-Security', 'max-age=31536000');
-        res.header('Access-Control-Allow-Origin', "http://192.168.1.21:3000");
+        res.header('Access-Control-Allow-Origin', process.env.IP_NOW_FRONTEND);
         res.header('Access-Control-Allow-Credentials', 'true');
         res.header('X-XSS-Protection', '1; mode=block');
         res.header('Access-Control-Allow-Methods', 'GET,POST,PATCH, DELETE');

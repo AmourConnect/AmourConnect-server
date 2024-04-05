@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 export async function apiFetch<T> (
 url: string,
 { json, method }: {json?: Record<string, unknown>; method?: string } = {}

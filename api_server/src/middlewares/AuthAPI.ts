@@ -43,7 +43,7 @@ export class AuthMiddleware extends Validator
    * @param res 
    * @param next 
    */
-  public async verif_user_no_connect_cookie(req: any, res: Response, next: NextFunction)
+  public async verif_user_no_connect_cookie(req: Request, res: Response, next: NextFunction)
   {
       try 
       {
