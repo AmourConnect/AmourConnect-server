@@ -104,14 +104,4 @@ export default class AuthUser
     {
         return res.status(200).json({ status: 200, message: 'User connected' });
     }
-
-
-    /**
-    * GET Welcome
-    * Public test route to find out if the API works
-    */
-    public async TestoApi(req: Request, res: Response)
-    {
-        res.status(200).json({ status: 200, message: 'Welcome to the AmourConnect API' });
-    }
 }

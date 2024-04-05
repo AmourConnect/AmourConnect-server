@@ -4,6 +4,7 @@ import { apiFetch } from "./apiFetch";
 
 export function useAuth() {
   const [account, setAccount] = useState<Account | null | undefined>(null);
+  const [usersToMatch, setUsersToMatch] = useState<Account[]>([]);
   let status;
 
   switch (account) {
@@ -19,10 +20,16 @@ export function useAuth() {
   }
 
   const authenticate = useCallback(() => {
-    console.log('Authenticating...');
     apiFetch<Account>("/auth/get/SessionStatus")
       .then(response => setAccount(response))
       .catch(() => setAccount(null));
+  }, []);
+
+
+  const getUserToMatch = useCallback(() => {
+    apiFetch<Account[]>("/membre/get/user_to_match")
+      .then(response => setUsersToMatch(response))
+      .catch(() => setUsersToMatch([]));
   }, []);
 
 
@@ -31,12 +38,19 @@ export function useAuth() {
       setAccount
     );
   }, []);
+
+
+  // const logout = useCallback(() => {
+  //   apiFetch<Account>("/logout", { method: "DELETE" }).then(setAccount);
+  // }, []);
   
 
   return {
     status,
     account,
     authenticate,
-    login
+    login,
+    getUserToMatch,
+    usersToMatch
   };
 }

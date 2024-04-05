@@ -71,7 +71,7 @@ export async function TextShimmerBadge() {
         <TextShimmer className="inline-flex items-center justify-center px-4 py-1">
           <span>
             <a href="accueil">
-            🫀 Commencez votre voyage amoureux
+            ❤️ Commencez votre voyage amoureux
             </a>
           </span>
           <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />

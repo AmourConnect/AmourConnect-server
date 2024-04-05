@@ -6,25 +6,8 @@
 ![Exemple POST](./assets/post_login.png)
 
 
-# AUTH | Login - Register - Welcome - Validate Registration - Session Status
+# AUTH | Login - Register - Validate Registration - Session Status
 
-
-## Test API /GET
-
--Objective of testing the API
-
-
-http://localhost:5002/amourconnect/api/auth/get/testo
-
-
-*- The positive message from the server:*
-
-{ status: 200, message: 'Welcome to the AmourConnect API' }
-
-
-*- The possible error message :*
-
-{ status: 500, message: 'Internal Server Error' }
 
 ## To know if the user is connected or not /GET
 

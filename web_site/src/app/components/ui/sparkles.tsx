@@ -7,6 +7,7 @@ import { loadSlim } from "@tsparticles/slim";
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "framer-motion";
 
+
 type ParticlesProps = {
   id?: string;
   className?: string;

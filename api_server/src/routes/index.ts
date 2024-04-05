@@ -9,7 +9,7 @@ const routage = express.Router();
 const authMiddleware = new AuthMiddleware();
 
 
-// 1) | Route PUBLIC AUTH | Login - Register - Welcome - Validate Registration - Session Status
+// 1) | Route PUBLIC AUTH | Login - Register - Validate Registration - Session Status
 routage.use('/auth', routes_auth);
 
 
