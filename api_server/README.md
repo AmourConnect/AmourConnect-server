@@ -2,7 +2,7 @@
 
 Dating site to match with a man VS woman and look for his love❤️
 
-# Config .env at the root of the project
+# CONFIG .env at the root of the project
 
 ```
 PORT_API_BACK_IN_DOCKER="3005"
