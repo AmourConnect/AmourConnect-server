@@ -5,11 +5,6 @@ import { error_msg_api } from "../controllers/CustomError";
 import { Validator } from "../controllers/Validator";
 import { UserGet } from "../controllers/User/UserGet";
 
-import Utilisateur from '../models/shema_migration/utilisateur';
-import { Body, UserInstance, UserInscriptionInstance } from '../controllers/Interface';
-import { ModelStatic } from 'sequelize';
-
-
 const user_get = new UserGet();
 
 const user_check = new UserChecker();
@@ -54,16 +49,11 @@ export class AuthMiddleware extends Validator
       {
         const cookie_user = session.get_cookie(req);
 
-        if(!cookie_user) {
+        if(!this.checkTokenSessionReturnBool(cookie_user)) {
           return next();
         }
 
-        const db_user = await (Utilisateur as ModelStatic<UserInstance>).findOne<UserInstance>({
-          attributes: ['token_session_user', 'token_session_expiration'],
-          where: {
-            token_session_user: cookie_user
-          }
-        });
+        const db_user = await user_get.UserGetData(['token_session_user', 'token_session_expiration'], { token_session_user: cookie_user });
 
         if (!db_user) {
           return next();

@@ -1,0 +1,27 @@
+name: Node Audit
+
+on: [push, pull_request]
+
+jobs:
+  node-audit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies and run audit in Api server folder
+      run: |
+        cd api_server
+        npm install
+        npm audit
+
+    - name: Install dependencies and run audit in Web site folder
+      run: |
+        cd web_site
+        npm install
+        npm audit

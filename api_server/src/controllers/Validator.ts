@@ -75,10 +75,19 @@ export abstract class Validator
 
     protected checkTokenSession(token: string): void
     {
-      if (!this.undefinied(token) || !this.token_regex.test(token))
+      if (!this.checkTokenSessionReturnBool(token))
       {
         throw new CustomError('Invalid token', 400);
       }
+    }
+
+    protected checkTokenSessionReturnBool(token: string): boolean
+    {
+      if (!this.undefinied(token) || !this.token_regex.test(token))
+      {
+        return false;
+      }
+      return true;
     }
 
     protected checkDateExpired(date : Date): boolean
