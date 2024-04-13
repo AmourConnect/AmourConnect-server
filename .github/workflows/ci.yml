@@ -1,4 +1,4 @@
-name: Node Audit
+name: Node and C# Audit
 
 on: [push, pull_request]
 
@@ -25,3 +25,14 @@ jobs:
         cd web_site
         npm install
         npm audit
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0'
+
+    - name: Restore dependencies and run audit in Api server 2 folder
+      run: |
+        cd api_server_2
+        dotnet restore
+        dotnet list package --vulnerable
