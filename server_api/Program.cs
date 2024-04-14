@@ -5,7 +5,6 @@ using server_api.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddTransient<SeedData>();
 var connect = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApiDbContext>(options =>
@@ -22,7 +21,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApiDbContext>();
+        var seedData = new SeedData();
+        seedData.SeedApiDbContext(context);
+    }
 }
+
 
 // app.UseHttpsRedirection();
 

@@ -79,11 +79,5 @@ dotnet build && dotnet ef migrations add InitialCreate && dotnet ef database upd
 dotnet run
 ```
 
-*Generate data if necessary, you uncomment this line in Program.cs*
-
-```
-builder.Services.AddTransient<SeedData>();
-```
-
 
 # For production :

@@ -5,15 +5,11 @@ namespace server_api.Models
 {
     public class SeedData
     {
-        private readonly ApiDbContext ApiDbContext;
-        public SeedData(ApiDbContext context)
+        public void SeedApiDbContext(ApiDbContext context)
         {
-            this.ApiDbContext = context;
-        }
-        public void SeedApiDbContext()
-        {
-            if (!ApiDbContext.User.Any())
+            if (!context.User.Any())
             {
+                Random random = new Random();
                 for (int i = 0; i < 50; i++)
                 {
                     User newUser = new User
@@ -23,13 +19,15 @@ namespace server_api.Models
                         PasswordHash = GenerateRandomPassword(),
                         city = GenerateRandomCity(),
                         sex = GenerateRandomGender(),
-                        grade = "User"
+                        grade = "User",
+                        date_of_birth = DateTime.UtcNow.AddYears(-random.Next(18, 65)),
+                        account_created_at = DateTime.UtcNow
                     };
 
-                    ApiDbContext.User.Add(newUser);
+                    context.User.Add(newUser);
                 }
 
-                ApiDbContext.SaveChanges();
+                context.SaveChanges();
             }
         }
         private string GenerateRandomName()
