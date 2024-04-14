@@ -69,6 +69,11 @@ Else if you use VS
 nuget restore
 ```
 
+*To play Migration*
+```
+dotnet ef migrations add InitialCreate && dotnet ef database update
+```
+
 *Generate data if necessary*
 
 ```
