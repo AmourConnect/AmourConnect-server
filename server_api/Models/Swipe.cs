@@ -7,12 +7,15 @@ namespace server_api.Models
         [Key]
         public int Id_Swipe { get; set; }
 
+        [Required]
         public int Id_User { get; set; }
-
         public User User { get; set; }
 
-        public int Id_User_Swiped { get; set; }
+        [Required]
+        public int Id_User_which_was_Swiped { get; set; }
+        public User UserWhichWasSwiped { get; set; }
 
-        public DateOnly Moment_of_swiping { get; set; }
+        [Required]
+        public DateTime Date_of_swiping { get; set; }
     }
 }

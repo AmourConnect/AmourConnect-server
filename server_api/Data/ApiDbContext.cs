@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using server_api.Models;
 
-namespace server_api.Models
+namespace server_api.Data
 {
     public class ApiDbContext : DbContext
     {
@@ -13,5 +14,19 @@ namespace server_api.Models
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Swipe>()
+                .HasOne<User>(s => s.User)
+                .WithMany(u => u.Swipes)
+                .HasForeignKey(s => s.Id_User)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Swipe>()
+                .HasOne<User>(s => s.UserWhichWasSwiped)
+                .WithMany(u => u.SwipesReceived)
+                .HasForeignKey(s => s.Id_User_which_was_Swiped)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }

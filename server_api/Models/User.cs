@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace server_api.Models
 {
@@ -7,26 +8,40 @@ namespace server_api.Models
         [Key]
         public int Id_User { get; set; }
 
+        [Required]
         public string Pseudo { get; set; }
 
+        [Required]
         public string Email { get; set; }
 
+        [Required]
         public string PasswordHash { get; set; }
 
-        public Byte Profile_picture { get; set; }
+        public byte[]? Profile_picture { get; set; }
 
+        [Required]
         public string grade { get; set; }
 
-        public DateTime date_token_session_expiration { get; set; }
+        public DateTime? date_token_session_expiration { get; set; }
 
-        public string token_session_user { get; set; }
+        public string? token_session_user { get; set; }
 
+        [Required]
         public string city { get; set; }
 
+        [Required]
         public string sex { get; set; }
 
-        public DateOnly date_of_birth { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime date_of_birth { get; set; }
 
+        [Required]
         public DateTime account_created_at { get; set; }
+
+        public virtual ICollection<Swipe> Swipes { get; set; } = new HashSet<Swipe>();
+
+        public virtual ICollection<Swipe> SwipesReceived { get; set; } = new HashSet<Swipe>();
+
     }
 }

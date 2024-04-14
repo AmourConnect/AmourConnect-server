@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using server_api.Models;
+using server_api.Data;
 
 #nullable disable
 
@@ -30,21 +30,20 @@ namespace server_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Swipe"));
 
+                    b.Property<DateTime>("Date_of_swiping")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Id_User")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id_User_Swiped")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly>("Moment_of_swiping")
-                        .HasColumnType("date");
-
-                    b.Property<int>("UserId_User")
+                    b.Property<int>("Id_User_which_was_Swiped")
                         .HasColumnType("integer");
 
                     b.HasKey("Id_Swipe");
 
-                    b.HasIndex("UserId_User");
+                    b.HasIndex("Id_User");
+
+                    b.HasIndex("Id_User_which_was_Swiped");
 
                     b.ToTable("Swipe");
                 });
@@ -65,8 +64,8 @@ namespace server_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte>("Profile_picture")
-                        .HasColumnType("smallint");
+                    b.Property<byte[]>("Profile_picture")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("Pseudo")
                         .IsRequired()
@@ -79,10 +78,10 @@ namespace server_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("date_of_birth")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("date_of_birth")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("date_token_session_expiration")
+                    b.Property<DateTime?>("date_token_session_expiration")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("grade")
@@ -94,7 +93,6 @@ namespace server_api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("token_session_user")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id_User");
@@ -105,12 +103,27 @@ namespace server_api.Migrations
             modelBuilder.Entity("server_api.Models.Swipe", b =>
                 {
                     b.HasOne("server_api.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId_User")
+                        .WithMany("Swipes")
+                        .HasForeignKey("Id_User")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("server_api.Models.User", "UserWhichWasSwiped")
+                        .WithMany("SwipesReceived")
+                        .HasForeignKey("Id_User_which_was_Swiped")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+
+                    b.Navigation("UserWhichWasSwiped");
+                });
+
+            modelBuilder.Entity("server_api.Models.User", b =>
+                {
+                    b.Navigation("Swipes");
+
+                    b.Navigation("SwipesReceived");
                 });
 #pragma warning restore 612, 618
         }

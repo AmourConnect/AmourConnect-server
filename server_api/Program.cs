@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using server_api.Data;
 using server_api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddTransient<SeedData>();
 var connect = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApiDbContext>(options =>

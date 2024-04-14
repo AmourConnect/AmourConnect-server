@@ -71,17 +71,18 @@ nuget restore
 
 *To play Migration*
 ```
-dotnet ef migrations add InitialCreate && dotnet ef database update
+dotnet build && dotnet ef migrations add InitialCreate && dotnet ef database update
 ```
 
-*Generate data if necessary*
+*Start*
+```
+dotnet run
+```
+
+*Generate data if necessary, you uncomment this line in Program.cs*
 
 ```
-```
-
-*Cancel a migration if necessary*
-
-```
+builder.Services.AddTransient<SeedData>();
 ```
 
 

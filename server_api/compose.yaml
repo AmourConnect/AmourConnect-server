@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-        - ConnectionStrings__DefaultConnection=${DB_USER};ID=${DIALECT_SQL};Password=${DB_PASSWORD};Server=${DB_HOST};Port=${Port_db};Database=${DB_DATABASE};IntegratedSecurity=true;Pooling=true;
+        - ConnectionStrings__DefaultConnection=${DB_USER} ID=${DIALECT_SQL};Password=${DB_PASSWORD};Server=${DB_HOST};Port=${Port_db};Database=${DB_DATABASE};IntegratedSecurity=true;Pooling=true;
         - ASPNETCORE_URLS=http://+80
     networks:
       - amour_connect
