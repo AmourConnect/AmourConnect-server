@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace api_server_2.Models
+namespace server_api.Models
 {
     public class Swipe
     {

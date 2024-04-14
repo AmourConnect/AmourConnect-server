@@ -1,4 +1,4 @@
-# Projet AmourConnect - BackEND - API PRIVATE in C#
+# Projet AmourConnect - BackEND - API PRIVATE in .NET Core
 
 Dating site to match with a man VS woman and look for his love❤️
 
@@ -20,6 +20,7 @@ PGADMIN_DEFAULT_PASSWORD="123soleil123"
 PGADMIN_DEFAULT_EMAIL="soleil@gmail.com"
 
 #Database
+Port_db="5432"
 DB_HOST="postgres-amourconnect"
 DB_USER="tchoulo"
 DB_PASSWORD="123tchoulo123"
@@ -31,6 +32,17 @@ DIALECT_SQL="postgres"
 
 *If you have Docker*
 
+
+Start API .NET Core
+```
+docker build . -t apinetcore
+```
+
+```
+docker run -p 8081:80 -e ASPNETCORE_URLS=http://+80 apinetcore
+```
+
+For the database
 ```
 docker-compose -f .\compose.yaml up -d
 ```
@@ -47,11 +59,15 @@ docker image prune --force
 
 **Otherwise do this manually if you don't have Docker**
 
-
+If you use .NET Core CLI
 ```
-dotnet tool install --global dotnet-ef && dotnet ef migrations add InitialCreate && dotnet ef database update
+dotnet restore
 ```
 
+Else if you use VS
+```
+nuget restore
+```
 
 *Generate data if necessary*
 

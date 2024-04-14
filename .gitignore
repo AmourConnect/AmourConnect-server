@@ -1,5 +1,1 @@
-*.vs
-*node_modules
-*bin
-*obj
-*api_server_2/Migrations
+*vs

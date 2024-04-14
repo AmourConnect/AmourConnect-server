@@ -1,7 +1,30 @@
 version: "3.9"
 
+
+networks:
+  amour_connect:
+     driver: bridge
+
+
 services:
 
+  apinetcore:
+    image: docker.io/library/apinetcore
+    depends_on:
+       - postgres-amourconnect
+    container_name: services-api-amourconnect
+    ports:
+      - "3212:80"
+    restart: on-failure:5
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+        - ConnectionStrings__DefaultConnection=${DB_USER};ID=${DIALECT_SQL};Password=${DB_PASSWORD};Server=${DB_HOST};Port=${Port_db};Database=${DB_DATABASE};IntegratedSecurity=true;Pooling=true;
+        - ASPNETCORE_URLS=http://+80
+    networks:
+      - amour_connect
+  
 
   postgres-amourconnect:
     image: postgres:latest
@@ -12,10 +35,10 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
     ports:
-       - "127.0.0.1:3224:5132"
+       - "127.0.0.1:5433:5432"
     volumes:
       - pgdata-amourconnect:/var/lib/postgresql/data:rw
-      - ./Models/sql/user.sql:/docker-entrypoint-initdb.d/user.sql:ro
+      - ./Models/user.sql:/docker-entrypoint-initdb.d/user.sql:ro
     networks:
       - amour_connect
     pids_limit: 100
@@ -45,9 +68,6 @@ services:
           cpus: '0.5'
           memory: 1G
 
-
-networks:
-    amour_connect:
 
 volumes:
   pgdata-amourconnect:
