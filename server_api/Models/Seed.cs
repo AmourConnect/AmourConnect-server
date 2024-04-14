@@ -14,11 +14,11 @@ namespace server_api.Models
                 {
                     User newUser = new User
                     {
-                        Pseudo = GenerateRandomName(),
-                        Email = GenerateRandomEmail(),
-                        PasswordHash = GenerateRandomPassword(),
-                        city = GenerateRandomCity(),
-                        sex = GenerateRandomGender(),
+                        Pseudo = _GenerateRandomName(),
+                        Email = _GenerateRandomEmail(),
+                        PasswordHash = _GenerateRandomPassword(),
+                        city = _GenerateRandomCity(),
+                        sex = _GenerateRandomGender(),
                         grade = "User",
                         date_of_birth = DateTime.UtcNow.AddYears(-random.Next(18, 65)),
                         account_created_at = DateTime.UtcNow
@@ -30,35 +30,35 @@ namespace server_api.Models
                 context.SaveChanges();
             }
         }
-        private string GenerateRandomName()
+        private string _GenerateRandomName()
         {
             string[] names = { "John", "Jane", "Bob", "Alice", "Charlie", "Emma", "Oliver", "Sophia", "William", "Ava" };
             Random rand = new Random();
             return names[rand.Next(names.Length)];
         }
 
-        private string GenerateRandomEmail()
+        private string _GenerateRandomEmail()
         {
             string[] domains = { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com" };
             Random rand = new Random();
-            return $"{GenerateRandomName().ToLower()}@{domains[rand.Next(domains.Length)]}";
+            return $"{_GenerateRandomName().ToLower()}@{domains[rand.Next(domains.Length)]}";
         }
 
-        private string GenerateRandomPassword()
+        private string _GenerateRandomPassword()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             Random rand = new Random();
             return new string(Enumerable.Repeat(chars, 8).Select(s => s[rand.Next(s.Length)]).ToArray());
         }
 
-        private string GenerateRandomCity()
+        private string _GenerateRandomCity()
         {
             string[] cities = { "Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille" };
             Random rand = new Random();
             return cities[rand.Next(cities.Length)];
         }
 
-        private string GenerateRandomGender()
+        private string _GenerateRandomGender()
         {
             string[] genders = { "M", "F" };
             Random rand = new Random();
