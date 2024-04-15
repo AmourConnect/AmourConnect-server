@@ -1,12 +1,16 @@
 name: NodeJS and .NET Core Audit
 
+
 on: [push, pull_request]
 
+
 jobs:
+
+
   node-audit:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout librairies
       uses: actions/checkout@v2
 
     - name: Use Node.js
@@ -19,6 +23,13 @@ jobs:
         cd web_site
         npm install
         npm audit
+
+
+  dotnet-audit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout librairies
+      uses: actions/checkout@v2
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v2
