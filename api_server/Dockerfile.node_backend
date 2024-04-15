@@ -1,7 +1,0 @@
-# Dockerfile.node_backend
-FROM node:alpine
-
-WORKDIR /app/site/backend
-
-# prevent the container from dying 
-CMD [ "tail", "-f", "/dev/null" ]

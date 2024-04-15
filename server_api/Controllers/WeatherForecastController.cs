@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-//Controllers/WeatherForecastController.cs
 namespace Controllers.WeatherForecastController
 {
     [ApiController]

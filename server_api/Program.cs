@@ -3,6 +3,11 @@ using server_api.Data;
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Repository;
+using DotNetEnv;
+
+
+Env.Load();
+Env.TraversePath().Load();
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
-var connect = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApiDbContext>(options =>
-options.UseNpgsql(connect));
+options.UseNpgsql(Env.GetString("ConnectionDB")));
 
 
 

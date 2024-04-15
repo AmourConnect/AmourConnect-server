@@ -1,4 +1,4 @@
-# Projet AmourConnect - Frontend
+# Projet AmourConnect - Frontend Site Web
 
 Dating site to match with a man VS woman and look for his love❤️
 
@@ -22,7 +22,7 @@ docker image prune --force
 ```
 
 ```
-docker exec -it amourconnect_frontend-frontend-amourconnect-1 /bin/sh
+docker exec -it web_site-frontend-amourconnect-1 /bin/sh
 ```
 
 **Otherwise do this manually if you don't have Docker**
