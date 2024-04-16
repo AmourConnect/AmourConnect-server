@@ -14,26 +14,31 @@ SERVICE="gmail"
 IP_NOW_FRONTEND="http://192.168.1.21:3000"
 
 #Database
-ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev"
+ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
 # To start API
 
-*If you have Docker*
+*⛔ Start the Database first before*
 
+*If you have Docker URL DataBase =>*
+
+```
+Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;
+```
 
 Start API .NET Core
 ```
 docker-compose -f .\compose.yaml up -d
 ```
 
-OR
+OR not recommended, because the .env file will not be included in the build, you will need to put the ConnectionDb value directly in options.UseNpgsql();
 ```
 docker build . -t apinetcore
 ```
 
 ```
-docker run -p 8081:80 -e ASPNETCORE_URLS=http://+80 apinetcore
+docker run --network database_amour_connect -p 3110:5267 -e ASPNETCORE_URLS=http://+:5267 apinetcore
 ```
 
 **Clean the caches if that doesn't work :**
@@ -72,6 +77,3 @@ dotnet run
 ```
 dotnet upgrade-assistant
 ```
-
-
-# For production :

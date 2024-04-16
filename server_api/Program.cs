@@ -24,13 +24,20 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+// Env.GetString("ConnectionDB"))
 builder.Services.AddDbContext<ApiDbContext>(options =>
 options.UseNpgsql(Env.GetString("ConnectionDB")));
 
 
-
 var app = builder.Build();
+
+
+// Migration
+using (var scope = app.Services.CreateScope())
+{
+    var dataContext = scope.ServiceProvider.GetRequiredService<ApiDbContext>();
+    dataContext.Database.Migrate();
+}
 
 
 
