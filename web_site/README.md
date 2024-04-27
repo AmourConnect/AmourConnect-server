@@ -6,6 +6,8 @@ Dating site to match with a man VS woman and look for his love❤️
 
 *If you have Docker*
 
+*⛔ Start the Database first before*
+
 ```
 docker-compose -f .\compose.yaml up -d
 ```
