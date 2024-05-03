@@ -5,11 +5,15 @@ Dating site to match with a man VS woman and look for his love❤️
 # CONFIG .env at the root of the project
 
 ```
-#identifier for nodemailer
+#identifier for mail
 
-EMAIL_USER="kakozdeh@gmail.com"
-EMAIL_MDP="qqskngxwmreqefpm"
+EMAIL_USER=""
+EMAIL_MDP=""
 SERVICE="gmail"
+
+# Auth Google
+ClientId=""
+ClientSecret=""
 
 IP_NOW_FRONTEND="http://192.168.1.21:3000"
 

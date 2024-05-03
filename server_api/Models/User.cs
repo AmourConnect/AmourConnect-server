@@ -8,28 +8,28 @@ namespace server_api.Models
         public int Id_User { get; set; }
 
         [Required]
-        public string Pseudo { get; set; }
+        public string? userIdGoogle { get; set; }
 
         [Required]
-        public string Email { get; set; }
+        public string? NameGoogle { get; set; }
 
         [Required]
-        public string PasswordHash { get; set; }
+        public string? EmailGoogle { get; set; }
 
         public byte[]? Profile_picture { get; set; }
-
-        [Required]
-        public string grade { get; set; }
 
         public DateTime? date_token_session_expiration { get; set; }
 
         public string? token_session_user { get; set; }
 
         [Required]
-        public string city { get; set; }
+        public string? grade { get; set; }
 
         [Required]
-        public string sex { get; set; }
+        public string? city { get; set; }
+
+        [Required]
+        public string? sex { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

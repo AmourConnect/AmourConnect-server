@@ -56,20 +56,16 @@ namespace server_api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_User"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("EmailGoogle")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("NameGoogle")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<byte[]>("Profile_picture")
                         .HasColumnType("bytea");
-
-                    b.Property<string>("Pseudo")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("account_created_at")
                         .HasColumnType("timestamp with time zone");
@@ -93,6 +89,10 @@ namespace server_api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("token_session_user")
+                        .HasColumnType("text");
+
+                    b.Property<string>("userIdGoogle")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id_User");

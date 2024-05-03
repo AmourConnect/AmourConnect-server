@@ -17,5 +17,13 @@ namespace server_api.Repository
         {
             return _context.User.ToList();
         }
+
+        public bool UserExists(string emailGoogle, string googleId)
+        {
+            var user = _context.User
+                .FirstOrDefault(u => u.EmailGoogle == emailGoogle && u.userIdGoogle == googleId);
+
+            return user != null;
+        }
     }
 }

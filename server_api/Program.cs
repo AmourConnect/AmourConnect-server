@@ -1,16 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using server_api.Data;
 using server_api.Interfaces;
-using server_api.Models;
 using server_api.Repository;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+
 
 
 Env.Load();
 Env.TraversePath().Load();
 
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 // Add services to the container.
@@ -19,17 +23,34 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Env.GetString("ConnectionDB"))
+
+
 builder.Services.AddDbContext<ApiDbContext>(options =>
 options.UseNpgsql(Env.GetString("ConnectionDB")));
 
 
+
+// Auth Google
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(options =>
+{
+    options.ClientId = Env.GetString("ClientId");
+    options.ClientSecret = Env.GetString("ClientSecret");
+});
+
+
+
 var app = builder.Build();
+
 
 
 // Migration
@@ -46,7 +67,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    using (var scope = app.Services.CreateScope())
+    using (var scope = app.Services.CreateScope()) // SeedData User random
     {
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<ApiDbContext>();
@@ -56,11 +77,13 @@ if (app.Environment.IsDevelopment())
 }
 
 
+
 // app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 app.Run();

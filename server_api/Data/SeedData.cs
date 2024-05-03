@@ -1,7 +1,7 @@
-﻿using server_api.Data;
+﻿using server_api.Models;
 
 
-namespace server_api.Models
+namespace server_api.Data
 {
     public class SeedData
     {
@@ -14,9 +14,9 @@ namespace server_api.Models
                 {
                     User newUser = new User
                     {
-                        Pseudo = _GenerateRandomName(),
-                        Email = _GenerateRandomEmail(),
-                        PasswordHash = _GenerateRandomPassword(),
+                        NameGoogle = _GenerateRandomName(),
+                        EmailGoogle = _GenerateRandomEmail(),
+                        userIdGoogle = _GenerateRandomPassword(),
                         city = _GenerateRandomCity(),
                         sex = _GenerateRandomGender(),
                         grade = "User",
