@@ -1,10 +1,8 @@
-﻿namespace server_api.Models
+﻿namespace server_api.Dto
 {
     public class UserRegistrationDto
     {
-        public string? NameGoogle { get; set; }
-        public string? EmailGoogle { get; set; }
-        public string? GoogleId { get; set; }
+        public string? Pseudo { get; set; }
         public string? DateOfBirth { get; set; }
         public string? Sex { get; set; }
         public string? City { get; set; }

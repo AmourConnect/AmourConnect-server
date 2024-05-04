@@ -58,21 +58,24 @@ namespace server_api.Migrations
 
                     b.Property<string>("EmailGoogle")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NameGoogle")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<byte[]>("Profile_picture")
                         .HasColumnType("bytea");
+
+                    b.Property<string>("Pseudo")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
 
                     b.Property<DateTime>("account_created_at")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("city")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("date_of_birth")
                         .HasColumnType("timestamp with time zone");

@@ -1,6 +1,7 @@
 ﻿using server_api.Data;
 using server_api.Interfaces;
 using server_api.Models;
+using server_api.Dto;
 
 namespace server_api.Repository
 {
@@ -13,17 +14,104 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public ICollection<User> GetUsers()
+        public ICollection<User> GetUsers(User user_data)
         {
-            return _context.User.ToList();
+            return _context.User
+            .Where(u =>
+                u.city == user_data.city &&
+                u.sex == (user_data.sex == "M" ? "F" : "M") &&
+                u.date_of_birth >= (user_data.sex == "F" ?
+                    user_data.date_of_birth.AddYears(-10) :
+                    user_data.date_of_birth.AddYears(-1)) &&
+                u.date_of_birth <= (user_data.sex == "M" ?
+                    user_data.date_of_birth.AddYears(10) :
+                    user_data.date_of_birth.AddYears(1)))
+            .Select(u => new User
+            {
+                Id_User = u.Id_User,
+                Pseudo = u.Pseudo,
+                Profile_picture = u.Profile_picture,
+                sex = u.sex,
+                date_of_birth = u.date_of_birth
+            })
+            .ToList();
         }
 
-        public bool UserExists(string emailGoogle, string googleId)
+        public int? SearchIdUserWithIdGoogle(string emailGoogle, string googleId)
         {
-            var user = _context.User
-                .FirstOrDefault(u => u.EmailGoogle == emailGoogle && u.userIdGoogle == googleId);
+            return _context.User
+                .Where(u => u.EmailGoogle == emailGoogle && u.userIdGoogle == googleId)
+                .Select(u => u.Id_User)
+                .FirstOrDefault();
+        }
 
-            return user != null;
+        public int? CreateUser(string googleId, string emailGoogle, string dateOfBirth, string sex, string pseudo, string city)
+        {
+            var user = new User
+            {
+                userIdGoogle = googleId,
+                EmailGoogle = emailGoogle,
+                date_of_birth = DateTime.Parse(dateOfBirth).ToUniversalTime(),
+                sex = sex,
+                Pseudo = pseudo,
+                city = city,
+                account_created_at = DateTime.Now.ToUniversalTime(),
+            };
+
+            _context.User.Add(user);
+            var rowsAffected = _context.SaveChanges();
+
+            if (rowsAffected > 0)
+            {
+                return user.Id_User;
+            }
+
+            return null;
+        }
+
+        public SessionDataDto UpdateSessionUser(int id_user)
+        {
+            string newSessionToken;
+            DateTime expirationDate;
+
+            do
+            {
+                newSessionToken = GenerateNewSessionToken();
+                expirationDate = DateTime.UtcNow.AddDays(7);
+
+            } while (_context.User.Any(u => u.token_session_user == newSessionToken));
+
+
+            var user = _context.User.FirstOrDefault(u => u.Id_User == id_user);
+
+            if (user != null)
+            {
+                user.token_session_user = newSessionToken;
+                user.date_token_session_expiration = expirationDate;
+
+                _context.SaveChanges();
+            }
+
+            return new SessionDataDto
+            {
+                Token = newSessionToken,
+                ExpirationDate = expirationDate
+            };
+        }
+
+        public bool CheckIfPseudoAlreadyExist(string pseudo)
+        {
+            return _context.User.Any(u => u.Pseudo.ToLower() == pseudo.ToLower());
+        }
+
+        private string GenerateNewSessionToken()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public User GetUserWithCookie(string cookie_user)
+        {
+            return _context.User.FirstOrDefault(u => u.token_session_user == cookie_user);
         }
     }
 }

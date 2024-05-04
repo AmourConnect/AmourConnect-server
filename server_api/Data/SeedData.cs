@@ -14,12 +14,11 @@ namespace server_api.Data
                 {
                     User newUser = new User
                     {
-                        NameGoogle = _GenerateRandomName(),
+                        Pseudo = _GenerateRandomName(),
                         EmailGoogle = _GenerateRandomEmail(),
                         userIdGoogle = _GenerateRandomPassword(),
                         city = _GenerateRandomCity(),
                         sex = _GenerateRandomGender(),
-                        grade = "User",
                         date_of_birth = DateTime.UtcNow.AddYears(-random.Next(18, 65)),
                         account_created_at = DateTime.UtcNow
                     };

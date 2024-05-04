@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using server_api.Filters;
 using server_api.Interfaces;
 using server_api.Models;
+using server_api.Utils;
 
 namespace server_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ServiceFilter(typeof(AuthorizeUserConnect))]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -18,9 +21,12 @@ namespace server_api.Controllers
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
 
-        public IActionResult GetUsers()
+        public IActionResult GetUsersToMach()
         {
-            var users = _userRepository.GetUsers();
+            string cookie_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(cookie_user);
+
+            var users = _userRepository.GetUsers(data_user_now_connect);
 
             if (!ModelState.IsValid)
             {

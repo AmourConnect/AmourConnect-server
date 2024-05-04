@@ -19,13 +19,13 @@ namespace server_api.Migrations
                     Id_User = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userIdGoogle = table.Column<string>(type: "text", nullable: false),
-                    NameGoogle = table.Column<string>(type: "text", nullable: false),
-                    EmailGoogle = table.Column<string>(type: "text", nullable: false),
+                    Pseudo = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    EmailGoogle = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Profile_picture = table.Column<byte[]>(type: "bytea", nullable: true),
                     date_token_session_expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     token_session_user = table.Column<string>(type: "text", nullable: true),
                     grade = table.Column<string>(type: "text", nullable: false),
-                    city = table.Column<string>(type: "text", nullable: false),
+                    city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     sex = table.Column<string>(type: "text", nullable: false),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     account_created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

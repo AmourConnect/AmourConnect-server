@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using server_api.Interfaces;
-using server_api.Models;
+using server_api.Dto;
+using server_api.Utils;
+
 
 namespace server_api.Controllers
 {
@@ -12,8 +14,6 @@ namespace server_api.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-
-
         private readonly IUserRepository _userRepository;
 
         public AuthController(IUserRepository userRepository)
@@ -36,57 +36,73 @@ namespace server_api.Controllers
         public async Task<IActionResult> GoogleLogin()
         {
             var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (response.Principal == null) return BadRequest();
+            if (response?.Principal == null) return BadRequest();
 
-            var nameGoogle = response.Principal.FindFirstValue(ClaimTypes.Name);
             var emailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
             var userIdGoogle = response.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (_userRepository.UserExists(emailGoogle, userIdGoogle))
+           int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, userIdGoogle);
+
+            if (id_user > 0)
             {
-                // TO DO, connect user exist, create cookie session and date expiration ect...
+                return CreateSessionLoginAndReturnResponse(id_user.Value);
             }
             else
             {
-                var userData = new
-                {
-                    Name = nameGoogle,
-                    Email = emailGoogle,
-                    GoogleId = userIdGoogle
-                };
-
-                var responseApi = new
-                {
-                    Message = "Please register to continue",
-                    UserData = userData
-                };
-
-                return Ok(responseApi);
+                CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, emailGoogle);
+                return Ok(new { Message = "Please register to continue" });
             }
-
-            return Ok();
         }
 
 
-        
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserRegistrationDto userRegistrationDto)
         {
-            if (string.IsNullOrEmpty(userRegistrationDto.GoogleId) ||
-                string.IsNullOrEmpty(userRegistrationDto.NameGoogle) ||
-                string.IsNullOrEmpty(userRegistrationDto.EmailGoogle))
+            var (idGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
+
+            if (idGoogle == null && emailGoogle == null)
             {
-                return BadRequest("Google user data is required for registration");
+                return BadRequest("Please login with Google before register");
             }
 
-            if (string.IsNullOrEmpty(userRegistrationDto.DateOfBirth) || string.IsNullOrEmpty(userRegistrationDto.Sex) || string.IsNullOrEmpty(userRegistrationDto.City))
+            RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.City, userRegistrationDto.Pseudo);
+
+            if (_userRepository.CheckIfPseudoAlreadyExist(userRegistrationDto.Pseudo))
             {
-                return BadRequest("Additional information is required");
+                return BadRequest("Pseudo Already use");
             }
 
-            // TO DO re check if user is already (true create session cookie) register else create User him and create session cookie
+            int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, idGoogle);
 
-            return Ok();
+            if (id_user > 0)
+            {
+                return CreateSessionLoginAndReturnResponse(id_user.Value);
+            }
+
+            else 
+            {
+                int? id_user2 = _userRepository.CreateUser(idGoogle, emailGoogle, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.Pseudo, userRegistrationDto.City);
+
+                if (id_user2.HasValue)
+                {
+                    SessionDataDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
+                    CookieUtils.CreateSessionCookie(Response, sessionData);
+                    return Ok(new { Message = "Account creation successful" });
+                }
+                else
+                {
+                    return BadRequest("Failed to create user");
+                }
+            }
+        }
+
+
+
+        private IActionResult CreateSessionLoginAndReturnResponse(int userId)
+        {
+            SessionDataDto sessionData = _userRepository.UpdateSessionUser(userId);
+            CookieUtils.CreateSessionCookie(Response, sessionData);
+            return Ok(new { Message = "Login succes" });
         }
     }
 }
