@@ -2,17 +2,24 @@ import 'tailwindcss/tailwind.css';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/Hook/type";
-import { useAuth } from "@/Hook/UseAuth";
+import { UseAuth } from "@/Hook/UseAuth";
 import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
 import googleLogo from '../../public/assets/images/logo_google.png';
+
+
+
 export default function LoginGoogle() {
 
-    const { status, authenticate, LoginGoogle } = useAuth();
+
+
+    const { status, GetAllUsersToMatch, LoginGoogle } = UseAuth();
     const router = useRouter()
 
+
+
     useEffect(() => {
-        authenticate();
+        GetAllUsersToMatch();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
@@ -20,7 +27,9 @@ export default function LoginGoogle() {
             }, 5000);
         }
         return () => clearTimeout(timer);
-    }, [status, authenticate, router]);
+    }, [status, GetAllUsersToMatch, router]);
+
+
 
 
     if (status === AuthStatus.Unauthenticated)
@@ -41,6 +50,8 @@ export default function LoginGoogle() {
             </div>
         );
     }
+
+
 
     return (
             <Loader1 />

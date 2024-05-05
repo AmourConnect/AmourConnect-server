@@ -11,11 +11,11 @@ EMAIL_USER=""
 EMAIL_MDP=""
 SERVICE="gmail"
 
-# Auth Google
+# OAuth Google Console
 ClientId=""
 ClientSecret=""
 
-IP_NOW_FRONTEND="http://192.168.1.21:3000"
+IP_NOW_FRONTEND="http://localhost:3000"
 
 #Database
 ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
@@ -25,7 +25,7 @@ ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;D
 
 *⛔ Start the Database first before*
 
-*If you have Docker URL DataBase =>*
+*If you have Docker, the database URL will be =>*
 
 ```
 Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;
@@ -60,11 +60,6 @@ docker image prune --force
 If you use .NET Core CLI
 ```
 dotnet restore
-```
-
-Else if you use VS
-```
-nuget restore
 ```
 
 *To play Migration*

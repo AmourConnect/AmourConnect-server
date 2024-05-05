@@ -1,4 +1,4 @@
-import { API_BACKEND_API } from "../lib/config";
+import { API_BACKEND_URL } from "../lib/config";
 
 export async function apiFetch<T>(
 url: string,
@@ -6,7 +6,7 @@ url: string,
 ): Promise<T> {
     method ??= json ? "POST" : "GET";
     const body = json ? JSON.stringify(json) : undefined;
-    const r = await fetch(API_BACKEND_API + url, {
+    const r = await fetch(API_BACKEND_URL + url, {
         method,
         credentials: "include",
         body,

@@ -7,6 +7,7 @@ using server_api.Interfaces;
 using server_api.Dto;
 using server_api.Utils;
 using DotNetEnv;
+using server_api.Models;
 
 namespace server_api.Controllers
 {
@@ -89,7 +90,9 @@ namespace server_api.Controllers
 
                 if (id_user2.HasValue)
                 {
-                    return CreateSessionLoginAndReturnResponse(id_user.Value);
+                    SessionDataDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
+                    CookieUtils.CreateSessionCookie(Response, sessionData);
+                    return Ok("Register finish");
                 }
                 else
                 {

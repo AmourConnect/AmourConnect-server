@@ -8,10 +8,8 @@ export default function Loader1() {
                 <Image
                     src="/assets/gif/loading_heart.gif"
                     alt="Description de l'image"
-                    layout="responsive"
                     width={200}
                     height={200}
-                    objectFit="contain"
                     className="img-fluid"
                 />
             </div>

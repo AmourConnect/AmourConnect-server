@@ -4,7 +4,7 @@ export type Account =
     pseudo: string;
     profile_picture: Blob;
     sex: string;
-    dateOfBirth: string;
+    date_of_birth: string;
     account_created_at: Date;
     city: string;
 }
@@ -15,7 +15,6 @@ export type UserRegister =
     pseudo: string;
     sex: string;
     city: string;
-    response: string
 }
 
 export enum AuthStatus
