@@ -23,6 +23,18 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthorizeUserConnect>();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "web_site_Front", configurePolicy: policyBuilder =>
+    {
+        policyBuilder.WithOrigins(Env.GetString("IP_NOW_FRONTEND"));
+        policyBuilder.WithHeaders("Content-Type");
+        policyBuilder.WithMethods("GET", "POST");
+        policyBuilder.AllowCredentials();
+    });
+});
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -85,5 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("web_site_Front");
 
 app.Run();

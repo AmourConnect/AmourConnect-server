@@ -18,7 +18,7 @@ namespace server_api.Repository
         {
             return _context.User
             .Where(u =>
-                u.city == user_data.city &&
+                u.city.ToLower() == user_data.city.ToLower() &&
                 u.sex == (user_data.sex == "M" ? "F" : "M") &&
                 u.date_of_birth >= (user_data.sex == "F" ?
                     user_data.date_of_birth.AddYears(-10) :
@@ -31,8 +31,10 @@ namespace server_api.Repository
                 Id_User = u.Id_User,
                 Pseudo = u.Pseudo,
                 Profile_picture = u.Profile_picture,
+                city = u.city,
                 sex = u.sex,
-                date_of_birth = u.date_of_birth
+                date_of_birth = u.date_of_birth,
+                account_created_at = u.account_created_at,
             })
             .ToList();
         }

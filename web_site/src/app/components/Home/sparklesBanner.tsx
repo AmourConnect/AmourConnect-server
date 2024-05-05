@@ -70,7 +70,7 @@ export async function TextShimmerBadge() {
       >
         <TextShimmer className="inline-flex items-center justify-center px-4 py-1">
           <span>
-            <a href="accueil">
+            <a href="welcome">
             ❤️ Commencez votre voyage amoureux
             </a>
           </span>

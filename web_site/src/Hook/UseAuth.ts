@@ -1,56 +1,45 @@
-import { Account, AuthStatus } from "./type";
 import { useCallback, useState } from "react";
+import { Account, AuthStatus, UserRegister } from "./type";
 import { apiFetch } from "./apiFetch";
+import { GOOGLE_LOGIN_URL } from "../lib/config";
 
 export function useAuth() {
   const [account, setAccount] = useState<Account | null | undefined>(null);
-  const [usersToMatch, setUsersToMatch] = useState<Account[]>([]);
   let status;
 
   switch (account) {
     case null:
-      status = AuthStatus.Guest;
-      break;
-    case undefined:
-      status = AuthStatus.Unknown;
+      status = AuthStatus.Unauthenticated;
       break;
     default:
       status = AuthStatus.Authenticated;
       break;
   }
 
+
   const authenticate = useCallback(() => {
-    apiFetch<Account>("/auth/get/SessionStatus")
+      apiFetch<Account>("User")
       .then(response => setAccount(response))
       .catch(() => setAccount(null));
   }, []);
 
 
-  const getUserToMatch = useCallback(() => {
-    apiFetch<Account[]>("/membre/get/user_to_match")
-      .then(response => setUsersToMatch(response))
-      .catch(() => setUsersToMatch([]));
-  }, []);
+    const LoginGoogle = useCallback(() => {
+        window.location.href = GOOGLE_LOGIN_URL;
+    }, []);
 
 
-  const login = useCallback((email: string, mot_de_passe: string) => {
-    apiFetch<Account>("/auth/post/login", { json: { email, mot_de_passe } }).then(
+    const FinalRegister = useCallback((pseudo: UserRegister, sex: UserRegister, city: UserRegister, dateOfBirthday: UserRegister) => {
+        apiFetch<Account>("Auth/register", { json: { pseudo, sex, city, dateOfBirthday } }).then(
       setAccount
     );
   }, []);
-
-
-  // const logout = useCallback(() => {
-  //   apiFetch<Account>("/logout", { method: "DELETE" }).then(setAccount);
-  // }, []);
   
 
   return {
     status,
-    account,
     authenticate,
-    login,
-    getUserToMatch,
-    usersToMatch
+    LoginGoogle,
+    FinalRegister
   };
 }

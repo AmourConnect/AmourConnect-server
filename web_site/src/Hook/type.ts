@@ -1,31 +1,24 @@
 export type Account = 
 {
-    utilisateur_id: number;
+    id_User: number;
     pseudo: string;
-    email: string;
-    photo_profil: Blob;
-    sexe: string;
-    date_naissance: Date;
-    ville: string;
-    centre_interet: string;
-    grade: string;
+    profile_picture: Blob;
+    sex: string;
+    date_of_birth: Date;
+    account_created_at: Date;
+    city: string;
 }
 
-export type UserInscription =
+export type UserRegister =
 {
-    date_token_expiration_email: Date;
-    mot_de_passe: string;
-    email: string;
+    dateOfBirth: string;
     pseudo: string;
-    cle_secret: string;
-    sexe: string;
-    date_naissance: string;
-    ville: string;
+    sex: string;
+    city: string;
 }
 
 export enum AuthStatus
 {
-    Unknown = 0,
-    Authenticated = 1,
-    Guest = 2
+    Authenticated,
+    Unauthenticated
 }

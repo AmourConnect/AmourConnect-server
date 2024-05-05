@@ -1,10 +1,12 @@
-export async function apiFetch<T> (
+import { API_BACKEND_API } from "../lib/config";
+
+export async function apiFetch<T>(
 url: string,
 { json, method }: {json?: Record<string, unknown>; method?: string } = {}
 ): Promise<T> {
     method ??= json ? "POST" : "GET";
     const body = json ? JSON.stringify(json) : undefined;
-    const r = await fetch("http://192.168.1.21:5002/amourconnect/api/" + url, {
+    const r = await fetch(API_BACKEND_API + url, {
         method,
         credentials: "include",
         body,
