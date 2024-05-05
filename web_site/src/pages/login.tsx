@@ -8,21 +8,23 @@ import Image from 'next/image';
 import googleLogo from '../../public/assets/images/logo_google.png';
 export default function LoginGoogle() {
 
-    const { status, LoginGoogle } = useAuth();
+    const { status, authenticate, LoginGoogle } = useAuth();
     const router = useRouter()
 
     useEffect(() => {
+        authenticate();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
-                router.push('/login');
+                router.push('/welcome');
             }, 5000);
         }
         return () => clearTimeout(timer);
-    }, [status, router]);
+    }, [status, authenticate, router]);
 
 
-    if (status === AuthStatus.Unauthenticated) {
+    if (status === AuthStatus.Unauthenticated)
+    {
         return (
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-black">Connexion uniquement avec Google❤</h1>
@@ -40,9 +42,7 @@ export default function LoginGoogle() {
         );
     }
 
-    else {
-        return (
+    return (
             <Loader1 />
-        );
-    }
+    );
 }

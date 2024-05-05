@@ -6,7 +6,7 @@ using System.Security.Claims;
 using server_api.Interfaces;
 using server_api.Dto;
 using server_api.Utils;
-
+using DotNetEnv;
 
 namespace server_api.Controllers
 {
@@ -50,7 +50,7 @@ namespace server_api.Controllers
             else
             {
                 CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, emailGoogle);
-                return Ok(new { Message = "Please register to continue" });
+                return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
             }
         }
 
@@ -65,7 +65,11 @@ namespace server_api.Controllers
                 return BadRequest("Please login with Google before register");
             }
 
-            RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.City, userRegistrationDto.Pseudo);
+            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.City, userRegistrationDto.Pseudo);
+            if (result != null)
+            {
+                return result;
+            }
 
             if (_userRepository.CheckIfPseudoAlreadyExist(userRegistrationDto.Pseudo))
             {
@@ -85,9 +89,7 @@ namespace server_api.Controllers
 
                 if (id_user2.HasValue)
                 {
-                    SessionDataDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
-                    CookieUtils.CreateSessionCookie(Response, sessionData);
-                    return Ok(new { Message = "Account creation successful" });
+                    return CreateSessionLoginAndReturnResponse(id_user.Value);
                 }
                 else
                 {
@@ -102,7 +104,7 @@ namespace server_api.Controllers
         {
             SessionDataDto sessionData = _userRepository.UpdateSessionUser(userId);
             CookieUtils.CreateSessionCookie(Response, sessionData);
-            return Ok(new { Message = "Login succes" });
+            return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
         }
     }
 }

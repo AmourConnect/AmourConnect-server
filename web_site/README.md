@@ -33,9 +33,7 @@ docker exec -it web_site-frontend-amourconnect-1 /bin/sh
 npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm run dev
 ```
 
-**for the ip request api_backend, edit the file src/Hook/apiFetch.ts**
-"http://192.168.1.21:5002/amourconnect/api/"
-
+** ⛔ For the IP request api_backend, edit the file src/lib/config.ts**
 
 # For production :
 

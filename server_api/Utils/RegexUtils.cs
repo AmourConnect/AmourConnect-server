@@ -34,7 +34,7 @@ namespace server_api.Utils
             {
                 return controller.BadRequest("Invalid pseudo format");
             }
-            return controller.Ok();
+            return null; // the check regex is okay :)
         }
     }
 }

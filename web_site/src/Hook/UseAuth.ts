@@ -2,10 +2,13 @@ import { useCallback, useState } from "react";
 import { Account, AuthStatus, UserRegister } from "./type";
 import { apiFetch } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
+import { useRouter } from 'next/navigation'
 
 export function useAuth() {
-  const [account, setAccount] = useState<Account | null | undefined>(null);
-  let status;
+    const [account, setAccount] = useState<Account | null | undefined>(null);
+    const [error, setError] = useState('');
+    const router = useRouter();
+    let status;
 
   switch (account) {
     case null:
@@ -18,7 +21,7 @@ export function useAuth() {
 
 
   const authenticate = useCallback(() => {
-      apiFetch<Account>("User")
+      apiFetch<Account>("/User")
       .then(response => setAccount(response))
       .catch(() => setAccount(null));
   }, []);
@@ -29,17 +32,26 @@ export function useAuth() {
     }, []);
 
 
-    const FinalRegister = useCallback((pseudo: UserRegister, sex: UserRegister, city: UserRegister, dateOfBirthday: UserRegister) => {
-        apiFetch<Account>("Auth/register", { json: { pseudo, sex, city, dateOfBirthday } }).then(
-      setAccount
-    );
-  }, []);
+    const FinalRegister = useCallback((pseudo: string, sex: string, city: string, dateOfBirth: string) => {
+        apiFetch<UserRegister>("/Auth/register", { json: { pseudo, sex, city, dateOfBirth } })
+            .then(response => {
+                setAccount(response);
+                setError('');
+                router.push('/welcome');
+            })
+            .catch(error => {
+                setAccount(null);
+                setError(error.message);
+            });
+    }, []);
   
 
   return {
     status,
     authenticate,
     LoginGoogle,
-    FinalRegister
+    FinalRegister,
+    error,
+    account
   };
 }
