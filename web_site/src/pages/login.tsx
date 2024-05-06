@@ -6,6 +6,7 @@ import { UseAuth } from "@/Hook/UseAuth";
 import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
 import googleLogo from '../../public/assets/images/logo_google.png';
+import Head from 'next/head';
 
 
 
@@ -36,6 +37,10 @@ export default function LoginGoogle() {
     {
         return (
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
+                <Head>
+                    <title>AmourConnect</title>
+                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                </Head>
                 <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-black">Connexion uniquement avec Google❤</h1>
                 <div className="flex items-center mb-4 sm:mb-6">
                     <Image src={googleLogo} alt="Logo Google" className="h-6 w-6 mr-2 sm:h-8 sm:w-8" />

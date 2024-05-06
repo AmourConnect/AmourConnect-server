@@ -5,6 +5,7 @@ import { AuthStatus, UserRegister } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
 import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
+import Head from 'next/head';
 
 
 export default function Register() {
@@ -54,6 +55,10 @@ export default function Register() {
 
         return (
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
+                <Head>
+                    <title>AmourConnect</title>
+                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                </Head>
                     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
                         <div className="mx-auto max-w-lg">
                             <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">Valider votre Inscription pour lover ❤️</h1>
