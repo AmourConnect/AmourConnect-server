@@ -12,7 +12,7 @@ export default function Register() {
 
 
 
-    const { status, GetAllUsersToMatch, FinalRegister } = UseAuth();
+    const { status, GetAllUsersToMatch, FinalRegister, errorMessage } = UseAuth();
     const router = useRouter();
 
 
@@ -65,7 +65,7 @@ export default function Register() {
 
                         <form onSubmit={handleSubmit} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
 
-
+                            {errorMessage && <p>{errorMessage}</p>}
 
                                 <div>
                                     <label htmlFor="pseudo" className="sr-only">Pseudo</label>

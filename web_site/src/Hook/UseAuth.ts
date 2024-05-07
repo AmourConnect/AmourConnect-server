@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
 import { Account, AuthStatus, UserRegister } from "./type";
-import { apiFetch } from "./apiFetch";
+import { apiFetch, ApiError } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
-
 
 
 export function UseAuth()
 {
       const [account, setAccount] = useState<Account | null | UserRegister>(null);
+      const [errorMessage, setErrorMessage] = useState<string | null>(null);
       let status;
 
 
@@ -38,9 +38,13 @@ export function UseAuth()
             apiFetch<UserRegister>("/Auth/register", { json: { pseudo, sex, city, dateOfBirth } })
                 .then(response => {
                     setAccount(response);
+                    setErrorMessage(null); 
                     window.location.reload();
                 })
                 .catch(error => {
+                    if (error instanceof ApiError) {
+                        setErrorMessage(error.message);
+                    }
                     setAccount(null);
                 });
       }, []);
@@ -51,6 +55,7 @@ export function UseAuth()
         GetAllUsersToMatch,
         LoginGoogle,
         FinalRegister,
-        account
+        account,
+        errorMessage
       };
 }

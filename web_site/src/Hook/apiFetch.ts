@@ -19,10 +19,11 @@ url: string,
     if(r.ok) {
         return r.json() as Promise<T>;
     }
-    throw new ApiError(r.status, await r.json(), '');
+    const data = await r.json();
+    throw new ApiError(r.status, data, data.message || 'Une erreur s\'est produite');
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
     constructor(public status: number, public data: Record<string, unknown>, public message: string)
     {
         super(message);

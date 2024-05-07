@@ -14,25 +14,25 @@ namespace server_api.Utils
         {
             if (string.IsNullOrEmpty(DateOfBirth) || string.IsNullOrEmpty(Sex) || string.IsNullOrEmpty(City) || string.IsNullOrEmpty(Pseudo))
             {
-                return controller.BadRequest("Additional information is required");
+                return controller.BadRequest(new { message = "Additional information is required" });
             }
             if (!DateOfBirthRegex.IsMatch(DateOfBirth))
             {
-                return controller.BadRequest("Invalid date of birth format");
+                return controller.BadRequest(new { message = "Invalid date of birth format" });
             }
             if (!new[] { "M", "F" }.Contains(Sex, StringComparer.OrdinalIgnoreCase))
             {
-                return controller.BadRequest("Invalid sex value");
+                return controller.BadRequest(new { message = "Invalid sex value" });
             }
 
             if (!CityRegex.IsMatch(City))
             {
-                return controller.BadRequest("Invalid city format");
+                return controller.BadRequest(new { message = "Invalid city format" });
             }
 
             if (!PseudoRegex.IsMatch(Pseudo))
             {
-                return controller.BadRequest("Invalid pseudo format");
+                return controller.BadRequest(new { message = "Invalid pseudo format" });
             }
             return null; // the check regex is okay :)
         }

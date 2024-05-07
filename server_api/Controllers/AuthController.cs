@@ -7,7 +7,6 @@ using server_api.Interfaces;
 using server_api.Dto;
 using server_api.Utils;
 using DotNetEnv;
-using server_api.Models;
 
 namespace server_api.Controllers
 {
@@ -63,7 +62,7 @@ namespace server_api.Controllers
 
             if (idGoogle == null && emailGoogle == null)
             {
-                return BadRequest("Please login with Google before register");
+                return BadRequest(new { message = "Please login with Google before register" });
             }
 
             IActionResult result = RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.City, userRegistrationDto.Pseudo);
@@ -74,7 +73,7 @@ namespace server_api.Controllers
 
             if (_userRepository.CheckIfPseudoAlreadyExist(userRegistrationDto.Pseudo))
             {
-                return BadRequest("Pseudo Already use");
+                return BadRequest(new { message = "Pseudo Already use" });
             }
 
             int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, idGoogle);
@@ -92,11 +91,11 @@ namespace server_api.Controllers
                 {
                     SessionDataDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
-                    return Ok("Register finish");
+                    return Ok(new { message = "Register finish" });
                 }
                 else
                 {
-                    return BadRequest("Failed to create user");
+                    return BadRequest(new { message = "Failed to create user" });
                 }
             }
         }
