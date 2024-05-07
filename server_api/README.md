@@ -16,6 +16,7 @@ ClientId=""
 ClientSecret=""
 
 IP_NOW_FRONTEND="http://localhost:3000"
+IP_NOW_BACKENDAPI="http://localhost:5266"
 
 # The HS256 algorithm requires a key of at least 256 bits (32 characters)
 SecretKeyJWT=""
