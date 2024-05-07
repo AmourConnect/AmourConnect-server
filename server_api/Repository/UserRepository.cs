@@ -2,6 +2,7 @@
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Dto;
+using System.Text;
 
 namespace server_api.Repository
 {
@@ -78,7 +79,7 @@ namespace server_api.Repository
 
             do
             {
-                newSessionToken = GenerateNewSessionToken();
+                newSessionToken = GenerateNewSessionToken(64);
                 expirationDate = DateTime.UtcNow.AddDays(7);
 
             } while (_context.User.Any(u => u.token_session_user == newSessionToken));
@@ -106,9 +107,18 @@ namespace server_api.Repository
             return _context.User.Any(u => u.Pseudo.ToLower() == pseudo.ToLower());
         }
 
-        private string GenerateNewSessionToken()
+        private string GenerateNewSessionToken(int length)
         {
-            return Guid.NewGuid().ToString();
+            const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random rand = new Random();
+            StringBuilder sessionToken = new StringBuilder(length);
+
+            for (int i = 0; i < length; i++)
+            {
+                sessionToken.Append(allowedChars[rand.Next(allowedChars.Length)]);
+            }
+
+            return sessionToken.ToString();
         }
 
         public User GetUserWithCookie(string cookie_user)

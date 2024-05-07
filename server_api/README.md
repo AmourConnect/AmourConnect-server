@@ -11,11 +11,14 @@ EMAIL_USER=""
 EMAIL_MDP=""
 SERVICE="gmail"
 
-# OAuth Google Console
+# Auth Google
 ClientId=""
 ClientSecret=""
 
 IP_NOW_FRONTEND="http://localhost:3000"
+
+# The HS256 algorithm requires a key of at least 256 bits (32 characters)
+SecretKeyJWT=""
 
 #Database
 ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
