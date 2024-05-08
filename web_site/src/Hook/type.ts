@@ -5,17 +5,8 @@ export type Account =
     profile_picture: Blob;
     sex: string;
     date_of_birth: Date;
-    account_created_at: Date;
     city: string;
     emailGoogle: string;
-}
-
-export type UserRegister =
-{
-    dateOfBirth: Date;
-    pseudo: string;
-    sex: string;
-    city: string;
 }
 
 export enum AuthStatus

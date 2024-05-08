@@ -22,15 +22,15 @@ namespace server_api.Utils
 
 
 
-        public static void CreateSessionCookie(HttpResponse Response, SessionDataDto sessionData)
+        public static void CreateSessionCookie(HttpResponse Response, SessionUserDto sessionData)
         {
-            DateTimeOffset dateExpiration = sessionData.ExpirationDate;
+            DateTimeOffset dateExpiration = sessionData.date_token_session_expiration;
             DateTimeOffset currentDate = DateTimeOffset.UtcNow;
             TimeSpan maxAge = dateExpiration - currentDate;
 
             Response.Cookies.Append(
                 "User-AmourConnect",
-                sessionData.Token,
+                sessionData.token_session_user,
                 new CookieOptions
                 {
                     Path = "/",
@@ -43,7 +43,7 @@ namespace server_api.Utils
         }
 
 
-        public static void CreateCookieToSaveIdGoogle(HttpResponse Response, string idGoogle, string emailGoogle)
+        public static void CreateCookieToSaveIdGoogle(HttpResponse Response, string userIdGoogle, string EmailGoogle)
         {
             var issuer = Env.GetString("IP_NOW_FRONTEND");
             var audience = Env.GetString("IP_NOW_BACKENDAPI");
@@ -53,8 +53,8 @@ namespace server_api.Utils
 
             var claims = new[]
             {
-                new Claim("IdGoogle", idGoogle),
-                new Claim("EmailGoogle", emailGoogle)
+                new Claim("userIdGoogle", userIdGoogle),
+                new Claim("EmailGoogle", EmailGoogle)
             };
 
             var token = new JwtSecurityToken(
@@ -114,10 +114,10 @@ namespace server_api.Utils
                 var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
                 var claims = principal.Claims;
 
-                string idGoogle = claims.FirstOrDefault(c => c.Type == "IdGoogle")?.Value;
-                string emailGoogle = claims.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
+                string userIdGoogle = claims.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;
+                string EmailGoogle = claims.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
 
-                return (idGoogle, emailGoogle);
+                return (userIdGoogle, EmailGoogle);
             }
             catch
             {

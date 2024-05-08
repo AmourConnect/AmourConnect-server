@@ -38,34 +38,35 @@ namespace server_api.Controllers
             var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (response?.Principal == null) return BadRequest();
 
-            var emailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
+            var EmailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
             var userIdGoogle = response.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-           int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, userIdGoogle);
+           int? Id_User = _userRepository.SearchIdUserWithIdGoogle(EmailGoogle, userIdGoogle);
 
-            if (id_user > 0)
+            if (Id_User > 0)
             {
-                return CreateSessionLoginAndReturnResponse(id_user.Value);
+                return CreateSessionLoginAndReturnResponse(Id_User.Value);
             }
             else
             {
-                CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, emailGoogle);
+                CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, EmailGoogle);
                 return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
             }
         }
 
 
+
         [HttpPost("register")]
         public IActionResult Register([FromBody] UserRegistrationDto userRegistrationDto)
         {
-            var (idGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
+            var (userIdGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
 
-            if (idGoogle == null && emailGoogle == null)
+            if (userIdGoogle == null && emailGoogle == null)
             {
                 return BadRequest(new { message = "Please login with Google before register" });
             }
 
-            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.City, userRegistrationDto.Pseudo);
+            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.date_of_birth, userRegistrationDto.sex, userRegistrationDto.city, userRegistrationDto.Pseudo);
             if (result != null)
             {
                 return result;
@@ -76,7 +77,7 @@ namespace server_api.Controllers
                 return BadRequest(new { message = "Pseudo Already use" });
             }
 
-            int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, idGoogle);
+            int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, userIdGoogle);
 
             if (id_user > 0)
             {
@@ -85,11 +86,11 @@ namespace server_api.Controllers
 
             else 
             {
-                int? id_user2 = _userRepository.CreateUser(idGoogle, emailGoogle, userRegistrationDto.DateOfBirth, userRegistrationDto.Sex, userRegistrationDto.Pseudo, userRegistrationDto.City);
+                int? id_user2 = _userRepository.CreateUser(userIdGoogle, emailGoogle, userRegistrationDto.date_of_birth, userRegistrationDto.sex, userRegistrationDto.Pseudo, userRegistrationDto.city);
 
                 if (id_user2.HasValue)
                 {
-                    SessionDataDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
+                    SessionUserDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
                     return Ok(new { message = "Register finish" });
                 }
@@ -102,9 +103,9 @@ namespace server_api.Controllers
 
 
 
-        private IActionResult CreateSessionLoginAndReturnResponse(int userId)
+        private IActionResult CreateSessionLoginAndReturnResponse(int Id_User)
         {
-            SessionDataDto sessionData = _userRepository.UpdateSessionUser(userId);
+            SessionUserDto sessionData = _userRepository.UpdateSessionUser(Id_User);
             CookieUtils.CreateSessionCookie(Response, sessionData);
             return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
         }

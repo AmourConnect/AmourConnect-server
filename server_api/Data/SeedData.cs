@@ -10,7 +10,7 @@ namespace server_api.Data
             if (!context.User.Any())
             {
                 Random random = new Random();
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < 200; i++)
                 {
                     User newUser = new User
                     {

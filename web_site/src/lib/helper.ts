@@ -1,6 +1,6 @@
-export function ConvertingADateOfBirthToAge(dateOfBirth: Date): number {
+export function ConvertingADateToAge(date_of_birth: Date): number {
     const today = new Date();
-    const birthDate = new Date(dateOfBirth);
+    const birthDate = new Date(date_of_birth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {

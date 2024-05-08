@@ -2,7 +2,7 @@
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Dto;
-using System.Text;
+using server_api.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace server_api.Repository
@@ -16,18 +16,18 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public ICollection<User> GetUsers(User user_data)
+        public ICollection<User> GetUsers(User data_user_now_connect)
         {
             return _context.User
             .Where(u =>
-                u.city.ToLower() == user_data.city.ToLower() &&
-                u.sex == (user_data.sex == "M" ? "F" : "M") &&
-                u.date_of_birth >= (user_data.sex == "F" ?
-                    user_data.date_of_birth.AddYears(-10) :
-                    user_data.date_of_birth.AddYears(-1)) &&
-                u.date_of_birth <= (user_data.sex == "M" ?
-                    user_data.date_of_birth.AddYears(10) :
-                    user_data.date_of_birth.AddYears(1)))
+                u.city.ToLower() == data_user_now_connect.city.ToLower() &&
+                u.sex == (data_user_now_connect.sex == "M" ? "F" : "M") &&
+                u.date_of_birth >= (data_user_now_connect.sex == "F" ?
+                    data_user_now_connect.date_of_birth.AddYears(-10) :
+                    data_user_now_connect.date_of_birth.AddYears(-1)) &&
+                u.date_of_birth <= (data_user_now_connect.sex == "M" ?
+                    data_user_now_connect.date_of_birth.AddYears(10) :
+                    data_user_now_connect.date_of_birth.AddYears(1)))
             .Select(u => new User
             {
                 Id_User = u.Id_User,
@@ -41,23 +41,27 @@ namespace server_api.Repository
             .ToList();
         }
 
-        public int? SearchIdUserWithIdGoogle(string emailGoogle, string googleId)
+
+
+        public int? SearchIdUserWithIdGoogle(string EmailGoogle, string userIdGoogle)
         {
             return _context.User
-                .Where(u => u.EmailGoogle == emailGoogle && u.userIdGoogle == googleId)
+                .Where(u => u.EmailGoogle == EmailGoogle && u.userIdGoogle == userIdGoogle)
                 .Select(u => u.Id_User)
                 .FirstOrDefault();
         }
 
-        public int? CreateUser(string googleId, string emailGoogle, DateTime? dateOfBirth, string sex, string pseudo, string city)
+
+
+        public int? CreateUser(string userIdGoogle, string EmailGoogle, DateTime? date_of_birth, string sex, string Pseudo, string city)
         {
             var user = new User
             {
-                userIdGoogle = googleId,
-                EmailGoogle = emailGoogle,
-                date_of_birth = dateOfBirth.HasValue ? dateOfBirth.Value.ToUniversalTime() : DateTime.MinValue,
+                userIdGoogle = userIdGoogle,
+                EmailGoogle = EmailGoogle,
+                date_of_birth = date_of_birth.HasValue ? date_of_birth.Value.ToUniversalTime() : DateTime.MinValue,
                 sex = sex,
-                Pseudo = pseudo,
+                Pseudo = Pseudo,
                 city = city,
                 account_created_at = DateTime.Now.ToUniversalTime(),
             };
@@ -72,20 +76,22 @@ namespace server_api.Repository
             return null;
         }
 
-        public SessionDataDto UpdateSessionUser(int id_user)
+
+
+        public SessionUserDto UpdateSessionUser(int Id_User)
         {
             string newSessionToken;
             DateTime expirationDate;
 
             do
             {
-                newSessionToken = GenerateNewSessionToken(64);
+                newSessionToken = MessUtils.GeneratePassword(64);
                 expirationDate = DateTime.UtcNow.AddDays(7);
 
             } while (_context.User.Any(u => u.token_session_user == newSessionToken));
 
 
-            var user = _context.User.FirstOrDefault(u => u.Id_User == id_user);
+            var user = _context.User.FirstOrDefault(u => u.Id_User == Id_User);
 
             if (user != null)
             {
@@ -95,44 +101,32 @@ namespace server_api.Repository
                 _context.SaveChanges();
             }
 
-            return new SessionDataDto
+            return new SessionUserDto
             {
-                Token = newSessionToken,
-                ExpirationDate = expirationDate
+                token_session_user = newSessionToken,
+                date_token_session_expiration = expirationDate
             };
         }
 
-        public bool CheckIfPseudoAlreadyExist(string pseudo)
+
+
+        public bool CheckIfPseudoAlreadyExist(string Pseudo)
         {
-            return _context.User.Any(u => u.Pseudo.ToLower() == pseudo.ToLower());
-        }
-
-        private string GenerateNewSessionToken(int length)
-        {
-            const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random rand = new Random();
-            StringBuilder sessionToken = new StringBuilder(length);
-
-            for (int i = 0; i < length; i++)
-            {
-                sessionToken.Append(allowedChars[rand.Next(allowedChars.Length)]);
-            }
-
-            return sessionToken.ToString();
+            return _context.User.Any(u => u.Pseudo.ToLower() == Pseudo.ToLower());
         }
 
 
 
-        public User GetUserWithCookie(string cookie_user)
+        public User GetUserWithCookie(string token_session_user)
         {
-            return _context.User.FirstOrDefault(u => u.token_session_user == cookie_user);
+            return _context.User.FirstOrDefault(u => u.token_session_user == token_session_user);
         }
 
 
 
-        public bool UpdateUser(int userId, User user)
+        public bool UpdateUser(int Id_User, User user)
         {
-            User existingUser = _context.User.FirstOrDefault(u => u.Id_User == userId);
+            User existingUser = _context.User.FirstOrDefault(u => u.Id_User == Id_User);
 
             if (existingUser == null)
             {

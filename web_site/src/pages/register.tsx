@@ -1,7 +1,7 @@
 ﻿import 'tailwindcss/tailwind.css';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'
-import { AuthStatus, UserRegister } from "@/Hook/type";
+import { AuthStatus } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
 import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
@@ -21,7 +21,7 @@ export default function Register() {
     const [pseudo, setPseudo] = useState('');
     const [sex, setSex] = useState('');
     const [city, setCity] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [date_of_birth, setdate_of_birth] = useState('');
 
 
 
@@ -43,17 +43,17 @@ export default function Register() {
     {
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            if (!isValidDate(dateOfBirth)) {
+            if (!isValidDate(date_of_birth)) {
                 alert('Veuillez entrer une date de naissance valide.');
                 return;
             }
-            const user: UserRegister = {
+            const user = {
                 pseudo: pseudo,
                 sex: sex,
                 city: city,
-                dateOfBirth: new Date(dateOfBirth)
+                date_of_birth: new Date(date_of_birth)
             };
-            FinalRegister(user.pseudo, user.sex, user.city, user.dateOfBirth);
+            FinalRegister(user.pseudo, user.sex, user.city, user.date_of_birth);
         };
 
 
@@ -161,14 +161,14 @@ export default function Register() {
 
 
                             <div>
-                                <label htmlFor="dateOfBirth" className="sr-only">dateOfBirth</label>
+                                <label htmlFor="date_of_birth" className="sr-only">date_of_birth</label>
 
                                 <div className="relative">
                                     <input
                                         type="date"
-                                        id="dateOfBirth"
-                                        value={dateOfBirth}
-                                        onChange={(e) => setDateOfBirth(e.target.value)}
+                                        id="date_of_birth"
+                                        value={date_of_birth}
+                                        onChange={(e) => setdate_of_birth(e.target.value)}
                                         className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                         required
                                     />

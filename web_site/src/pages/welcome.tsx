@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import { ConvertingADateOfBirthToAge } from "../lib/helper";
+import { ConvertingADateToAge } from "../lib/helper";
 import { motion } from 'framer-motion';
 
 
@@ -66,7 +66,7 @@ export default function Welcome() {
                                         {account.sex === 'F' ? 'Mme ' : 'Mr '}
                                         {account.pseudo}
                                     </div>
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateOfBirthToAge(account.date_of_birth)} ans</div>
+                                    <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Sex : {account.sex}</div>
                                 </motion.div>
                             ))

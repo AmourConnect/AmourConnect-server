@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
-import { Account, AuthStatus, UserRegister } from "./type";
+import { Account, AuthStatus } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
 
 
 export function UseAuth()
 {
-      const [account, setAccount] = useState<Account | null | UserRegister>(null);
+      const [account, setAccount] = useState<Account | null>(null);
       const [errorMessage, setErrorMessage] = useState<string | null>(null);
       let status;
+
 
 
       switch (account) {
@@ -22,9 +23,11 @@ export function UseAuth()
       }
 
 
+
       const LoginGoogle = useCallback(() => {
             window.location.href = GOOGLE_LOGIN_URL;
       }, []);
+
 
 
       const GetAllUsersToMatch = useCallback(() => {
@@ -34,6 +37,7 @@ export function UseAuth()
       }, []);
 
 
+
     const GetUserOnly = useCallback(() => {
         apiFetch<Account>("/User/GetUserOnly")
             .then(response => setAccount(response))
@@ -41,8 +45,9 @@ export function UseAuth()
     }, []);
 
 
-      const FinalRegister = useCallback((pseudo: string, sex: string, city: string, dateOfBirth: Date) => {
-            apiFetch<UserRegister>("/Auth/register", { json: { pseudo, sex, city, dateOfBirth } })
+
+    const FinalRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date) => {
+        apiFetch<Account>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
                 .then(response => {
                     setAccount(response);
                     setErrorMessage(null); 
@@ -58,14 +63,8 @@ export function UseAuth()
 
 
 
-    const PatchUser = useCallback((profile_picture: Blob, sex: string, city: string, dateOfBirth: Date) => {
-        const formData = new FormData();
-        formData.append('profile_picture', profile_picture);
-        formData.append('sex', sex);
-        formData.append('city', city);
-        formData.append('dateOfBirth', dateOfBirth.toISOString());
-
-        apiFetch<Account>("/User/UpdateUser", { json: formData, method: 'PATCH' })
+    const PatchUser = useCallback((sex: string, city: string, date_of_birth: Date) => {
+        apiFetch<Account>("/User/UpdateUser", { json: { sex, city, date_of_birth }, method: 'PATCH' })
             .then(response => {
                 setAccount(response);
                 window.location.reload();
@@ -75,6 +74,7 @@ export function UseAuth()
             });
     }, []);
   
+
 
       return {
         status,

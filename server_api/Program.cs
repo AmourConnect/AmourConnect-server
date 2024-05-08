@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
     {
         policyBuilder.WithOrigins(Env.GetString("IP_NOW_FRONTEND"));
         policyBuilder.WithHeaders("Content-Type");
-        policyBuilder.WithMethods("GET", "POST");
+        policyBuilder.WithMethods("GET", "POST", "PATCH");
         policyBuilder.AllowCredentials();
     });
 });

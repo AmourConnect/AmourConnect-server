@@ -3,8 +3,8 @@
     public class UserRegistrationDto
     {
         public string? Pseudo { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public string? Sex { get; set; }
-        public string? City { get; set; }
+        public DateTime? date_of_birth { get; set; }
+        public string? sex { get; set; }
+        public string? city { get; set; }
     }
 }

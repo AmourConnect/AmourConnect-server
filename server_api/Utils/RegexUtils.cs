@@ -10,18 +10,18 @@ namespace server_api.Utils
         public static readonly Regex PseudoRegex = new Regex(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
 
 
-        public static IActionResult CheckBodyAuthRegister(ControllerBase controller, DateTime? DateOfBirth, string Sex, string City, string Pseudo)
+        public static IActionResult CheckBodyAuthRegister(ControllerBase controller, DateTime? date_of_birth, string sex, string city, string Pseudo)
         {
-            if (!CheckDate(DateOfBirth))
+            if (!CheckDate(date_of_birth))
             {
                 return controller.BadRequest(new { message = "Invalid date of birth format" });
             }
-            if (!CheckSex(Sex))
+            if (!CheckSex(sex))
             {
                 return controller.BadRequest(new { message = "Invalid sex value" });
             }
 
-            if (!CheckCity(City))
+            if (!CheckCity(city))
             {
                 return controller.BadRequest(new { message = "Invalid city format" });
             }
@@ -35,16 +35,16 @@ namespace server_api.Utils
 
 
 
-        public static bool CheckPicture(byte[] picture)
+        public static bool CheckPicture(byte[] Profile_picture)
         {
             const int maxSize = 5 * 1024 * 1024; // 5 Mo
 
-            if (picture == null || picture.Length == 0)
+            if (Profile_picture == null || Profile_picture.Length == 0)
             {
                 return false;
             }
 
-            if (picture.Length > maxSize)
+            if (Profile_picture.Length > maxSize)
             {
                 return false;
             }
@@ -107,13 +107,13 @@ namespace server_api.Utils
 
 
 
-        public static bool CheckPseudo(string pseudo)
+        public static bool CheckPseudo(string Pseudo)
         {
-            if (string.IsNullOrEmpty(pseudo))
+            if (string.IsNullOrEmpty(Pseudo))
             {
                 return false;
             }
-            if (!PseudoRegex.IsMatch(pseudo))
+            if (!PseudoRegex.IsMatch(Pseudo))
             {
                 return false;
             }

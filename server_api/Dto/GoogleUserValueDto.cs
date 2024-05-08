@@ -2,7 +2,7 @@
 {
     public class GoogleUserValueDto
     {
-        public string IdGoogle { get; set; }
+        public string userIdGoogle { get; set; }
         public string EmailGoogle { get; set; }
     }
 }

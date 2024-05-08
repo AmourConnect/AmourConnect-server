@@ -22,12 +22,12 @@ namespace server_api.Controllers
 
 
         [HttpGet("GetUsersToMach")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserOnlyDto>))]
 
         public IActionResult GetUsersToMach()
         {
-            string cookie_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(cookie_user);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
 
             var users = _userRepository.GetUsers(data_user_now_connect);
 
@@ -41,10 +41,11 @@ namespace server_api.Controllers
 
 
         [HttpGet("GetUserOnly")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserOnlyDto>))]
         public IActionResult GetUserOnly()
         {
-            string cookie_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(cookie_user);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
 
             GetUserOnlyDto userDto = new GetUserOnlyDto
             {
@@ -63,32 +64,32 @@ namespace server_api.Controllers
         [HttpPatch("UpdateUser")]
         public IActionResult UpdateUser([FromBody] UserUpdateDto userUpdateDto)
         {
-            string cookie_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(cookie_user);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
 
             var newsValues = new
             {
-                ProfilePicture = RegexUtils.CheckPicture(userUpdateDto.ProfilePicture)
-                                ? userUpdateDto.ProfilePicture
+                Profile_picture = RegexUtils.CheckPicture(userUpdateDto.Profile_picture)
+                                ? userUpdateDto.Profile_picture
                                 : data_user_now_connect.Profile_picture,
 
-                City = RegexUtils.CheckCity(userUpdateDto.city)
+                city = RegexUtils.CheckCity(userUpdateDto.city)
                           ? userUpdateDto.city
                           : data_user_now_connect.city,
 
-                Sex = RegexUtils.CheckSex(userUpdateDto.sex)
+                sex = RegexUtils.CheckSex(userUpdateDto.sex)
                          ? userUpdateDto.sex
                          : data_user_now_connect.sex,
 
-                DateOfBirth = RegexUtils.CheckDate(userUpdateDto.DateOfBirth)
-                            ? userUpdateDto.DateOfBirth ?? DateTime.MinValue
+                date_of_birth = RegexUtils.CheckDate(userUpdateDto.date_of_birth)
+                            ? userUpdateDto.date_of_birth ?? DateTime.MinValue
                             : data_user_now_connect.date_of_birth,
             };
 
-            data_user_now_connect.Profile_picture = newsValues.ProfilePicture;
-            data_user_now_connect.city = newsValues.City;
-            data_user_now_connect.sex = newsValues.Sex;
-            data_user_now_connect.date_of_birth = newsValues.DateOfBirth;
+            data_user_now_connect.Profile_picture = newsValues.Profile_picture;
+            data_user_now_connect.city = newsValues.city;
+            data_user_now_connect.sex = newsValues.sex;
+            data_user_now_connect.date_of_birth = newsValues.date_of_birth;
 
             _userRepository.UpdateUser(data_user_now_connect.Id_User, data_user_now_connect);
 
