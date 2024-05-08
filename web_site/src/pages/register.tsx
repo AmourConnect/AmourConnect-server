@@ -6,6 +6,7 @@ import { UseAuth } from "@/Hook/UseAuth";
 import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
+import { isValidDate } from "../lib/helper";
 
 
 export default function Register() {
@@ -42,11 +43,15 @@ export default function Register() {
     {
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
+            if (!isValidDate(dateOfBirth)) {
+                alert('Veuillez entrer une date de naissance valide.');
+                return;
+            }
             const user: UserRegister = {
                 pseudo: pseudo,
                 sex: sex,
                 city: city,
-                dateOfBirth: dateOfBirth
+                dateOfBirth: new Date(dateOfBirth)
             };
             FinalRegister(user.pseudo, user.sex, user.city, user.dateOfBirth);
         };
@@ -61,11 +66,11 @@ export default function Register() {
                 </Head>
                     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
                         <div className="mx-auto max-w-lg">
-                            <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">Valider votre Inscription pour lover ❤️</h1>
+                            <h1 className="text-center text-2xl font-bold text-pink-500 sm:text-3xl">Valider votre Inscription pour lover ❤️</h1>
 
                         <form onSubmit={handleSubmit} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
 
-                            {errorMessage && <p>{errorMessage}</p>}
+                            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
                                 <div>
                                     <label htmlFor="pseudo" className="sr-only">Pseudo</label>
@@ -78,9 +83,10 @@ export default function Register() {
                                             onChange={(e) => setPseudo(e.target.value)}
                                             className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                             placeholder="Enter Pseudo"
+                                            required
                                         />
 
-                                        <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                                       <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                             <Image
                                             src="/assets/images/circle-user-round.svg"
                                             alt="Pseudo icon"
@@ -102,6 +108,7 @@ export default function Register() {
                                         value={sex}
                                         onChange={(e) => setSex(e.target.value)}
                                         className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                                        required
                                         >
                                         <option value="">Choose your sex...</option>
                                         <option value="M">Masculin</option>
@@ -130,6 +137,7 @@ export default function Register() {
                                         value={city}
                                         onChange={(e) => setCity(e.target.value)}
                                         className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                                        required
                                     >
                                         <option value="">Choose your city...</option>
                                         <option value="Marseille">Marseille</option>
@@ -162,8 +170,8 @@ export default function Register() {
                                         value={dateOfBirth}
                                         onChange={(e) => setDateOfBirth(e.target.value)}
                                         className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                                        required
                                     />
-
                                     <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                         <Image
                                             src="/assets/images/calendar-days.svg"
@@ -179,10 +187,10 @@ export default function Register() {
 
                                 <button
                                     type="submit"
-                                    className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white"
+                                className="block w-full rounded-lg bg-pink-500 hover:bg-pink-600 px-5 py-3 text-sm font-medium text-white"
                                 >
                                     Valider 😍
-                                </button>
+                            </button>
                             </form>
                         </div>
                     </div>

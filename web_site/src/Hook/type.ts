@@ -4,14 +4,15 @@ export type Account =
     pseudo: string;
     profile_picture: Blob;
     sex: string;
-    date_of_birth: string;
+    date_of_birth: Date;
     account_created_at: Date;
     city: string;
+    emailGoogle: string;
 }
 
 export type UserRegister =
 {
-    dateOfBirth: string;
+    dateOfBirth: Date;
     pseudo: string;
     sex: string;
     city: string;

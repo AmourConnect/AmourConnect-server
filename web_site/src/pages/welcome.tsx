@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { ConvertingADateOfBirthToAge } from "../lib/helper";
 import { motion } from 'framer-motion';
 
+
 export default function Welcome() {
 
 
@@ -38,6 +39,9 @@ export default function Welcome() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
+                <a href={`/profile`} className="text-white bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                    Voir mon profil
+                </a>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         {Array.isArray(account) && account.length > 0 ? (

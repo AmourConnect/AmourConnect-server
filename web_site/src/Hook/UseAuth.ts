@@ -28,13 +28,20 @@ export function UseAuth()
 
 
       const GetAllUsersToMatch = useCallback(() => {
-        apiFetch<Account>("/User")
+       apiFetch<Account>("/User/GetUsersToMach")
             .then(response => setAccount(response))
             .catch(() => setAccount(null));
       }, []);
 
 
-      const FinalRegister = useCallback((pseudo: string, sex: string, city: string, dateOfBirth: string) => {
+    const GetUserOnly = useCallback(() => {
+        apiFetch<Account>("/User/GetUserOnly")
+            .then(response => setAccount(response))
+            .catch(() => setAccount(null));
+    }, []);
+
+
+      const FinalRegister = useCallback((pseudo: string, sex: string, city: string, dateOfBirth: Date) => {
             apiFetch<UserRegister>("/Auth/register", { json: { pseudo, sex, city, dateOfBirth } })
                 .then(response => {
                     setAccount(response);
@@ -48,6 +55,25 @@ export function UseAuth()
                     setAccount(null);
                 });
       }, []);
+
+
+
+    const PatchUser = useCallback((profile_picture: Blob, sex: string, city: string, dateOfBirth: Date) => {
+        const formData = new FormData();
+        formData.append('profile_picture', profile_picture);
+        formData.append('sex', sex);
+        formData.append('city', city);
+        formData.append('dateOfBirth', dateOfBirth.toISOString());
+
+        apiFetch<Account>("/User/UpdateUser", { json: formData, method: 'PATCH' })
+            .then(response => {
+                setAccount(response);
+                window.location.reload();
+            })
+            .catch(error => {
+                setAccount(null);
+            });
+    }, []);
   
 
       return {
@@ -56,6 +82,8 @@ export function UseAuth()
         LoginGoogle,
         FinalRegister,
         account,
-        errorMessage
+        errorMessage,
+        GetUserOnly,
+        PatchUser
       };
 }

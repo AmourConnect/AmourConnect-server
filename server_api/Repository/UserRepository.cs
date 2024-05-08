@@ -3,6 +3,7 @@ using server_api.Interfaces;
 using server_api.Models;
 using server_api.Dto;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace server_api.Repository
 {
@@ -48,13 +49,13 @@ namespace server_api.Repository
                 .FirstOrDefault();
         }
 
-        public int? CreateUser(string googleId, string emailGoogle, string dateOfBirth, string sex, string pseudo, string city)
+        public int? CreateUser(string googleId, string emailGoogle, DateTime? dateOfBirth, string sex, string pseudo, string city)
         {
             var user = new User
             {
                 userIdGoogle = googleId,
                 EmailGoogle = emailGoogle,
-                date_of_birth = DateTime.Parse(dateOfBirth).ToUniversalTime(),
+                date_of_birth = dateOfBirth.HasValue ? dateOfBirth.Value.ToUniversalTime() : DateTime.MinValue,
                 sex = sex,
                 Pseudo = pseudo,
                 city = city,
@@ -68,7 +69,6 @@ namespace server_api.Repository
             {
                 return user.Id_User;
             }
-
             return null;
         }
 
@@ -121,9 +121,33 @@ namespace server_api.Repository
             return sessionToken.ToString();
         }
 
+
+
         public User GetUserWithCookie(string cookie_user)
         {
             return _context.User.FirstOrDefault(u => u.token_session_user == cookie_user);
+        }
+
+
+
+        public bool UpdateUser(int userId, User user)
+        {
+            User existingUser = _context.User.FirstOrDefault(u => u.Id_User == userId);
+
+            if (existingUser == null)
+            {
+                return false;
+            }
+
+            existingUser.date_of_birth = user.date_of_birth.ToUniversalTime();
+            existingUser.sex = user.sex;
+            existingUser.Profile_picture = user.Profile_picture;
+            existingUser.city = user.city;
+
+            _context.Entry(existingUser).State = EntityState.Modified;
+            var rowsAffected = _context.SaveChanges();
+
+            return rowsAffected > 0;
         }
     }
 }
