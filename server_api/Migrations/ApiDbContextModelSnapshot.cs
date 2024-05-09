@@ -22,30 +22,66 @@ namespace server_api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("server_api.Models.Swipe", b =>
+            modelBuilder.Entity("server_api.Models.Message", b =>
                 {
-                    b.Property<int>("Id_Swipe")
+                    b.Property<int>("Id_Message")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Swipe"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_Message"));
 
-                    b.Property<DateTime>("Date_of_swiping")
+                    b.Property<DateTime>("Date_of_request")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Id_User")
+                    b.Property<int>("IdUserIssuer")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Id_User_which_was_Swiped")
+                    b.Property<int>("Id_UserReceiver")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id_Swipe");
+                    b.Property<string>("message_content")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.HasIndex("Id_User");
+                    b.Property<bool>("read")
+                        .HasColumnType("boolean");
 
-                    b.HasIndex("Id_User_which_was_Swiped");
+                    b.HasKey("Id_Message");
 
-                    b.ToTable("Swipe");
+                    b.HasIndex("IdUserIssuer");
+
+                    b.HasIndex("Id_UserReceiver");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("server_api.Models.RequestFriends", b =>
+                {
+                    b.Property<int>("Id_RequestFriends")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_RequestFriends"));
+
+                    b.Property<DateTime>("Date_of_request")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("IdUserIssuer")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Id_UserReceiver")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id_RequestFriends");
+
+                    b.HasIndex("IdUserIssuer");
+
+                    b.HasIndex("Id_UserReceiver");
+
+                    b.ToTable("RequestFriends");
                 });
 
             modelBuilder.Entity("server_api.Models.User", b =>
@@ -103,30 +139,53 @@ namespace server_api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("server_api.Models.Swipe", b =>
+            modelBuilder.Entity("server_api.Models.Message", b =>
                 {
-                    b.HasOne("server_api.Models.User", "User")
-                        .WithMany("Swipes")
-                        .HasForeignKey("Id_User")
+                    b.HasOne("server_api.Models.User", "UserIssuer")
+                        .WithMany("MessagesSent")
+                        .HasForeignKey("IdUserIssuer")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("server_api.Models.User", "UserWhichWasSwiped")
-                        .WithMany("SwipesReceived")
-                        .HasForeignKey("Id_User_which_was_Swiped")
+                    b.HasOne("server_api.Models.User", "UserReceiver")
+                        .WithMany("MessagesReceived")
+                        .HasForeignKey("Id_UserReceiver")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("UserIssuer");
 
-                    b.Navigation("UserWhichWasSwiped");
+                    b.Navigation("UserReceiver");
+                });
+
+            modelBuilder.Entity("server_api.Models.RequestFriends", b =>
+                {
+                    b.HasOne("server_api.Models.User", "UserIssuer")
+                        .WithMany("RequestsSent")
+                        .HasForeignKey("IdUserIssuer")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("server_api.Models.User", "UserReceiver")
+                        .WithMany("RequestsReceived")
+                        .HasForeignKey("Id_UserReceiver")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserIssuer");
+
+                    b.Navigation("UserReceiver");
                 });
 
             modelBuilder.Entity("server_api.Models.User", b =>
                 {
-                    b.Navigation("Swipes");
+                    b.Navigation("MessagesReceived");
 
-                    b.Navigation("SwipesReceived");
+                    b.Navigation("MessagesSent");
+
+                    b.Navigation("RequestsReceived");
+
+                    b.Navigation("RequestsSent");
                 });
 #pragma warning restore 612, 618
         }

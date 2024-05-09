@@ -43,9 +43,9 @@ namespace server_api.Models
         [Required]
         public DateTime account_created_at { get; set; }
 
-        public virtual ICollection<Swipe> Swipes { get; set; } = new HashSet<Swipe>();
-
-        public virtual ICollection<Swipe> SwipesReceived { get; set; } = new HashSet<Swipe>();
-
+        public virtual ICollection<Message> MessagesSent { get; set; }
+        public virtual ICollection<Message> MessagesReceived { get; set; }
+        public virtual ICollection<RequestFriends> RequestsSent { get; set; }
+        public virtual ICollection<RequestFriends> RequestsReceived { get; set; }
     }
 }

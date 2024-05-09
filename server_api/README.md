@@ -32,7 +32,7 @@ ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;D
 *If you have Docker, the database URL will be =>*
 
 ```
-Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;
+ConnectionDB="Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
 Start API .NET Core
