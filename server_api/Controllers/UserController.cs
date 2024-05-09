@@ -4,6 +4,7 @@ using server_api.Filters;
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Utils;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace server_api.Controllers
 {
@@ -62,15 +63,17 @@ namespace server_api.Controllers
 
 
         [HttpPatch("UpdateUser")]
-        public IActionResult UpdateUser([FromBody] UserUpdateDto userUpdateDto)
+        public async Task<IActionResult> UpdateUser([FromForm] UserUpdateDto userUpdateDto)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
 
+            var imageData = await MessUtils.ConvertImageToByteArray(userUpdateDto.Profile_picture);
+
             var newsValues = new
             {
                 Profile_picture = RegexUtils.CheckPicture(userUpdateDto.Profile_picture)
-                                ? userUpdateDto.Profile_picture
+                                ? imageData
                                 : data_user_now_connect.Profile_picture,
 
                 city = RegexUtils.CheckCity(userUpdateDto.city)

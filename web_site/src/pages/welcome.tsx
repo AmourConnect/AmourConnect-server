@@ -60,7 +60,7 @@ export default function Welcome() {
                                         <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
                                     )}
                                     {account.profile_picture && (
-                                        <Image src={URL.createObjectURL(account.profile_picture)} width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                        <Image src={`data:image/jpeg;base64,${account.profile_picture}`} width="100" height="100" alt={account.pseudo} className="rounded-full" />
                                     )}
                                     <div className="text-xl font-medium text-black dark:text-white">
                                         {account.sex === 'F' ? 'Mme ' : 'Mr '}

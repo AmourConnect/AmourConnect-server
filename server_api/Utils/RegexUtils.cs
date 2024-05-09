@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace server_api.Utils
 {
@@ -35,16 +36,24 @@ namespace server_api.Utils
 
 
 
-        public static bool CheckPicture(byte[] Profile_picture)
+        public static bool CheckPicture(IFormFile Profile_picture)
         {
-            const int maxSize = 5 * 1024 * 1024; // 5 Mo
 
             if (Profile_picture == null || Profile_picture.Length == 0)
             {
                 return false;
             }
 
+            const int maxSize = 3 * 1024 * 1024; // 3 Mo
+
             if (Profile_picture.Length > maxSize)
+            {
+                return false;
+            }
+
+            var allowedTypes = new[] { "image/png", "image/jpeg", "image/gif" };
+
+            if (!allowedTypes.Contains(Profile_picture.ContentType))
             {
                 return false;
             }

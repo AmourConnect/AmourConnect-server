@@ -17,5 +17,18 @@ namespace server_api.Utils
 
             return password.ToString();
         }
+
+
+
+        public static async Task<byte[]> ConvertImageToByteArray(IFormFile image)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+            using var memoryStream = new MemoryStream();
+            await image.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
     }
 }

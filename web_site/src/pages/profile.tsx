@@ -43,12 +43,20 @@ export default function Profile() {
 
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
-            const user = {
-                sex: sex,
-                city: city,
-                date_of_birth: new Date(date_of_birth)
-            };
-            PatchUser(user.sex, user.city, user.date_of_birth);
+            const inputElement = event.currentTarget.elements.namedItem("profile_picture") as HTMLInputElement;
+            const formData = new FormData();
+            let file;
+            if (inputElement)
+            {
+               file = inputElement.files?.[0];
+            }
+            if (file)
+            {
+                formData.append("profile_picture", file);
+            }
+            formData.append("city", city);
+            formData.append("sex", sex);
+            PatchUser(formData);
         };
 
 
@@ -58,12 +66,10 @@ export default function Profile() {
                 alert('Veuillez entrer une date de naissance valide.');
                 return;
             }
-            const user = {
-                sex: sex,
-                city: city,
-                date_of_birth: new Date(date_of_birth)
-            };
-            PatchUser(user.sex, user.city, user.date_of_birth);
+            let d = new Date(date_of_birth);
+            const formData = new FormData();
+            formData.append("date_of_birth", d.toISOString());
+            PatchUser(formData);
         };
 
 
@@ -77,31 +83,38 @@ export default function Profile() {
                 {account ? (
                     <>
                         <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Améliore ton profil pour attirer plus de proies ❤</h1>
-                        <div className="flex flex-col items-center justify-center">
-                            {account.sex === 'F' && !account.profile_picture && (
-                                <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
-                            )}
-                            {account.sex === 'M' && !account.profile_picture && (
-                                <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
-                            )}
-                            {account.profile_picture && (
-                                <Image src={URL.createObjectURL(account.profile_picture)} width="100" height="100" alt={account.pseudo} className="rounded-full" />
-                            )}
-                            <div className="text-xl font-medium text-black dark:text-white">
-                                {account.sex === 'F' ? 'Mme ' : 'Mr '}
-                                {account.pseudo}
+                        <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
+                            <div className="mb-4 sm:mb-0">
+                                {account.sex === 'F' && !account.profile_picture && (
+                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                )}
+                                {account.sex === 'M' && !account.profile_picture && (
+                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                )}
+                                {account.profile_picture && (
+                                    <Image src={`data:image/jpeg;base64,${account.profile_picture}`} width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                )}
                             </div>
-                            <p>Email Google : {account.emailGoogle}</p>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
-                            <form onSubmit={handleSubmit}>
+                            <div className="text-center sm:text-left">
+                                <div className="text-xl font-medium text-black dark:text-white">
+                                    {account.sex === 'F' ? 'Mme ' : 'Mr '}
+                                    {account.pseudo}
+                                </div>
+                                <p>Email Google : {account.emailGoogle}</p>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
+                            <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <input type="file" name="profile_picture" accept="image/*" />
+                                <p className="text-sm text-red-500">Veuillez télécharger une image de maximum 3 Mo.</p>
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Picture Profile</button>
                             </form>
-                            <form onSubmit={handleSubmitDate}>
+                            <form onSubmit={handleSubmitDate} className="w-full sm:w-auto">
                                 <input type="date" value={date_of_birth} onChange={(e) => setdate_of_birth(e.target.value)} className="p-2 border rounded mt-2" />
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Date</button>
                             </form>
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <select
                                     id="city"
                                     value={city}
@@ -117,7 +130,7 @@ export default function Profile() {
                                 </select>
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update City</button>
                             </form>
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <select
                                     id="sex"
                                     value={sex}
@@ -130,8 +143,8 @@ export default function Profile() {
                                 </select>
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Sex</button>
                             </form>
-                                <a href="/welcome">Aller à la page welcome pour chercher des proies</a>
                         </div>
+                        <a href="/welcome" className="block mt-4 text-center underline">Aller à la page welcome pour chercher des proies</a>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Chargement du profil...</h1>

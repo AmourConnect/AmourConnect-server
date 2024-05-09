@@ -63,8 +63,8 @@ export function UseAuth()
 
 
 
-    const PatchUser = useCallback((sex: string, city: string, date_of_birth: Date) => {
-        apiFetch<Account>("/User/UpdateUser", { json: { sex, city, date_of_birth }, method: 'PATCH' })
+    const PatchUser = useCallback((formData: FormData) => {
+        apiFetch<Account>("/User/UpdateUser", { formData, method: 'PATCH' })
             .then(response => {
                 setAccount(response);
                 window.location.reload();
@@ -84,6 +84,6 @@ export function UseAuth()
         account,
         errorMessage,
         GetUserOnly,
-        PatchUser
+        PatchUser,
       };
 }

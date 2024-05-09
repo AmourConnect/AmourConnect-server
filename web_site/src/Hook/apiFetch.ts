@@ -1,22 +1,26 @@
 import { API_BACKEND_URL } from "../lib/config";
 
 export async function apiFetch<T>(
-url: string,
-{ json, method }: {json?: Record<string, unknown>; method?: string } = {}
+    url: string,
+    { formData, json, method }: { formData?: FormData; json?: Record<string, unknown>; method?: string } = {}
 ): Promise<T> {
-    method ??= json ? "POST" : "GET";
-    const body = json ? JSON.stringify(json) : undefined;
+    method ??= formData ? "POST" : json ? "POST" : "GET";
+    const body = formData ?? JSON.stringify(json);
+    const headers: Record<string, string> = { accept: "application/json" };
+    if (json) {
+        headers["content-type"] = "application/json";
+    }
+    if (formData) {
+        delete headers["content-type"];
+    }
     const r = await fetch(API_BACKEND_URL + url, {
         method,
         credentials: "include",
         body,
-        headers: {
-            accept: "application/json",
-            "content-type": "application/json",
-        },
+        headers,
     });
 
-    if(r.ok) {
+    if (r.ok) {
         return r.json() as Promise<T>;
     }
     const data = await r.json();
@@ -24,8 +28,7 @@ url: string,
 }
 
 export class ApiError extends Error {
-    constructor(public status: number, public data: Record<string, unknown>, public message: string)
-    {
+    constructor(public status: number, public data: Record<string, unknown>, public message: string) {
         super(message);
     }
 }
