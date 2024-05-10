@@ -116,7 +116,7 @@ namespace server_api.Controllers
 
 
         [HttpPost("RequestFriends/{IdUserReceiver}")]
-        public IActionResult RequestFriends([FromBody] int IdUserReceiver)
+        public IActionResult RequestFriends([FromRoute] int IdUserReceiver)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
@@ -166,7 +166,7 @@ namespace server_api.Controllers
 
 
         [HttpPatch("AcceptRequestFriends/{IdUserIssuer}")]
-        public IActionResult AcceptFriendRequest(int IdUserIssuer)
+        public IActionResult AcceptFriendRequest([FromRoute] int IdUserIssuer)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
