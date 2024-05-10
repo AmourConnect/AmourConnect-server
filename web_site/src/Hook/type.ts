@@ -6,7 +6,24 @@ export type Account =
     sex: string;
     date_of_birth: Date;
     city: string;
-    emailGoogle: string;
+}
+
+export type RequestFriends =
+{
+  id_RequestFriends: number;
+  status: StatusRequestFriends,
+  date_of_request: Date;
+  id_UserReceiver: number;
+  idUserIssuer: number;
+  userReceiverPseudo: string;
+  userIssuerPseudo: string;
+}
+
+export enum StatusRequestFriends
+{
+    Onhold,
+    Accepted,
+    Refused
 }
 
 export enum AuthStatus

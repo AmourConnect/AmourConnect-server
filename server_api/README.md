@@ -75,8 +75,3 @@ dotnet tool install --global dotnet-ef && dotnet build && dotnet ef migrations a
 ```
 dotnet build & dotnet run
 ```
-
-*Upgrade all dependances (not necessary)*
-```
-dotnet upgrade-assistant
-```

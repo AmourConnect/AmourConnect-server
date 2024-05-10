@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using server_api.Dto;
 using server_api.Filters;
 using server_api.Interfaces;
@@ -52,7 +51,6 @@ namespace server_api.Controllers
             {
                 Id_User = data_user_now_connect.Id_User,
                 Pseudo = data_user_now_connect.Pseudo,
-                EmailGoogle = data_user_now_connect.EmailGoogle,
                 Profile_picture = data_user_now_connect.Profile_picture,
                 city = data_user_now_connect.city,
                 sex = data_user_now_connect.sex,
@@ -127,13 +125,13 @@ namespace server_api.Controllers
 
             if (userReceiver == null)
             {
-                return BadRequest("User receiver do not exist");
+                return BadRequest(new { message = "User receiver do not exist" });
             }
 
 
             if (data_user_now_connect.Id_User == userReceiver.Id_User)
             {
-                return BadRequest("User cannot send a friend request to themselves");
+                return BadRequest(new { message = "User cannot send a friend request to themselves" });
             }
 
 
@@ -143,11 +141,11 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict("A friend request is already pending between these users");
+                    return Conflict(new { message = "A friend request is already pending between these users" });
                 }
                 else
                 {
-                    return Conflict("These users are already friends");
+                    return Conflict(new { message = "These users are already friends" });
                 }
             }
 
@@ -161,7 +159,7 @@ namespace server_api.Controllers
 
             _userRepository.AddRequestFriend(requestFriends);
 
-            return Ok("Request Friend carried out");
+            return Ok(new { message = "Request Friend carried out" });
         }
 
 
@@ -182,7 +180,30 @@ namespace server_api.Controllers
 
             _userRepository.UpdateStatusRequestFriends(friendRequest);
 
-            return Ok("Request Friend accepted");
+            return Ok(new { message = "Request Friend accepted" });
+        }
+
+
+        [HttpGet("GetUser/{Id_User}")]
+        public IActionResult GetUser([FromRoute] int Id_User)
+        {
+            User user = _userRepository.SearchUserWithIdUser(Id_User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            GetUserOnlyDto userDto = new GetUserOnlyDto
+            {
+                Id_User = user.Id_User,
+                Pseudo = user.Pseudo,
+                Profile_picture = user.Profile_picture,
+                city = user.city,
+                sex = user.sex,
+                date_of_birth = user.date_of_birth
+            };
+            return Ok(userDto);
         }
     }
 }

@@ -14,13 +14,13 @@ export default function LoginGoogle() {
 
 
 
-    const { status, GetAllUsersToMatch, LoginGoogle } = UseAuth();
+    const { status, GetUserOnly, LoginGoogle } = UseAuth();
     const router = useRouter()
 
 
 
     useEffect(() => {
-        GetAllUsersToMatch();
+        GetUserOnly();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
@@ -28,7 +28,7 @@ export default function LoginGoogle() {
             }, 5000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetAllUsersToMatch, router]);
+    }, [status, GetUserOnly, router]);
 
 
 

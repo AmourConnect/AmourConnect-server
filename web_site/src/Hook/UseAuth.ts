@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
-import { Account, AuthStatus } from "./type";
+import { Account, AuthStatus, RequestFriends } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
 
@@ -8,8 +8,10 @@ import { GOOGLE_LOGIN_URL } from "../lib/config";
 export function UseAuth()
 {
       const [account, setAccount] = useState<Account | null>(null);
+      const [account2, setAccount2] = useState<null | RequestFriends>(null);
       const [errorMessage, setErrorMessage] = useState<string | null>(null);
-      let status;
+    let status;
+    let status2;
 
 
 
@@ -21,6 +23,16 @@ export function UseAuth()
           status = AuthStatus.Authenticated;
           break;
       }
+
+
+        switch (account2) {
+            case null:
+                status2 = AuthStatus.Unauthenticated;
+                break;
+            default:
+                status2 = AuthStatus.Authenticated;
+                break;
+        }
 
 
 
@@ -73,11 +85,52 @@ export function UseAuth()
                 setAccount(null);
             });
     }, []);
+
+
+
+    const GetRequestFriends = useCallback(() => {
+        apiFetch<RequestFriends>("/User/GetRequestFriends")
+            .then(response => setAccount2(response))
+            .catch(() => setAccount2(null));
+    }, []);
+
+
+
+    const RequestFriends = useCallback((Id_User :number) => {
+        apiFetch<Account>("/User/RequestFriends/" + Id_User, { method: 'POST' })
+            .then(response => {
+                setAccount(response);
+            })
+            .catch(error => {
+                setAccount(null);
+            });
+    }, []);
   
 
 
+    const AcceptRequestFriends = useCallback((Id_User: number) => {
+        apiFetch<Account>("/User/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
+            .then(response => {
+                setAccount(response);
+                window.location.reload();
+            })
+            .catch(error => {
+                setAccount(null);
+            });
+    }, []);
+
+
+
+    const GetUserID = useCallback((Id_User: number) => {
+        apiFetch<Account>("/User/GetUser/" + Id_User)
+            .then(response => setAccount(response))
+            .catch(() => setAccount(null));
+    }, []);
+
+
       return {
-        status,
+       status,
+       status2,
         GetAllUsersToMatch,
         LoginGoogle,
         FinalRegister,
@@ -85,5 +138,10 @@ export function UseAuth()
         errorMessage,
         GetUserOnly,
         PatchUser,
+        GetRequestFriends,
+        RequestFriends,
+        AcceptRequestFriends,
+        account2,
+        GetUserID
       };
 }

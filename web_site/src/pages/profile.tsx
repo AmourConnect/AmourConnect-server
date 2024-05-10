@@ -100,7 +100,7 @@ export default function Profile() {
                                     {account.sex === 'F' ? 'Mme ' : 'Mr '}
                                     {account.pseudo}
                                 </div>
-                                <p>Email Google : {account.emailGoogle}</p>
+                                <p>Date de naissance : {new Date(account.date_of_birth).toLocaleString()}</p>
                                 <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
                             </div>
                         </div>

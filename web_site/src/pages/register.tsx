@@ -13,7 +13,7 @@ export default function Register() {
 
 
 
-    const { status, GetAllUsersToMatch, FinalRegister, errorMessage } = UseAuth();
+    const { status, GetUserOnly, FinalRegister, errorMessage } = UseAuth();
     const router = useRouter();
 
 
@@ -26,7 +26,7 @@ export default function Register() {
 
 
     useEffect(() => {
-        GetAllUsersToMatch();
+        GetUserOnly();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
@@ -34,7 +34,7 @@ export default function Register() {
             }, 5000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetAllUsersToMatch, router]);
+    }, [status, GetUserOnly, router]);
 
 
 

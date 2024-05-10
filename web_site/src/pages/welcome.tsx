@@ -14,8 +14,8 @@ export default function Welcome() {
 
 
 
-    const { status, GetAllUsersToMatch, account } = UseAuth();
-    const router = useRouter()
+    const { status, GetAllUsersToMatch, account, RequestFriends } = UseAuth();
+    const router = useRouter();
 
 
 
@@ -68,6 +68,12 @@ export default function Welcome() {
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Sex : {account.sex}</div>
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                                        onClick={() => RequestFriends(account.id_User)}
+                                    >
+                                        Demande de match
+                                    </button>
                                 </motion.div>
                             ))
                         ) : (
