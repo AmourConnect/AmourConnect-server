@@ -61,22 +61,22 @@ docker image prune --force
 
 **Otherwise do this manually if you don't have Docker**
 
-If you use .NET Core CLI
+Restore dependances
 ```
 dotnet restore
 ```
 
-*To play Migration*
+*To play Migration (not necessary)*
 ```
 dotnet tool install --global dotnet-ef && dotnet build && dotnet ef migrations add InitialCreate && dotnet ef database update
 ```
 
 *Start*
 ```
-dotnet run
+dotnet build & dotnet run
 ```
 
-*Upgrade all dependances*
+*Upgrade all dependances (not necessary)*
 ```
 dotnet upgrade-assistant
 ```

@@ -16,7 +16,7 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public ICollection<User> GetUsers(User data_user_now_connect)
+        public ICollection<User> GetUsersToMatch(User data_user_now_connect)
         {
             return _context.User
             .Where(u =>
@@ -27,7 +27,11 @@ namespace server_api.Repository
                     data_user_now_connect.date_of_birth.AddYears(-1)) &&
                 u.date_of_birth <= (data_user_now_connect.sex == "M" ?
                     data_user_now_connect.date_of_birth.AddYears(10) :
-                    data_user_now_connect.date_of_birth.AddYears(1)))
+                    data_user_now_connect.date_of_birth.AddYears(1)) &&
+            !_context.RequestFriends.Any(r =>
+                ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == data_user_now_connect.Id_User) ||
+                (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == data_user_now_connect.Id_User)) &&
+                r.Status == RequestStatus.Accepted))
             .Select(u => new User
             {
                 Id_User = u.Id_User,
@@ -142,6 +146,65 @@ namespace server_api.Repository
             var rowsAffected = _context.SaveChanges();
 
             return rowsAffected > 0;
+        }
+
+
+
+        public User SearchUserWithIdUser(int Id_User)
+        {
+            return _context.User
+                .Where(u => u.Id_User == Id_User)
+                .FirstOrDefault();
+        }
+
+        
+        public RequestFriends SearchRequestFriend(int IdUserIssuer, int IdUserReceiver)
+        {
+            return _context.RequestFriends
+            .Where(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == IdUserReceiver)
+                || (r.IdUserIssuer == IdUserReceiver && r.Id_UserReceiver == IdUserIssuer))
+                .FirstOrDefault();
+        }
+
+
+        public void AddRequestFriend(RequestFriends requestFriends)
+        {
+            _context.RequestFriends.Add(requestFriends);
+            _context.SaveChanges();
+        }
+
+
+        public ICollection<GetRequestFriendsDto> GetRequestFriends(int Id_User)
+        {
+            return _context.RequestFriends
+                .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
+                .Include(r => r.UserIssuer)
+                .Include(r => r.UserReceiver)
+                .Select(r => new GetRequestFriendsDto
+                {
+                    Id_RequestFriends = r.Id_RequestFriends,
+                    IdUserIssuer = r.IdUserIssuer,
+                    UserIssuerPseudo = r.UserIssuer.Pseudo,
+                    Id_UserReceiver = r.Id_UserReceiver,
+                    UserReceiverPseudo = r.UserReceiver.Pseudo,
+                    Status = r.Status,
+                    Date_of_request = r.Date_of_request
+                })
+                .ToList();
+        }
+
+        public RequestFriends SearchUserFriendRequest(int Id_User, int IdUserIssuer)
+        {
+            return _context.RequestFriends
+        .FirstOrDefault(r =>
+            (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
+        }
+
+
+        public void UpdateStatusRequestFriends(RequestFriends friendRequest)
+        {
+            _context.Entry(friendRequest).State = EntityState.Modified;
+            _context.SaveChanges();
         }
     }
 }
