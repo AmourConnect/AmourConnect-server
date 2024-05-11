@@ -13,7 +13,7 @@ export default function Profile() {
 
 
 
-    const { status, GetUserOnly, account, PatchUser } = UseAuth();
+    const { status, UserGetConnected, accountState, UserPatch } = UseAuth();
     const router = useRouter()
 
 
@@ -25,22 +25,22 @@ export default function Profile() {
 
 
     useEffect(() => {
-        GetUserOnly();
+        UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
                 router.push('/login');
-            }, 5000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetUserOnly, router]);
+    }, [status, UserGetConnected, router]);
 
 
 
 
     if (status === AuthStatus.Authenticated) {
 
-
+        console.log(status);
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const inputElement = event.currentTarget.elements.namedItem("profile_picture") as HTMLInputElement;
@@ -56,7 +56,7 @@ export default function Profile() {
             }
             formData.append("city", city);
             formData.append("sex", sex);
-            PatchUser(formData);
+            UserPatch(formData);
         };
 
 
@@ -69,7 +69,7 @@ export default function Profile() {
             let d = new Date(date_of_birth);
             const formData = new FormData();
             formData.append("date_of_birth", d.toISOString());
-            PatchUser(formData);
+            UserPatch(formData);
         };
 
 
@@ -80,28 +80,28 @@ export default function Profile() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
-                {account ? (
+                {accountState ? (
                     <>
                         <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Améliore ton profil pour attirer plus de proies ❤</h1>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
-                                {account.sex === 'F' && !account.profile_picture && (
-                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                {accountState.userDto?.sex === 'F' && !accountState.userDto?.profile_picture && (
+                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
                                 )}
-                                {account.sex === 'M' && !account.profile_picture && (
-                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                {accountState.userDto?.sex === 'M' && !accountState.userDto.profile_picture && (
+                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
                                 )}
-                                {account.profile_picture && (
-                                    <Image src={`data:image/jpeg;base64,${account.profile_picture}`} width="100" height="100" alt={account.pseudo} className="rounded-full" />
+                                {accountState.userDto?.profile_picture && (
+                                    <Image src={`data:image/jpeg;base64,${accountState.userDto.profile_picture}`} width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
                                 )}
                             </div>
                             <div className="text-center sm:text-left">
                                 <div className="text-xl font-medium text-black dark:text-white">
-                                    {account.sex === 'F' ? 'Mme ' : 'Mr '}
-                                    {account.pseudo}
+                                    {accountState.userDto?.sex === 'F' ? 'Mme ' : 'Mr '}
+                                    {accountState.userDto?.pseudo}
                                 </div>
-                                <p>Date de naissance : {new Date(account.date_of_birth).toLocaleString()}</p>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
+                                <p>Date de naissance : {new Date(accountState.userDto?.date_of_birth || 0).toLocaleString()}</p>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(accountState.userDto?.date_of_birth || new Date())} ans</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
@@ -121,7 +121,7 @@ export default function Profile() {
                                     onChange={(e) => setCity(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{account.city}</option>
+                                    <option value="">{accountState.userDto?.city}</option>
                                     <option value="Marseille">Marseille</option>
                                     <option value="Paris">Paris</option>
                                     <option value="Lyon">Lyon</option>
@@ -137,7 +137,7 @@ export default function Profile() {
                                     onChange={(e) => setSex(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{account.sex}</option>
+                                    <option value="">{accountState.userDto?.sex}</option>
                                     <option value="M">Masculin</option>
                                     <option value="F">Feminin</option>
                                 </select>

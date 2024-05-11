@@ -1,4 +1,4 @@
-import { AuthStatus, RequestFriends } from "@/Hook/type";
+import { AuthStatus, GetRequestFriendsDto } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
@@ -7,44 +7,36 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 
-
-
 export default function Request() {
 
-
-    const { status2, account, account2, GetRequestFriends, GetUserOnly, AcceptRequestFriends } = UseAuth();
+    const { status, accountState, GetRequestFriends, UserGetConnected, AcceptRequestFriends } = UseAuth();
     const router = useRouter();
 
-
-    const [sentRequests, setSentRequests] = useState<RequestFriends[]>([]);
-    const [receivedRequests, setReceivedRequests] = useState<RequestFriends[]>([]);
-    const [friends, setFriends] = useState<RequestFriends[]>([]);
-
-
+    const [sentRequests, setSentRequests] = useState<GetRequestFriendsDto[]>([]);
+    const [receivedRequests, setReceivedRequests] = useState<GetRequestFriendsDto[]>([]);
+    const [friends, setFriends] = useState<GetRequestFriendsDto[]>([]);
 
     useEffect(() => {
         GetRequestFriends();
-        GetUserOnly();
+        UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
-        if (status2 === AuthStatus.Unauthenticated) {
+        if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
                 router.push('/login');
-            }, 5000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status2, GetRequestFriends, GetUserOnly, router]);
-
-
+    }, [status, GetRequestFriends, UserGetConnected, router]);
 
     useEffect(() => {
-        if (Array.isArray(account2)) {
-            const sent: RequestFriends[] = [];
-            const received: RequestFriends[] = [];
-            const friendsList: RequestFriends[] = [];
-            account2.forEach((item: RequestFriends) => {
-                if (item.idUserIssuer === account?.id_User && item.status === 0) {
+        if (accountState?.requestFriendsDto) {
+            const sent: GetRequestFriendsDto[] = [];
+            const received: GetRequestFriendsDto[] = [];
+            const friendsList: GetRequestFriendsDto[] = [];
+            accountState.requestFriendsDto.forEach((item: GetRequestFriendsDto) => {
+                if (item.idUserIssuer === accountState.userDto?.id_User && item.status === 0) {
                     sent.push(item);
-                } else if (item.id_UserReceiver === account?.id_User && item.status === 0) {
+                } else if (item.id_UserReceiver === accountState.userDto?.id_User && item.status === 0) {
                     received.push(item);
                 } else if (item.status === 1) {
                     friendsList.push(item);
@@ -54,11 +46,9 @@ export default function Request() {
             setReceivedRequests(received);
             setFriends(friendsList);
         }
-    }, [account2, account]);
+    }, [accountState?.requestFriendsDto, accountState?.userDto]);
 
-
-
-    if (status2 === AuthStatus.Authenticated) {
+    if (status === AuthStatus.Authenticated) {
         return (
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <Head>
@@ -118,7 +108,7 @@ export default function Request() {
                             </table>
                         </div>
                         <div className="w-full md:w-1/3 p-4">
-                            <h2 className="text-lg font-medium text-gray-900 mb-2 bg-white">Liste de match valider</h2>
+                            <h2 className="text-lg font-medium text-gray-900 mb-2 bg-white">Liste de match valides</h2>
                             <table className="w-full text-left divide-y divide-gray-200">
                                 <tbody className="divide-y divide-gray-200">
                                     {friends.map((item, index) => (
@@ -126,15 +116,15 @@ export default function Request() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
-                                                        <a href={`/profil-details/${item.idUserIssuer === account?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
-                                                        <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === account?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
+                                                        <a href={`/profil-details/${item.idUserIssuer === accountState?.userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                                            <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === accountState?.userDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
                                                         </a>
-                                                        <a href={`/tchat/${item.idUserIssuer === account?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                                        <a href={`/tchat/${item.idUserIssuer === accountState?.userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                                             <Image
-                                                            src="/assets/images/tchat_icon.svg"
-                                                            alt="Tchater avec"
-                                                            width={20}
-                                                            height={20}
+                                                                src="/assets/images/tchat_icon.svg"
+                                                                alt="Tchater avec"
+                                                                width={20}
+                                                                height={20}
                                                             />
                                                         </a>
                                                     </div>
@@ -151,10 +141,7 @@ export default function Request() {
         );
     }
 
-
     return (
         <Loader1 />
     );
-
-
 }

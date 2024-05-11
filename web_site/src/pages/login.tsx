@@ -14,21 +14,21 @@ export default function LoginGoogle() {
 
 
 
-    const { status, GetUserOnly, LoginGoogle } = UseAuth();
+    const { status, UserGetConnected, AuthLoginGoogle } = UseAuth();
     const router = useRouter()
 
 
 
     useEffect(() => {
-        GetUserOnly();
+        UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
                 router.push('/welcome');
-            }, 5000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetUserOnly, router]);
+    }, [status, UserGetConnected, router]);
 
 
 
@@ -47,7 +47,7 @@ export default function LoginGoogle() {
                     <button
                         type="button"
                         className="px-6 py-3 bg-pink-500 text-white font-medium rounded hover:bg-pink-600 focus:outline-none sm:px-8 sm:py-4"
-                        onClick={LoginGoogle}
+                        onClick={AuthLoginGoogle}
                     >
                         Se connecter avec Google
                     </button>

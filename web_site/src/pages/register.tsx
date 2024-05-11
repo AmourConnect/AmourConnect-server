@@ -13,7 +13,7 @@ export default function Register() {
 
 
 
-    const { status, GetUserOnly, FinalRegister, errorMessage } = UseAuth();
+    const { status, UserGetConnected, AuthRegister, errorMessage } = UseAuth();
     const router = useRouter();
 
 
@@ -26,15 +26,15 @@ export default function Register() {
 
 
     useEffect(() => {
-        GetUserOnly();
+        UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Authenticated) {
             timer = setTimeout(() => {
                 router.push('/welcome');
-            }, 5000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetUserOnly, router]);
+    }, [status, UserGetConnected, router]);
 
 
 
@@ -53,7 +53,7 @@ export default function Register() {
                 city: city,
                 date_of_birth: new Date(date_of_birth)
             };
-            FinalRegister(user.pseudo, user.sex, user.city, user.date_of_birth);
+            AuthRegister(user.pseudo, user.sex, user.city, user.date_of_birth);
         };
 
 

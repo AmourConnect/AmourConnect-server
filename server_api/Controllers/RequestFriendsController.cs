@@ -26,7 +26,7 @@ namespace server_api.Controllers
 
         [HttpGet("GetRequestFriends")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ICollection<GetRequestFriendsDto>>))]
-        public ActionResult GetRequestFriends()
+        public IActionResult GetRequestFriends()
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);

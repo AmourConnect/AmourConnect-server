@@ -1,4 +1,4 @@
-export type Account = 
+export type GetUserDto = 
 {
     id_User: number;
     pseudo: string;
@@ -8,7 +8,7 @@ export type Account =
     city: string;
 }
 
-export type RequestFriends =
+export type GetRequestFriendsDto =
 {
   id_RequestFriends: number;
   status: StatusRequestFriends,
@@ -28,10 +28,6 @@ export type GetMessageDto =
   id_UserReceiver: number,
   userReceiverPseudo: string,
   userIssuerPseudo: string,
-  userReceiverProfile_picture: Blob,
-  userIssuerProfile_picture: Blob
-  userIssuerSex: string,
-  userReceiverSex: string
 }
 
 export enum StatusRequestFriends
@@ -44,4 +40,12 @@ export enum AuthStatus
 {
     Authenticated,
     Unauthenticated
+}
+
+
+export type AccountState =
+{
+    userDto: GetUserDto | null;
+    requestFriendsDto: GetRequestFriendsDto | null;
+    messageDto: GetMessageDto | null;
 }

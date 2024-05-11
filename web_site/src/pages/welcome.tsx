@@ -1,4 +1,4 @@
-import { AuthStatus, Account } from "@/Hook/type";
+import { AuthStatus, GetUserDto } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
@@ -14,21 +14,21 @@ export default function Welcome() {
 
 
 
-    const { status, GetAllUsersToMatch, account, RequestFriends } = UseAuth();
+    const { status, UserGetUsersToMach, accountState, RequestFriendsAdd } = UseAuth();
     const router = useRouter();
 
 
 
     useEffect(() => {
-        GetAllUsersToMatch();
+        UserGetUsersToMach();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
                 router.push('/login');
-            }, 5000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetAllUsersToMatch, router]);
+    }, [status, UserGetUsersToMach, router]);
 
 
 
@@ -44,8 +44,8 @@ export default function Welcome() {
                 </a>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        {Array.isArray(account) && account.length > 0 ? (
-                            account.map((account: Account) => (
+                        {Array.isArray(accountState.userDto) && accountState.userDto.length > 0 ? (
+                            accountState.userDto.map((account: GetUserDto) => (
                                 <motion.div
                                     key={account.id_User}
                                     initial={{ opacity: 0, y: 50 }}
@@ -70,7 +70,7 @@ export default function Welcome() {
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Sex : {account.sex}</div>
                                     <button
                                         className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                                        onClick={() => RequestFriends(account.id_User)}
+                                        onClick={() => RequestFriendsAdd(account.id_User)}
                                     >
                                         Demande de match
                                     </button>

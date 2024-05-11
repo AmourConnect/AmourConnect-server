@@ -1,183 +1,169 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
-import { Account, AuthStatus, GetMessageDto, RequestFriends } from "./type";
+import { GetUserDto, AuthStatus, GetMessageDto, GetRequestFriendsDto, AccountState } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
 
 
-export function UseAuth()
-{
-      const [account, setAccount] = useState<Account | null>(null);
-    const [account2, setAccount2] = useState<null | RequestFriends>(null);
-    const [account3, setAccount3] = useState<null | GetMessageDto>(null);
-      const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    let status;
-    let status2;
-    let status3;
+export function UseAuth() {
+
+    const [accountState, setAccountState] = useState<AccountState>({
+        userDto: null,
+        requestFriendsDto: null,
+        messageDto: null,
+    });
+
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    let status: AuthStatus;
 
 
-
-      switch (account) {
+    switch (accountState.userDto) {
         case null:
           status = AuthStatus.Unauthenticated;
           break;
         default:
           status = AuthStatus.Authenticated;
           break;
-      }
-
-
-        switch (account2) {
-            case null:
-                status2 = AuthStatus.Unauthenticated;
-                break;
-            default:
-                status2 = AuthStatus.Authenticated;
-                break;
-    }
-
-
-    switch (account3) {
-        case null:
-            status3 = AuthStatus.Unauthenticated;
-            break;
-        default:
-            status3 = AuthStatus.Authenticated;
-            break;
     }
 
 
 
-      const LoginGoogle = useCallback(() => {
+    const AuthLoginGoogle = useCallback(() => {
             window.location.href = GOOGLE_LOGIN_URL;
-      }, []);
-
-
-
-      const GetAllUsersToMatch = useCallback(() => {
-       apiFetch<Account>("/User/GetUsersToMach")
-            .then(response => setAccount(response))
-            .catch(() => setAccount(null));
-      }, []);
-
-
-
-    const GetUserOnly = useCallback(() => {
-        apiFetch<Account>("/User/GetUserConnected")
-            .then(response => setAccount(response))
-            .catch(() => setAccount(null));
     }, []);
 
 
 
-    const FinalRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date) => {
-        apiFetch<Account>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
-                .then(response => {
-                    setAccount(response);
-                    setErrorMessage(null); 
-                    window.location.reload();
-                })
-                .catch(error => {
-                    if (error instanceof ApiError) {
-                        setErrorMessage(error.message);
-                    }
-                    setAccount(null);
-                });
-      }, []);
-
-
-
-    const PatchUser = useCallback((formData: FormData) => {
-        apiFetch<Account>("/User/UpdateUser", { formData, method: 'PATCH' })
+    const AuthRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date) => {
+        apiFetch<GetUserDto>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
             .then(response => {
-                setAccount(response);
+                setAccountState({ ...accountState, userDto: response })
+                setErrorMessage(null);
                 window.location.reload();
             })
             .catch(error => {
-                setAccount(null);
+                if (error instanceof ApiError) {
+                    setErrorMessage(error.message);
+                }
+                setAccountState({ ...accountState, userDto: null })
             });
     }, []);
 
 
 
-    const GetRequestFriends = useCallback(() => {
-        apiFetch<RequestFriends>("/RequestFriends/GetRequestFriends")
-            .then(response => setAccount2(response))
-            .catch(() => setAccount2(null));
+    const UserGetUsersToMach = useCallback(() => {
+       apiFetch<GetUserDto>("/User/GetUsersToMach")
+           .then(response => setAccountState({...accountState, userDto: response}))
+           .catch(() => setAccountState({...accountState, userDto: null}))
+      }, []);
+
+
+
+    const UserGetConnected = useCallback(() => {
+        apiFetch<GetUserDto>("/User/GetUserConnected")
+            .then(response => {
+                setAccountState({ ...accountState, userDto: response });
+            })
+            .catch(() => {
+                setAccountState({ ...accountState, userDto: null });
+            });
     }, []);
 
 
 
-    const RequestFriends = useCallback((Id_User :number) => {
-        apiFetch<Account>("/RequestFriends/AddRequest/" + Id_User, { method: 'POST' })
+    const UserPatch = useCallback((formData: FormData) => {
+        apiFetch<GetUserDto>("/User/UpdateUser", { formData, method: 'PATCH' })
             .then(response => {
-                setAccount(response);
+                setAccountState({ ...accountState, userDto: response })
+                window.location.reload();
             })
             .catch(error => {
-                setAccount(null);
+                setAccountState({ ...accountState, userDto: null })
+            });
+    }, []);
+
+
+
+    const UserGetUserID = useCallback((Id_User: number) => {
+        apiFetch<GetUserDto>("/User/GetUser/" + Id_User)
+            .then(response => setAccountState({ ...accountState, userDto: response }))
+            .catch(() => setAccountState({ ...accountState, userDto: null }))
+    }, []);
+
+
+
+    const GetRequestFriends = useCallback(() => {
+        apiFetch<GetRequestFriendsDto>("/RequestFriends/GetRequestFriends")
+            .then(response => {
+                setAccountState({ ...accountState, requestFriendsDto: response })
+            })
+            .catch(() => {
+                setAccountState({ ...accountState, requestFriendsDto: null })
+            })
+    }, []);
+
+
+
+    const RequestFriendsAdd = useCallback((Id_User :number) => {
+        apiFetch<GetRequestFriendsDto>("/RequestFriends/AddRequest/" + Id_User)
+            .then(response => {
+                setAccountState({ ...accountState, requestFriendsDto: response })
+            })
+            .catch(error => {
+                setAccountState({ ...accountState, requestFriendsDto: null })
             });
     }, []);
   
 
 
     const AcceptRequestFriends = useCallback((Id_User: number) => {
-        apiFetch<Account>("/RequestFriends/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
+        apiFetch<GetRequestFriendsDto>("/RequestFriends/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
             .then(response => {
-                setAccount(response);
+                setAccountState({ ...accountState, requestFriendsDto: response })
                 window.location.reload();
             })
             .catch(error => {
-                setAccount(null);
+                setAccountState({ ...accountState, requestFriendsDto: null })
             });
     }, []);
 
 
 
-    const GetUserID = useCallback((Id_User: number) => {
-        apiFetch<Account>("/User/GetUser/" + Id_User)
-            .then(response => setAccount(response))
-            .catch(() => setAccount(null));
-    }, []);
-
-
-    
     const GetTchatID = useCallback((Id_User: number) => {
         apiFetch<GetMessageDto>("/Message/GetUserMessage/" + Id_User)
-            .then(response => setAccount3(response))
-            .catch(() => setAccount3(null));
+            .then(response => setAccountState({ ...accountState, messageDto: response }))
+            .catch(() => setAccountState({ ...accountState, messageDto: null }))
     }, []);
+
 
 
     const SendMessage = useCallback((idUserReceiver: number, messageContent: string) => {
-        apiFetch<Account>("/Message/SendMessage", { json: { idUserReceiver, messageContent } })
+        apiFetch<GetMessageDto>("/Message/SendMessage", { json: { idUserReceiver, messageContent } })
             .then(response => {
-                setAccount(response);
+                setAccountState({ ...accountState, messageDto: response })
                 window.location.reload();
             })
             .catch(error => {
-                setAccount(null);
+                setAccountState({ ...accountState, messageDto: null })
             });
     }, []);
 
 
       return {
-       status,
-       status2,
-        GetAllUsersToMatch,
-        LoginGoogle,
-        FinalRegister,
-        account,
+        status,
         errorMessage,
-        GetUserOnly,
-        PatchUser,
         GetRequestFriends,
-        RequestFriends,
         AcceptRequestFriends,
-        account2,
-        GetUserID,
-       account3,
-          SendMessage,
-          GetTchatID,
-       status3
+        SendMessage,
+        GetTchatID,
+        RequestFriendsAdd,
+        AuthLoginGoogle,
+        AuthRegister,
+        UserGetUsersToMach,
+        UserGetConnected,
+        UserPatch,
+        UserGetUserID,
+        accountState
       };
 }
