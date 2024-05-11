@@ -1,24 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
-import { GetUserDto, AuthStatus, GetMessageDto, GetRequestFriendsDto, AccountState } from "./type";
+import { GetUserDto, AuthStatus, GetMessageDto, GetRequestFriendsDto } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
 import { GOOGLE_LOGIN_URL } from "../lib/config";
 
 
 export function UseAuth() {
 
-    const [accountState, setAccountState] = useState<AccountState>({
-        userDto: null,
-        requestFriendsDto: null,
-        messageDto: null,
-    });
-
+    const [userDto, setUserDto] = useState<GetUserDto | null>(null);
+    const [requestFriendsDto, setRequestFriendsDto] = useState<GetRequestFriendsDto | null>(null);
+    const [messageDto, setMessageDto] = useState<GetMessageDto | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     let status: AuthStatus;
 
 
-    switch (accountState.userDto) {
+    switch (userDto) {
         case null:
           status = AuthStatus.Unauthenticated;
           break;
@@ -38,7 +35,7 @@ export function UseAuth() {
     const AuthRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date) => {
         apiFetch<GetUserDto>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
             .then(response => {
-                setAccountState({ ...accountState, userDto: response })
+                setUserDto(response);
                 setErrorMessage(null);
                 window.location.reload();
             })
@@ -46,28 +43,24 @@ export function UseAuth() {
                 if (error instanceof ApiError) {
                     setErrorMessage(error.message);
                 }
-                setAccountState({ ...accountState, userDto: null })
+                setUserDto(null)
             });
     }, []);
 
 
 
     const UserGetUsersToMach = useCallback(() => {
-       apiFetch<GetUserDto>("/User/GetUsersToMach")
-           .then(response => setAccountState({...accountState, userDto: response}))
-           .catch(() => setAccountState({...accountState, userDto: null}))
-      }, []);
+        apiFetch<GetUserDto>("/User/GetUsersToMach")
+            .then(response => setUserDto(response))
+            .catch(() => setUserDto(null))
+    }, []);
 
 
 
     const UserGetConnected = useCallback(() => {
         apiFetch<GetUserDto>("/User/GetUserConnected")
-            .then(response => {
-                setAccountState({ ...accountState, userDto: response });
-            })
-            .catch(() => {
-                setAccountState({ ...accountState, userDto: null });
-            });
+            .then(response => setUserDto(response))
+            .catch(() => setUserDto(null))
     }, []);
 
 
@@ -75,44 +68,34 @@ export function UseAuth() {
     const UserPatch = useCallback((formData: FormData) => {
         apiFetch<GetUserDto>("/User/UpdateUser", { formData, method: 'PATCH' })
             .then(response => {
-                setAccountState({ ...accountState, userDto: response })
+                setUserDto(response);
                 window.location.reload();
             })
-            .catch(error => {
-                setAccountState({ ...accountState, userDto: null })
-            });
+            .catch(() => setUserDto(null))
     }, []);
 
 
 
     const UserGetUserID = useCallback((Id_User: number) => {
         apiFetch<GetUserDto>("/User/GetUser/" + Id_User)
-            .then(response => setAccountState({ ...accountState, userDto: response }))
-            .catch(() => setAccountState({ ...accountState, userDto: null }))
+            .then(response => setUserDto(response))
+            .catch(() => setUserDto(null))
     }, []);
 
 
 
     const GetRequestFriends = useCallback(() => {
         apiFetch<GetRequestFriendsDto>("/RequestFriends/GetRequestFriends")
-            .then(response => {
-                setAccountState({ ...accountState, requestFriendsDto: response })
-            })
-            .catch(() => {
-                setAccountState({ ...accountState, requestFriendsDto: null })
-            })
+            .then(response => setRequestFriendsDto(response))
+            .catch(() => setRequestFriendsDto(null))
     }, []);
 
 
 
     const RequestFriendsAdd = useCallback((Id_User :number) => {
-        apiFetch<GetRequestFriendsDto>("/RequestFriends/AddRequest/" + Id_User)
-            .then(response => {
-                setAccountState({ ...accountState, requestFriendsDto: response })
-            })
-            .catch(error => {
-                setAccountState({ ...accountState, requestFriendsDto: null })
-            });
+        apiFetch<GetRequestFriendsDto>("/RequestFriends/AddRequest/" + Id_User, { method: 'POST' })
+            .then(response => setRequestFriendsDto(response))
+            .catch(() => setRequestFriendsDto(null))
     }, []);
   
 
@@ -120,20 +103,18 @@ export function UseAuth() {
     const AcceptRequestFriends = useCallback((Id_User: number) => {
         apiFetch<GetRequestFriendsDto>("/RequestFriends/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
             .then(response => {
-                setAccountState({ ...accountState, requestFriendsDto: response })
+                setRequestFriendsDto(response)
                 window.location.reload();
             })
-            .catch(error => {
-                setAccountState({ ...accountState, requestFriendsDto: null })
-            });
+            .catch(() => setRequestFriendsDto(null))
     }, []);
 
 
 
     const GetTchatID = useCallback((Id_User: number) => {
         apiFetch<GetMessageDto>("/Message/GetUserMessage/" + Id_User)
-            .then(response => setAccountState({ ...accountState, messageDto: response }))
-            .catch(() => setAccountState({ ...accountState, messageDto: null }))
+            .then(response => setMessageDto(response))
+            .catch(() => setMessageDto(null))
     }, []);
 
 
@@ -141,12 +122,10 @@ export function UseAuth() {
     const SendMessage = useCallback((idUserReceiver: number, messageContent: string) => {
         apiFetch<GetMessageDto>("/Message/SendMessage", { json: { idUserReceiver, messageContent } })
             .then(response => {
-                setAccountState({ ...accountState, messageDto: response })
+                setMessageDto(response)
                 window.location.reload();
             })
-            .catch(error => {
-                setAccountState({ ...accountState, messageDto: null })
-            });
+            .catch(() => setMessageDto(null))
     }, []);
 
 
@@ -164,6 +143,8 @@ export function UseAuth() {
         UserGetConnected,
         UserPatch,
         UserGetUserID,
-        accountState
+        userDto,
+        messageDto,
+        requestFriendsDto
       };
 }

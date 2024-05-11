@@ -13,7 +13,7 @@ export default function Profile() {
 
 
 
-    const { status, UserGetConnected, accountState, UserPatch } = UseAuth();
+    const { status, UserGetConnected, userDto, UserPatch } = UseAuth();
     const router = useRouter()
 
 
@@ -80,28 +80,28 @@ export default function Profile() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
-                {accountState ? (
+                {userDto ? (
                     <>
                         <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Améliore ton profil pour attirer plus de proies ❤</h1>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
-                                {accountState.userDto?.sex === 'F' && !accountState.userDto?.profile_picture && (
-                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
+                                {userDto?.sex === 'F' && !userDto?.profile_picture && (
+                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
                                 )}
-                                {accountState.userDto?.sex === 'M' && !accountState.userDto.profile_picture && (
-                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
+                                {userDto?.sex === 'M' && !userDto.profile_picture && (
+                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
                                 )}
-                                {accountState.userDto?.profile_picture && (
-                                    <Image src={`data:image/jpeg;base64,${accountState.userDto.profile_picture}`} width="100" height="100" alt={accountState.userDto.pseudo} className="rounded-full" />
+                                {userDto?.profile_picture && (
+                                    <Image src={`data:image/jpeg;base64,${userDto.profile_picture}`} width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
                                 )}
                             </div>
                             <div className="text-center sm:text-left">
                                 <div className="text-xl font-medium text-black dark:text-white">
-                                    {accountState.userDto?.sex === 'F' ? 'Mme ' : 'Mr '}
-                                    {accountState.userDto?.pseudo}
+                                    {userDto?.sex === 'F' ? 'Mme ' : 'Mr '}
+                                    {userDto?.pseudo}
                                 </div>
-                                <p>Date de naissance : {new Date(accountState.userDto?.date_of_birth || 0).toLocaleString()}</p>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(accountState.userDto?.date_of_birth || new Date())} ans</div>
+                                <p>Date de naissance : {new Date(userDto?.date_of_birth || 0).toLocaleString()}</p>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(userDto?.date_of_birth || new Date())} ans</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
@@ -121,7 +121,7 @@ export default function Profile() {
                                     onChange={(e) => setCity(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{accountState.userDto?.city}</option>
+                                    <option value="">{userDto?.city}</option>
                                     <option value="Marseille">Marseille</option>
                                     <option value="Paris">Paris</option>
                                     <option value="Lyon">Lyon</option>
@@ -137,7 +137,7 @@ export default function Profile() {
                                     onChange={(e) => setSex(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{accountState.userDto?.sex}</option>
+                                    <option value="">{userDto?.sex}</option>
                                     <option value="M">Masculin</option>
                                     <option value="F">Feminin</option>
                                 </select>

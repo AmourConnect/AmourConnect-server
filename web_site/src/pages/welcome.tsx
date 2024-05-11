@@ -14,7 +14,7 @@ export default function Welcome() {
 
 
 
-    const { status, UserGetUsersToMach, accountState, RequestFriendsAdd } = UseAuth();
+    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd } = UseAuth();
     const router = useRouter();
 
 
@@ -44,8 +44,8 @@ export default function Welcome() {
                 </a>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        {Array.isArray(accountState.userDto) && accountState.userDto.length > 0 ? (
-                            accountState.userDto.map((account: GetUserDto) => (
+                        {Array.isArray(userDto) && userDto.length > 0 ? (
+                            userDto.map((account: GetUserDto) => (
                                 <motion.div
                                     key={account.id_User}
                                     initial={{ opacity: 0, y: 50 }}

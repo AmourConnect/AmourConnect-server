@@ -41,11 +41,3 @@ export enum AuthStatus
     Authenticated,
     Unauthenticated
 }
-
-
-export type AccountState =
-{
-    userDto: GetUserDto | null;
-    requestFriendsDto: GetRequestFriendsDto | null;
-    messageDto: GetMessageDto | null;
-}

@@ -9,12 +9,19 @@ import Image from 'next/image';
 
 export default function Request() {
 
-    const { status, accountState, GetRequestFriends, UserGetConnected, AcceptRequestFriends } = UseAuth();
+
+
+    const { requestFriendsDto, status, userDto, GetRequestFriends, UserGetConnected, AcceptRequestFriends } = UseAuth();
     const router = useRouter();
+
+
 
     const [sentRequests, setSentRequests] = useState<GetRequestFriendsDto[]>([]);
     const [receivedRequests, setReceivedRequests] = useState<GetRequestFriendsDto[]>([]);
     const [friends, setFriends] = useState<GetRequestFriendsDto[]>([]);
+
+
+
 
     useEffect(() => {
         GetRequestFriends();
@@ -26,17 +33,20 @@ export default function Request() {
             }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, GetRequestFriends, UserGetConnected, router]);
+    }, [status, UserGetConnected, GetRequestFriends ,router]);
+
+
+
 
     useEffect(() => {
-        if (accountState?.requestFriendsDto) {
+        if (requestFriendsDto) {
             const sent: GetRequestFriendsDto[] = [];
             const received: GetRequestFriendsDto[] = [];
             const friendsList: GetRequestFriendsDto[] = [];
-            accountState.requestFriendsDto.forEach((item: GetRequestFriendsDto) => {
-                if (item.idUserIssuer === accountState.userDto?.id_User && item.status === 0) {
+            requestFriendsDto.forEach((item: GetRequestFriendsDto) => {
+                if (item.idUserIssuer === userDto?.id_User && item.status === 0) {
                     sent.push(item);
-                } else if (item.id_UserReceiver === accountState.userDto?.id_User && item.status === 0) {
+                } else if (item.id_UserReceiver === userDto?.id_User && item.status === 0) {
                     received.push(item);
                 } else if (item.status === 1) {
                     friendsList.push(item);
@@ -46,7 +56,10 @@ export default function Request() {
             setReceivedRequests(received);
             setFriends(friendsList);
         }
-    }, [accountState?.requestFriendsDto, accountState?.userDto]);
+    }, [requestFriendsDto, userDto]);
+
+
+
 
     if (status === AuthStatus.Authenticated) {
         return (
@@ -116,10 +129,10 @@ export default function Request() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="ml-4">
-                                                        <a href={`/profil-details/${item.idUserIssuer === accountState?.userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
-                                                            <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === accountState?.userDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
+                                                        <a href={`/profil-details/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                                            <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === userDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
                                                         </a>
-                                                        <a href={`/tchat/${item.idUserIssuer === accountState?.userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                                        <a href={`/tchat/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                                             <Image
                                                                 src="/assets/images/tchat_icon.svg"
                                                                 alt="Tchater avec"
