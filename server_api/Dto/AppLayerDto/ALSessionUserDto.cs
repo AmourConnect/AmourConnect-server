@@ -1,6 +1,6 @@
-﻿namespace server_api.Dto
+﻿namespace server_api.Dto.AppLayerDto
 {
-    public class SessionUserDto
+    public class ALSessionUserDto
     {
         public string token_session_user { get; set; }
         public DateTime date_token_session_expiration { get; set; }

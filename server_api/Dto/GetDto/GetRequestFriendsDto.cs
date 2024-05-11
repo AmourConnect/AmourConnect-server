@@ -1,6 +1,6 @@
 ﻿using server_api.Models;
 
-namespace server_api.Dto
+namespace server_api.Dto.GetDto
 {
     public class GetRequestFriendsDto
     {

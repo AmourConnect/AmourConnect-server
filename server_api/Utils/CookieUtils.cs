@@ -1,9 +1,9 @@
-﻿using server_api.Dto;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using DotNetEnv;
+using server_api.Dto.AppLayerDto;
 namespace server_api.Utils
 {
     public static class CookieUtils
@@ -22,7 +22,7 @@ namespace server_api.Utils
 
 
 
-        public static void CreateSessionCookie(HttpResponse Response, SessionUserDto sessionData)
+        public static void CreateSessionCookie(HttpResponse Response, ALSessionUserDto sessionData)
         {
             DateTimeOffset dateExpiration = sessionData.date_token_session_expiration;
             DateTimeOffset currentDate = DateTimeOffset.UtcNow;

@@ -1,9 +1,10 @@
 ﻿using server_api.Data;
 using server_api.Interfaces;
 using server_api.Models;
-using server_api.Dto;
 using server_api.Utils;
 using Microsoft.EntityFrameworkCore;
+using server_api.Dto.AppLayerDto;
+using server_api.Dto.GetDto;
 
 namespace server_api.Repository
 {
@@ -16,7 +17,7 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public ICollection<GetUserOnlyDto> GetUsersToMatch(User data_user_now_connect)
+        public ICollection<GetUserDto> GetUsersToMatch(User data_user_now_connect)
         {
             return _context.User
             .Where(u =>
@@ -32,7 +33,7 @@ namespace server_api.Repository
                 ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == data_user_now_connect.Id_User) ||
                 (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == data_user_now_connect.Id_User)) &&
                 r.Status == RequestStatus.Accepted))
-            .Select(u => new GetUserOnlyDto
+            .Select(u => new GetUserDto
             {
                 Id_User = u.Id_User,
                 Pseudo = u.Pseudo,
@@ -46,7 +47,7 @@ namespace server_api.Repository
 
 
 
-        public int? SearchIdUserWithIdGoogle(string EmailGoogle, string userIdGoogle)
+        public int? GetUserIdWithGoogleId(string EmailGoogle, string userIdGoogle)
         {
             return _context.User
                 .Where(u => u.EmailGoogle == EmailGoogle && u.userIdGoogle == userIdGoogle)
@@ -81,7 +82,7 @@ namespace server_api.Repository
 
 
 
-        public SessionUserDto UpdateSessionUser(int Id_User)
+        public ALSessionUserDto UpdateSessionUser(int Id_User)
         {
             string newSessionToken;
             DateTime expirationDate;
@@ -104,7 +105,7 @@ namespace server_api.Repository
                 _context.SaveChanges();
             }
 
-            return new SessionUserDto
+            return new ALSessionUserDto
             {
                 token_session_user = newSessionToken,
                 date_token_session_expiration = expirationDate
@@ -113,7 +114,7 @@ namespace server_api.Repository
 
 
 
-        public bool CheckIfPseudoAlreadyExist(string Pseudo)
+        public bool GetUserByPseudo(string Pseudo)
         {
             return _context.User.Any(u => u.Pseudo.ToLower() == Pseudo.ToLower());
         }
@@ -149,92 +150,11 @@ namespace server_api.Repository
 
 
 
-        public User SearchUserWithIdUser(int Id_User)
+        public User GetUserByIdUser(int Id_User)
         {
             return _context.User
                 .Where(u => u.Id_User == Id_User)
                 .FirstOrDefault();
-        }
-
-        
-        public RequestFriends SearchRequestFriend(int IdUserIssuer, int IdUserReceiver)
-        {
-            return _context.RequestFriends
-            .Where(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == IdUserReceiver)
-                || (r.IdUserIssuer == IdUserReceiver && r.Id_UserReceiver == IdUserIssuer))
-                .FirstOrDefault();
-        }
-
-
-        public void AddRequestFriend(RequestFriends requestFriends)
-        {
-            _context.RequestFriends.Add(requestFriends);
-            _context.SaveChanges();
-        }
-
-
-        public ICollection<GetRequestFriendsDto> GetRequestFriends(int Id_User)
-        {
-            return _context.RequestFriends
-                .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
-                .Include(r => r.UserIssuer)
-                .Include(r => r.UserReceiver)
-                .Select(r => new GetRequestFriendsDto
-                {
-                    Id_RequestFriends = r.Id_RequestFriends,
-                    IdUserIssuer = r.IdUserIssuer,
-                    UserIssuerPseudo = r.UserIssuer.Pseudo,
-                    Id_UserReceiver = r.Id_UserReceiver,
-                    UserReceiverPseudo = r.UserReceiver.Pseudo,
-                    Status = r.Status,
-                    Date_of_request = r.Date_of_request
-                })
-                .ToList();
-        }
-
-        public RequestFriends SearchUserFriendRequest(int Id_User, int IdUserIssuer)
-        {
-            return _context.RequestFriends
-        .FirstOrDefault(r =>
-            (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
-        }
-
-
-        public void UpdateStatusRequestFriends(RequestFriends friendRequest)
-        {
-            _context.Entry(friendRequest).State = EntityState.Modified;
-            _context.SaveChanges();
-        }
-
-        public void AddMessage(Message Message)
-        {
-            _context.Message.Add(Message);
-            _context.SaveChangesAsync();
-        }
-
-
-        public ICollection<GetMessageDto> GetMessages(int idUserIssuer, int idUserReceiver)
-        {
-            return _context.Message
-                .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
-                            (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
-                .Include(m => m.UserIssuer)
-                .Include(m => m.UserReceiver)
-                .Select(m => new GetMessageDto
-                {
-                    Id_Message = m.Id_Message,
-                    message_content = m.message_content,
-                    IdUserIssuer = m.IdUserIssuer,
-                    UserIssuerPseudo = m.UserIssuer.Pseudo,
-                    Id_UserReceiver = m.Id_UserReceiver,
-                    UserReceiverPseudo = m.UserReceiver.Pseudo,
-                    UserIssuerProfile_picture = m.UserIssuer.Profile_picture,
-                    UserReceiverProfile_picture = m.UserReceiver.Profile_picture,
-                    UserReceiverSex = m.UserReceiver.sex,
-                    UserIssuerSex = m.UserIssuer.sex,
-                    Date_of_request = m.Date_of_request
-                })
-                .ToList();
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace server_api.Dto
+﻿namespace server_api.Dto.SetDto
 {
-    public class UserRegistrationDto
+    public class SetUserRegistrationDto
     {
         public string? Pseudo { get; set; }
         public DateTime? date_of_birth { get; set; }

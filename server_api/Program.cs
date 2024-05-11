@@ -20,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMessage, MessageRepository>();
+builder.Services.AddScoped<IRequestFriends, RequestFriendsRepository>();
 builder.Services.AddScoped<AuthorizeUserConnect>();
 
 
@@ -35,7 +37,6 @@ builder.Services.AddCors(options =>
 });
 
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -46,7 +47,7 @@ options.UseNpgsql(Env.GetString("ConnectionDB")));
 
 
 
-// Auth Google
+// OAuth Google
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

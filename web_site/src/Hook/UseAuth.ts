@@ -63,7 +63,7 @@ export function UseAuth()
 
 
     const GetUserOnly = useCallback(() => {
-        apiFetch<Account>("/User/GetUserOnly")
+        apiFetch<Account>("/User/GetUserConnected")
             .then(response => setAccount(response))
             .catch(() => setAccount(null));
     }, []);
@@ -101,7 +101,7 @@ export function UseAuth()
 
 
     const GetRequestFriends = useCallback(() => {
-        apiFetch<RequestFriends>("/User/GetRequestFriends")
+        apiFetch<RequestFriends>("/RequestFriends/GetRequestFriends")
             .then(response => setAccount2(response))
             .catch(() => setAccount2(null));
     }, []);
@@ -109,7 +109,7 @@ export function UseAuth()
 
 
     const RequestFriends = useCallback((Id_User :number) => {
-        apiFetch<Account>("/User/RequestFriends/" + Id_User, { method: 'POST' })
+        apiFetch<Account>("/RequestFriends/AddRequest/" + Id_User, { method: 'POST' })
             .then(response => {
                 setAccount(response);
             })
@@ -121,7 +121,7 @@ export function UseAuth()
 
 
     const AcceptRequestFriends = useCallback((Id_User: number) => {
-        apiFetch<Account>("/User/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
+        apiFetch<Account>("/RequestFriends/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
             .then(response => {
                 setAccount(response);
                 window.location.reload();
@@ -142,14 +142,14 @@ export function UseAuth()
 
     
     const GetTchatID = useCallback((Id_User: number) => {
-        apiFetch<GetMessageDto>("/User/GetUserMessage/" + Id_User)
+        apiFetch<GetMessageDto>("/Message/GetUserMessage/" + Id_User)
             .then(response => setAccount3(response))
             .catch(() => setAccount3(null));
     }, []);
 
 
     const SendMessage = useCallback((idUserReceiver: number, messageContent: string) => {
-        apiFetch<Account>("/User/SendMessage", { json: { idUserReceiver, messageContent } })
+        apiFetch<Account>("/Message/SendMessage", { json: { idUserReceiver, messageContent } })
             .then(response => {
                 setAccount(response);
                 window.location.reload();

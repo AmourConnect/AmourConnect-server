@@ -1,7 +1,7 @@
-﻿namespace server_api.Dto
-{ 
-   public class UserUpdateDto
-   {
+﻿namespace server_api.Dto.SetDto
+{
+    public class SetUserUpdateDto
+    {
         public IFormFile? Profile_picture { get; set; }
         public string? city { get; set; }
         public string? sex { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace server_api.Dto
+﻿namespace server_api.Dto.AppLayerDto
 {
-    public class GoogleUserValueDto
+    public class ALGoogleUserValueDto
     {
         public string userIdGoogle { get; set; }
         public string EmailGoogle { get; set; }

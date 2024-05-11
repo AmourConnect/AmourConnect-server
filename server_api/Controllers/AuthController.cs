@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using server_api.Interfaces;
-using server_api.Dto;
 using server_api.Utils;
 using DotNetEnv;
+using server_api.Dto.AppLayerDto;
+using server_api.Dto.SetDto;
 
 namespace server_api.Controllers
 {
@@ -41,7 +42,12 @@ namespace server_api.Controllers
             var EmailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
             var userIdGoogle = response.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-           int? Id_User = _userRepository.SearchIdUserWithIdGoogle(EmailGoogle, userIdGoogle);
+            if (string.IsNullOrEmpty(EmailGoogle) || string.IsNullOrEmpty(userIdGoogle))
+            {
+                return BadRequest();
+            }
+
+            int? Id_User = _userRepository.GetUserIdWithGoogleId(EmailGoogle, userIdGoogle);
 
             if (Id_User > 0)
             {
@@ -57,27 +63,28 @@ namespace server_api.Controllers
 
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] UserRegistrationDto userRegistrationDto)
+        public IActionResult Register([FromBody] SetUserRegistrationDto setuserRegistrationDto)
         {
             var (userIdGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
 
-            if (userIdGoogle == null && emailGoogle == null)
+            if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
                 return BadRequest(new { message = "Please login with Google before register" });
             }
 
-            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, userRegistrationDto.date_of_birth, userRegistrationDto.sex, userRegistrationDto.city, userRegistrationDto.Pseudo);
+            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.city, setuserRegistrationDto.Pseudo);
+            
             if (result != null)
             {
-                return result;
+                return result; // return IActionResult
             }
 
-            if (_userRepository.CheckIfPseudoAlreadyExist(userRegistrationDto.Pseudo))
+            if (_userRepository.GetUserByPseudo(setuserRegistrationDto.Pseudo))
             {
                 return BadRequest(new { message = "Pseudo Already use" });
             }
 
-            int? id_user = _userRepository.SearchIdUserWithIdGoogle(emailGoogle, userIdGoogle);
+            int? id_user = _userRepository.GetUserIdWithGoogleId(emailGoogle, userIdGoogle);
 
             if (id_user > 0)
             {
@@ -86,11 +93,11 @@ namespace server_api.Controllers
 
             else 
             {
-                int? id_user2 = _userRepository.CreateUser(userIdGoogle, emailGoogle, userRegistrationDto.date_of_birth, userRegistrationDto.sex, userRegistrationDto.Pseudo, userRegistrationDto.city);
+                int? id_user2 = _userRepository.CreateUser(userIdGoogle, emailGoogle, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.Pseudo, setuserRegistrationDto.city);
 
                 if (id_user2.HasValue)
                 {
-                    SessionUserDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
+                    ALSessionUserDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
                     return Ok(new { message = "Register finish" });
                 }
@@ -105,7 +112,7 @@ namespace server_api.Controllers
 
         private IActionResult CreateSessionLoginAndReturnResponse(int Id_User)
         {
-            SessionUserDto sessionData = _userRepository.UpdateSessionUser(Id_User);
+            ALSessionUserDto sessionData = _userRepository.UpdateSessionUser(Id_User);
             CookieUtils.CreateSessionCookie(Response, sessionData);
             return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
         }

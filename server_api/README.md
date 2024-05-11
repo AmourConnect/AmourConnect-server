@@ -11,7 +11,7 @@ EMAIL_USER=""
 EMAIL_MDP=""
 SERVICE="gmail"
 
-# Auth Google
+# OAuth Google
 ClientId=""
 ClientSecret=""
 
@@ -29,7 +29,7 @@ ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;D
 
 *⛔ Start the Database first before*
 
-*If you have Docker, the database URL will be =>*
+*If you use Docker, the database URL will be =>*
 
 ```
 ConnectionDB="Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"

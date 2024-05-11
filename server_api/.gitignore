@@ -2,4 +2,4 @@
 *bin
 *vs
 .env
-*server_api.csproj.user
+*.csproj.user

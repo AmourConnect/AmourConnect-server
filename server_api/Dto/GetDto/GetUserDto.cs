@@ -1,6 +1,6 @@
-﻿namespace server_api.Dto
+﻿namespace server_api.Dto.GetDto
 {
-    public class GetUserOnlyDto
+    public class GetUserDto
     {
         public int Id_User { get; set; }
         public string Pseudo { get; set; }
