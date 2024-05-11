@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using server_api.Data;
+﻿using server_api.Data;
 using server_api.Dto.GetDto;
 using server_api.Interfaces;
 using server_api.Models;
@@ -27,8 +26,6 @@ namespace server_api.Repository
             return _context.Message
                 .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
                             (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
-                .Include(m => m.UserIssuer)
-                .Include(m => m.UserReceiver)
                 .Select(m => new GetMessageDto
                 {
                     Id_Message = m.Id_Message,

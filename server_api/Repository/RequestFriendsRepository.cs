@@ -20,8 +20,6 @@ namespace server_api.Repository
         {
             return _context.RequestFriends
                 .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
-                .Include(r => r.UserIssuer)
-                .Include(r => r.UserReceiver)
                 .Select(r => new GetRequestFriendsDto
                 {
                     Id_RequestFriends = r.Id_RequestFriends,
