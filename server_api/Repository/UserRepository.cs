@@ -230,6 +230,8 @@ namespace server_api.Repository
                     UserReceiverPseudo = m.UserReceiver.Pseudo,
                     UserIssuerProfile_picture = m.UserIssuer.Profile_picture,
                     UserReceiverProfile_picture = m.UserReceiver.Profile_picture,
+                    UserReceiverSex = m.UserReceiver.sex,
+                    UserIssuerSex = m.UserIssuer.sex,
                     Date_of_request = m.Date_of_request
                 })
                 .ToList();

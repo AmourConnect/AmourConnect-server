@@ -5,6 +5,7 @@ import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 
 
 
@@ -36,7 +37,7 @@ export default function Request() {
 
 
     useEffect(() => {
-        if (account2) {
+        if (Array.isArray(account2)) {
             const sent: RequestFriends[] = [];
             const received: RequestFriends[] = [];
             const friendsList: RequestFriends[] = [];
@@ -127,6 +128,14 @@ export default function Request() {
                                                     <div className="ml-4">
                                                         <a href={`/profil-details/${item.idUserIssuer === account?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                                         <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === account?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
+                                                        </a>
+                                                        <a href={`/tchat/${item.idUserIssuer === account?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                                            <Image
+                                                            src="/assets/images/tchat_icon.svg"
+                                                            alt="Tchater avec"
+                                                            width={20}
+                                                            height={20}
+                                                            />
                                                         </a>
                                                     </div>
                                                 </div>

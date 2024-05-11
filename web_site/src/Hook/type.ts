@@ -19,11 +19,25 @@ export type RequestFriends =
   userIssuerPseudo: string;
 }
 
+export type GetMessageDto =
+{
+  id_Message: number,
+  message_content: string,
+  date_of_request: Date,
+  idUserIssuer: number,
+  id_UserReceiver: number,
+  userReceiverPseudo: string,
+  userIssuerPseudo: string,
+  userReceiverProfile_picture: Blob,
+  userIssuerProfile_picture: Blob
+  userIssuerSex: string,
+  userReceiverSex: string
+}
+
 export enum StatusRequestFriends
 {
     Onhold,
     Accepted,
-    Refused
 }
 
 export enum AuthStatus

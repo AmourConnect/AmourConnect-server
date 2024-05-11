@@ -16,12 +16,12 @@ export default function ProfileDetailID() {
     const { status2, GetUserID, account, GetRequestFriends } = UseAuth();
     const router = useRouter();
     const { id } = router.query;
-
+    const idNumber = Number(id);
 
 
     useEffect(() => {
         GetRequestFriends();
-        GetUserID(id);
+        GetUserID(idNumber);
         let timer: NodeJS.Timeout | undefined;
         if (status2 === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
