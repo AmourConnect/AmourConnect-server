@@ -16,7 +16,7 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public ICollection<User> GetUsersToMatch(User data_user_now_connect)
+        public ICollection<GetUserOnlyDto> GetUsersToMatch(User data_user_now_connect)
         {
             return _context.User
             .Where(u =>
@@ -32,7 +32,7 @@ namespace server_api.Repository
                 ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == data_user_now_connect.Id_User) ||
                 (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == data_user_now_connect.Id_User)) &&
                 r.Status == RequestStatus.Accepted))
-            .Select(u => new User
+            .Select(u => new GetUserOnlyDto
             {
                 Id_User = u.Id_User,
                 Pseudo = u.Pseudo,
@@ -40,7 +40,6 @@ namespace server_api.Repository
                 city = u.city,
                 sex = u.sex,
                 date_of_birth = u.date_of_birth,
-                account_created_at = u.account_created_at,
             })
             .ToList();
         }
@@ -205,6 +204,35 @@ namespace server_api.Repository
         {
             _context.Entry(friendRequest).State = EntityState.Modified;
             _context.SaveChanges();
+        }
+
+        public void AddMessage(Message Message)
+        {
+            _context.Message.Add(Message);
+            _context.SaveChangesAsync();
+        }
+
+
+        public ICollection<GetMessageDto> GetMessages(int idUserIssuer, int idUserReceiver)
+        {
+            return _context.Message
+                .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
+                            (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
+                .Include(m => m.UserIssuer)
+                .Include(m => m.UserReceiver)
+                .Select(m => new GetMessageDto
+                {
+                    Id_Message = m.Id_Message,
+                    message_content = m.message_content,
+                    IdUserIssuer = m.IdUserIssuer,
+                    UserIssuerPseudo = m.UserIssuer.Pseudo,
+                    Id_UserReceiver = m.Id_UserReceiver,
+                    UserReceiverPseudo = m.UserReceiver.Pseudo,
+                    UserIssuerProfile_picture = m.UserIssuer.Profile_picture,
+                    UserReceiverProfile_picture = m.UserReceiver.Profile_picture,
+                    Date_of_request = m.Date_of_request
+                })
+                .ToList();
         }
     }
 }

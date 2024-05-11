@@ -27,9 +27,6 @@ namespace server_api.Models
         public string? token_session_user { get; set; }
 
         [Required]
-        public string? grade { get; set; } = "User";
-
-        [Required]
         [MaxLength(50)]
         public string? city { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace server_api.Utils
 {
@@ -9,6 +8,7 @@ namespace server_api.Utils
         public static readonly Regex DateRegex = new Regex(@"^\d{4}-\d{2}-\d{2}$", RegexOptions.Compiled); // (format : YYYY-MM-DD)
         public static readonly Regex CityRegex = new Regex(@"^[a-zA-Z\s]{1,50}$", RegexOptions.Compiled);
         public static readonly Regex PseudoRegex = new Regex(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
+        public static readonly Regex MessageRegex = new Regex(@"^.{1,200}$", RegexOptions.Compiled);
 
 
         public static IActionResult CheckBodyAuthRegister(ControllerBase controller, DateTime? date_of_birth, string sex, string city, string Pseudo)
@@ -44,7 +44,7 @@ namespace server_api.Utils
                 return false;
             }
 
-            const int maxSize = 3 * 1024 * 1024; // 3 Mo
+            const int maxSize = 1 * 1024 * 1024; // 1 Mo
 
             if (Profile_picture.Length > maxSize)
             {
@@ -126,6 +126,18 @@ namespace server_api.Utils
             {
                 return false;
             }
+            return true;
+        }
+
+
+        public static bool CheckMessage(string Message)
+        {
+            if(string.IsNullOrEmpty(Message))
+            { return false; }
+
+            if(!MessageRegex.IsMatch(Message))
+            { return false; }
+
             return true;
         }
     }

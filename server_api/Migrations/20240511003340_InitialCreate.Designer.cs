@@ -12,7 +12,7 @@ using server_api.Data;
 namespace server_api.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240509172113_InitialCreate")]
+    [Migration("20240511003340_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -46,16 +46,13 @@ namespace server_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("read")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id_Message");
 
                     b.HasIndex("IdUserIssuer");
 
                     b.HasIndex("Id_UserReceiver");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("server_api.Models.RequestFriends", b =>
@@ -121,10 +118,6 @@ namespace server_api.Migrations
 
                     b.Property<DateTime?>("date_token_session_expiration")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("grade")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("sex")
                         .IsRequired()

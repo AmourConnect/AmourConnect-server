@@ -27,8 +27,5 @@ namespace server_api.Models
 
         [Required]
         public DateTime Date_of_request { get; set; }
-
-        [Required]
-        public bool read { get; set; }
     }
 }

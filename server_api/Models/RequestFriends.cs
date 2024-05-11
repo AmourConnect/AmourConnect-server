@@ -32,6 +32,5 @@ namespace server_api.Models
     {
         Onhold,
         Accepted,
-        Refused
     }
 }

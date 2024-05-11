@@ -9,32 +9,32 @@ namespace server_api.Data
 
         public DbSet<RequestFriends> RequestFriends { get; set; }
 
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<Message> Message { get; set; }
 
         public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Message>()
-                .HasOne<User>(m => m.UserIssuer)
+                .HasOne(m => m.UserIssuer)
                 .WithMany(u => u.MessagesSent)
                 .HasForeignKey(m => m.IdUserIssuer)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Message>()
-                .HasOne<User>(m => m.UserReceiver)
+                .HasOne(m => m.UserReceiver)
                 .WithMany(u => u.MessagesReceived)
                 .HasForeignKey(m => m.Id_UserReceiver)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RequestFriends>()
-                .HasOne<User>(r => r.UserIssuer)
+                .HasOne(r => r.UserIssuer)
                 .WithMany(u => u.RequestsSent)
                 .HasForeignKey(r => r.IdUserIssuer)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RequestFriends>()
-                .HasOne<User>(r => r.UserReceiver)
+                .HasOne(r => r.UserReceiver)
                 .WithMany(u => u.RequestsReceived)
                 .HasForeignKey(r => r.Id_UserReceiver)
                 .OnDelete(DeleteBehavior.Cascade);

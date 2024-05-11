@@ -24,7 +24,6 @@ namespace server_api.Migrations
                     Profile_picture = table.Column<byte[]>(type: "bytea", nullable: true),
                     date_token_session_expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     token_session_user = table.Column<string>(type: "text", nullable: true),
-                    grade = table.Column<string>(type: "text", nullable: false),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     sex = table.Column<string>(type: "text", nullable: false),
                     date_of_birth = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -36,7 +35,7 @@ namespace server_api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "Message",
                 columns: table => new
                 {
                     Id_Message = table.Column<int>(type: "integer", nullable: false)
@@ -44,20 +43,19 @@ namespace server_api.Migrations
                     IdUserIssuer = table.Column<int>(type: "integer", nullable: false),
                     Id_UserReceiver = table.Column<int>(type: "integer", nullable: false),
                     message_content = table.Column<string>(type: "text", nullable: false),
-                    Date_of_request = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    read = table.Column<bool>(type: "boolean", nullable: false)
+                    Date_of_request = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.Id_Message);
+                    table.PrimaryKey("PK_Message", x => x.Id_Message);
                     table.ForeignKey(
-                        name: "FK_Messages_User_IdUserIssuer",
+                        name: "FK_Message_User_IdUserIssuer",
                         column: x => x.IdUserIssuer,
                         principalTable: "User",
                         principalColumn: "Id_User",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_User_Id_UserReceiver",
+                        name: "FK_Message_User_Id_UserReceiver",
                         column: x => x.Id_UserReceiver,
                         principalTable: "User",
                         principalColumn: "Id_User",
@@ -93,13 +91,13 @@ namespace server_api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_Id_UserReceiver",
-                table: "Messages",
+                name: "IX_Message_Id_UserReceiver",
+                table: "Message",
                 column: "Id_UserReceiver");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_IdUserIssuer",
-                table: "Messages",
+                name: "IX_Message_IdUserIssuer",
+                table: "Message",
                 column: "IdUserIssuer");
 
             migrationBuilder.CreateIndex(
@@ -117,7 +115,7 @@ namespace server_api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "RequestFriends");

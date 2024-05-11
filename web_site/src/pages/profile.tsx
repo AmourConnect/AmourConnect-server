@@ -107,7 +107,7 @@ export default function Profile() {
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <input type="file" name="profile_picture" accept="image/*" />
-                                <p className="text-sm text-red-500">Veuillez télécharger une image de maximum 3 Mo.</p>
+                                <p className="text-sm text-red-500">Veuillez télécharger une image de maximum de 1 Mo.</p>
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Picture Profile</button>
                             </form>
                             <form onSubmit={handleSubmitDate} className="w-full sm:w-auto">

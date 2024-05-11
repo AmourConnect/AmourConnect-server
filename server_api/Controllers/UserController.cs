@@ -20,7 +20,6 @@ namespace server_api.Controllers
         }
 
 
-
         [HttpGet("GetUsersToMach")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserOnlyDto>))]
 
@@ -29,7 +28,7 @@ namespace server_api.Controllers
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
 
-            var users = _userRepository.GetUsersToMatch(data_user_now_connect);
+            ICollection<GetUserOnlyDto> users = _userRepository.GetUsersToMatch(data_user_now_connect);
 
             if (!ModelState.IsValid)
             {
@@ -204,6 +203,72 @@ namespace server_api.Controllers
                 date_of_birth = user.date_of_birth
             };
             return Ok(userDto);
+        }
+
+
+
+        [HttpPost("SendMessage")]
+        public IActionResult SendMessage([FromBody] MessageDto messageDto)
+        {
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+
+            RequestFriends existingRequest = _userRepository.SearchRequestFriend(data_user_now_connect.Id_User, messageDto.IdUserReceiver);
+
+            if (existingRequest != null)
+            {
+                if (existingRequest.Status == RequestStatus.Onhold)
+                {
+                    return Conflict(new { message = "There must be validation of the friend request to chat" });
+                }
+
+                if (!RegexUtils.CheckMessage(messageDto.MessageContent))
+                {
+                    return BadRequest(new { message = "Message no valid" });
+                }
+
+                var message = new Message
+                {
+                    IdUserIssuer = data_user_now_connect.Id_User,
+                    Id_UserReceiver = messageDto.IdUserReceiver,
+                    message_content = messageDto.MessageContent,
+                    Date_of_request = DateTime.Now.ToUniversalTime(),
+                };
+
+                _userRepository.AddMessage(message);
+
+                return Ok("Message send succes");
+            }
+            return Conflict(new { message = "You are not friends to talk together" });
+        }
+
+
+        [HttpGet("GetUserMessage/{Id_UserReceiver}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetMessageDto>))]
+        public IActionResult GetUserMessage([FromRoute] int Id_UserReceiver)
+        {
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+
+            RequestFriends existingRequest = _userRepository.SearchRequestFriend(data_user_now_connect.Id_User, Id_UserReceiver);
+
+            if (existingRequest != null) 
+            {
+                if (existingRequest.Status == RequestStatus.Onhold)
+                {
+                    return Conflict(new { message = "There must be validation of the friend request to chat" });
+                }
+
+                ICollection<GetMessageDto> msg = _userRepository.GetMessages(data_user_now_connect.Id_User, Id_UserReceiver);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(msg);
+            }
+            return Conflict(new { message = "You are not friends to talk together" });
         }
     }
 }
