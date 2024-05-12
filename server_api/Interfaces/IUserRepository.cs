@@ -12,7 +12,8 @@ namespace server_api.Interfaces
         ALSessionUserDto UpdateSessionUser(int Id_User);
         bool GetUserByPseudo(string Pseudo);
         User GetUserWithCookie(string token_session_user);
-        bool UpdateUser(int Id_User, User user);
+        Task<bool> UpdateUser(int Id_User, User user);
         User GetUserByIdUser(int Id_User);
+        Task<User> GetUserWithCookieAsync(string token_session_user);
     }
 }

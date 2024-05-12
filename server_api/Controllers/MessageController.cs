@@ -28,12 +28,12 @@ namespace server_api.Controllers
 
 
         [HttpPost("SendMessage")]
-        public IActionResult SendMessage([FromBody] SetMessageDto setmessageDto)
+        public async Task<IActionResult> SendMessage([FromBody] SetMessageDto setmessageDto)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            RequestFriends existingRequest = _requestFriendsRepository.GetRequestFriendById(data_user_now_connect.Id_User, setmessageDto.IdUserReceiver);
+            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(data_user_now_connect.Id_User, setmessageDto.IdUserReceiver);
 
             if (existingRequest != null)
             {
@@ -55,7 +55,7 @@ namespace server_api.Controllers
                     Date_of_request = DateTime.Now.ToUniversalTime(),
                 };
 
-                _messageRepository.AddMessage(message);
+                await _messageRepository.AddMessageAsync(message);
 
                 return Ok("Message send succes");
             }
@@ -66,12 +66,12 @@ namespace server_api.Controllers
 
         [HttpGet("GetUserMessage/{Id_UserReceiver}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetMessageDto>))]
-        public IActionResult GetUserMessage([FromRoute] int Id_UserReceiver)
+        public async Task<IActionResult> GetUserMessage([FromRoute] int Id_UserReceiver)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            RequestFriends existingRequest = _requestFriendsRepository.GetRequestFriendById(data_user_now_connect.Id_User, Id_UserReceiver);
+            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(data_user_now_connect.Id_User, Id_UserReceiver);
 
             if (existingRequest != null)
             {
@@ -80,7 +80,7 @@ namespace server_api.Controllers
                     return Conflict(new { message = "There must be validation of the friend request to chat" });
                 }
 
-                ICollection<GetMessageDto> msg = _messageRepository.GetMessages(data_user_now_connect.Id_User, Id_UserReceiver);
+                ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(data_user_now_connect.Id_User, Id_UserReceiver);
 
                 if (!ModelState.IsValid)
                 {
@@ -89,12 +89,12 @@ namespace server_api.Controllers
 
                 var sortedMessages = msg.OrderBy(m => m.Date_of_request);
 
-                if (sortedMessages.Count() > 30)
+                if (sortedMessages.Count() > 50)
                 {
-                    var messagesToDelete = sortedMessages.Take(10);
+                    var messagesToDelete = sortedMessages.Take(30);
                     foreach (var message in messagesToDelete)
                     {
-                        _messageRepository.DeleteMessage(message.Id_Message);
+                        await _messageRepository.DeleteMessageAsync(message.Id_Message);
                     }
                 }
 

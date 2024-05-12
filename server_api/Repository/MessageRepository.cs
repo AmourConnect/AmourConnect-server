@@ -15,42 +15,42 @@ namespace server_api.Repository
             _context = context;
         }
 
-        public void AddMessage(Message Message)
+        public async Task AddMessageAsync(Message message)
         {
-            _context.Message.Add(Message);
-            _context.SaveChangesAsync();
+            _context.Message.Add(message);
+            await _context.SaveChangesAsync();
         }
 
 
-        public ICollection<GetMessageDto> GetMessages(int idUserIssuer, int idUserReceiver)
+        public async Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver)
         {
-            return _context.Message
-                .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
-                            (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
-                .Select(m => new GetMessageDto
-                {
-                    Id_Message = m.Id_Message,
-                    message_content = m.message_content,
-                    IdUserIssuer = m.IdUserIssuer,
-                    UserIssuerPseudo = m.UserIssuer.Pseudo,
-                    Id_UserReceiver = m.Id_UserReceiver,
-                    UserReceiverPseudo = m.UserReceiver.Pseudo,
-                    Date_of_request = m.Date_of_request
-                })
-                .ToList();
+            return await _context.Message
+                        .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
+                                    (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
+                        .Select(m => new GetMessageDto
+                        {
+                            Id_Message = m.Id_Message,
+                            message_content = m.message_content,
+                            IdUserIssuer = m.IdUserIssuer,
+                            UserIssuerPseudo = m.UserIssuer.Pseudo,
+                            Id_UserReceiver = m.Id_UserReceiver,
+                            UserReceiverPseudo = m.UserReceiver.Pseudo,
+                            Date_of_request = m.Date_of_request
+                        })
+                        .ToListAsync();
         }
 
 
-        public bool DeleteMessage(int id)
+        public async Task<bool> DeleteMessageAsync(int id)
         {
-            var message = _context.Message.FirstOrDefault(m => m.Id_Message == id);
+            var message = await _context.Message.FirstOrDefaultAsync(m => m.Id_Message == id);
 
             if (message != null)
             {
                 try
                 {
                     _context.Message.Remove(message);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     return true;
                 }
                 catch (DbUpdateConcurrencyException)
@@ -60,7 +60,7 @@ namespace server_api.Repository
                     {
                         return true;
                     }
-                    return DeleteMessage(id);
+                    return await DeleteMessageAsync(id);
                 }
             }
 

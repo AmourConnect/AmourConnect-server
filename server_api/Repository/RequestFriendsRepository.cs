@@ -43,6 +43,14 @@ namespace server_api.Repository
                 .FirstOrDefault();
         }
 
+        public async Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver)
+        {
+            return await _context.RequestFriends
+                    .Where(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == IdUserReceiver)
+                        || (r.IdUserIssuer == IdUserReceiver && r.Id_UserReceiver == IdUserIssuer))
+                        .FirstOrDefaultAsync();
+        }
+
 
         public void AddRequestFriend(RequestFriends requestFriends)
         {

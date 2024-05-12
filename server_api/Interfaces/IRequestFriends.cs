@@ -10,5 +10,6 @@ namespace server_api.Interfaces
         void AddRequestFriend(RequestFriends requestFriends);
         RequestFriends GetUserFriendRequestById(int Id_User, int IdUserIssuer);
         void UpdateStatusRequestFriends(RequestFriends friendRequest);
+        Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver);
     }
 }

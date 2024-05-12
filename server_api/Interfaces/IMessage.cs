@@ -5,8 +5,8 @@ namespace server_api.Interfaces
 {
     public interface IMessage
     {
-        void AddMessage(Message Message);
-        ICollection<GetMessageDto> GetMessages(int idUserIssuer, int idUserReceiver);
-        bool DeleteMessage(int Id_Message);
+        Task AddMessageAsync(Message Message);
+        Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver);
+        Task<bool> DeleteMessageAsync(int Id_Message);
     }
 }

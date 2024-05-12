@@ -126,11 +126,14 @@ namespace server_api.Repository
             return _context.User.FirstOrDefault(u => u.token_session_user == token_session_user);
         }
 
-
-
-        public bool UpdateUser(int Id_User, User user)
+        public async Task<User> GetUserWithCookieAsync(string token_session_user)
         {
-            User existingUser = _context.User.FirstOrDefault(u => u.Id_User == Id_User);
+            return await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
+        }
+
+        public async Task<bool> UpdateUser(int Id_User, User user)
+        {
+            User existingUser = await _context.User.FirstOrDefaultAsync(u => u.Id_User == Id_User);
 
             if (existingUser == null)
             {
@@ -143,7 +146,7 @@ namespace server_api.Repository
             existingUser.city = user.city;
 
             _context.Entry(existingUser).State = EntityState.Modified;
-            var rowsAffected = _context.SaveChanges();
+            var rowsAffected = await _context.SaveChangesAsync();
 
             return rowsAffected > 0;
         }

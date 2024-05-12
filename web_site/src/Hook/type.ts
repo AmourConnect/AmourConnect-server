@@ -17,6 +17,7 @@ export type GetRequestFriendsDto =
   idUserIssuer: number;
   userReceiverPseudo: string;
   userIssuerPseudo: string;
+  message: string;
 }
 
 export type GetMessageDto =

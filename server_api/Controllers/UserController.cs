@@ -64,7 +64,7 @@ namespace server_api.Controllers
         public async Task<IActionResult> UpdateUser([FromForm] SetUserUpdateDto setUserUpdateDto)
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
             var imageData = await MessUtils.ConvertImageToByteArray(setUserUpdateDto.Profile_picture);
 
@@ -92,7 +92,7 @@ namespace server_api.Controllers
             data_user_now_connect.sex = newsValues.sex;
             data_user_now_connect.date_of_birth = newsValues.date_of_birth;
 
-            _userRepository.UpdateUser(data_user_now_connect.Id_User, data_user_now_connect);
+            await _userRepository.UpdateUser(data_user_now_connect.Id_User, data_user_now_connect);
 
             return NoContent();
         }

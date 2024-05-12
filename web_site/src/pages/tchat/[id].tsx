@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { compareMessagesByDate } from '../../lib/helper';
+import Image from 'next/image';
 
 
 export default function TchatID() {
@@ -37,7 +38,7 @@ export default function TchatID() {
         if (status === AuthStatus.Authenticated) {
             timer = setInterval(() => {
                 GetTchatID(idNumber);
-            }, 5000);
+            }, 3000);
         }
 
         return () => clearInterval(timer);
@@ -61,24 +62,25 @@ export default function TchatID() {
                         {Array.isArray(messageDto) && messageDto.length > 0 ? (
                             messageDto
                                 .sort(compareMessagesByDate)
+                                .reverse()
                                 .map((messagedto: GetMessageDto) => (
                                     <div
                                         key={messagedto.id_Message}
                                         className={`flex items-center p-2 ${messagedto.idUserIssuer === userDto?.id_User
-                                                ? 'justify-end'
-                                                : 'justify-start'
+                                            ? 'justify-end'
+                                            : 'justify-start'
                                             }`}
                                     >
                                         <div
                                             className={`mx-2 max-w-[70%] p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User
-                                                    ? 'bg-blue-500 text-white'
-                                                    : 'bg-gray-200'
+                                                ? 'bg-blue-500 text-white'
+                                                : 'bg-gray-200'
                                                 }`}
                                         >
                                             <a
                                                 href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User
-                                                        ? userDto?.id_User
-                                                        : messagedto.idUserIssuer
+                                                    ? userDto?.id_User
+                                                    : messagedto.idUserIssuer
                                                     }`}
                                             >
                                                 <p>
@@ -97,7 +99,17 @@ export default function TchatID() {
                                     </div>
                                 ))
                         ) : (
-                            <p>Chargement...</p>
+                            <div className="fixed inset-0 flex items-center justify-center z-50 bg-white">
+                                <div className="max-w-xs mx-auto">
+                                    <Image
+                                        src="/assets/gif/loading_gray.gif"
+                                        alt="Description de l'image"
+                                        width={50}
+                                        height={50}
+                                        className="img-fluid"
+                                    />
+                                </div>
+                            </div>
                         )}
                     </div>
                     <div className="flex items-center p-2">
