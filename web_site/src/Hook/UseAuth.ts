@@ -111,8 +111,6 @@ export function UseAuth() {
     const AcceptRequestFriends = useCallback((Id_User: number) => {
         apiFetch<GetRequestFriendsDto>("/RequestFriends/AcceptRequestFriends/" + Id_User, { method: 'PATCH' })
             .then(response => {
-                setRequestFriendsDto(response)
-                window.location.reload();
             })
             .catch(() => setRequestFriendsDto(null))
     }, []);

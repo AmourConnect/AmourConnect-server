@@ -29,7 +29,7 @@ export default function TchatID() {
             }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, UserGetConnected, GetTchatID, idNumber,router]);
+    }, [status, UserGetConnected, router]);
 
 
     useEffect(() => {
@@ -99,17 +99,7 @@ export default function TchatID() {
                                     </div>
                                 ))
                         ) : (
-                            <div className="fixed inset-0 flex items-center justify-center z-50 bg-white">
-                                <div className="max-w-xs mx-auto">
-                                    <Image
-                                        src="/assets/gif/loading_gray.gif"
-                                        alt="Description de l'image"
-                                        width={50}
-                                        height={50}
-                                        className="img-fluid"
-                                    />
-                                </div>
-                            </div>
+                                <p className="text-center">Chargement....</p>
                         )}
                     </div>
                     <div className="flex items-center p-2">

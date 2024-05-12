@@ -24,7 +24,6 @@ export default function Request() {
 
 
     useEffect(() => {
-        GetRequestFriends();
         UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
@@ -36,6 +35,17 @@ export default function Request() {
     }, [status, UserGetConnected, GetRequestFriends ,router]);
 
 
+    useEffect(() => {
+        let timer: NodeJS.Timeout | undefined;
+
+        if (status === AuthStatus.Authenticated) {
+            timer = setInterval(() => {
+                GetRequestFriends();
+            }, 3000);
+        }
+
+        return () => clearInterval(timer);
+    }, [status, GetRequestFriends]);
 
 
     useEffect(() => {
