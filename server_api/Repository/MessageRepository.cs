@@ -1,4 +1,5 @@
-﻿using server_api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using server_api.Data;
 using server_api.Dto.GetDto;
 using server_api.Interfaces;
 using server_api.Models;
@@ -37,6 +38,33 @@ namespace server_api.Repository
                     Date_of_request = m.Date_of_request
                 })
                 .ToList();
+        }
+
+
+        public bool DeleteMessage(int id)
+        {
+            var message = _context.Message.FirstOrDefault(m => m.Id_Message == id);
+
+            if (message != null)
+            {
+                try
+                {
+                    _context.Message.Remove(message);
+                    _context.SaveChanges();
+                    return true;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    _context.Entry(message).Reload();
+                    if (message == null)
+                    {
+                        return true;
+                    }
+                    return DeleteMessage(id);
+                }
+            }
+
+            return false;
         }
     }
 }

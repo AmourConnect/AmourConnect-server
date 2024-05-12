@@ -14,7 +14,7 @@ import { motion } from 'framer-motion';
 export default function Welcome() {
 
 
-    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd, MessageApi } = UseAuth();
+    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd, MessageApi, requestFriendsDto } = UseAuth();
     const router = useRouter();
 
 
@@ -35,13 +35,13 @@ export default function Welcome() {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        if (show && MessageApi) {
+        if (show && MessageApi || requestFriendsDto) {
             const timer = setTimeout(() => {
                 setShow(false);
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [show, MessageApi]);
+    }, [show, MessageApi, requestFriendsDto]);
 
 
     function button_requestfriendsAdd(id_user: number)
@@ -59,7 +59,7 @@ export default function Welcome() {
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                    {show && MessageApi && <PopUp title="Message" description={MessageApi} />}
+                    {show && (MessageApi || requestFriendsDto) && <PopUp title="Message" description={MessageApi || requestFriendsDto.message} />}
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         {Array.isArray(userDto) && userDto.length > 0 ? (
                             userDto.map((account: GetUserDto) => (

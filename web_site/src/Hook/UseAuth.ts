@@ -130,8 +130,6 @@ export function UseAuth() {
     const SendMessage = useCallback((idUserReceiver: number, messageContent: string) => {
         apiFetch<GetMessageDto>("/Message/SendMessage", { json: { idUserReceiver, messageContent } })
             .then(response => {
-                setMessageDto(response)
-                window.location.reload();
             })
             .catch(() => setMessageDto(null))
     }, []);

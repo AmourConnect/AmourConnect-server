@@ -87,6 +87,17 @@ namespace server_api.Controllers
                     return BadRequest(ModelState);
                 }
 
+                var sortedMessages = msg.OrderBy(m => m.Date_of_request);
+
+                if (sortedMessages.Count() > 30)
+                {
+                    var messagesToDelete = sortedMessages.Take(10);
+                    foreach (var message in messagesToDelete)
+                    {
+                        _messageRepository.DeleteMessage(message.Id_Message);
+                    }
+                }
+
                 return Ok(msg);
             }
             return Conflict(new { message = "You are not friends to talk together" });

@@ -20,7 +20,6 @@ export default function TchatID() {
 
 
     useEffect(() => {
-        GetTchatID(idNumber);
         UserGetConnected();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
@@ -32,6 +31,17 @@ export default function TchatID() {
     }, [status, UserGetConnected, GetTchatID, idNumber,router]);
 
 
+    useEffect(() => {
+        let timer: NodeJS.Timeout | undefined;
+
+        if (status === AuthStatus.Authenticated) {
+            timer = setInterval(() => {
+                GetTchatID(idNumber);
+            }, 5000);
+        }
+
+        return () => clearInterval(timer);
+    }, [status, GetTchatID, idNumber]);
 
 
     const handleSendMessage = () => {
@@ -47,38 +57,69 @@ export default function TchatID() {
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
                 <div className="w-full max-w-xl mx-auto">
-                    {Array.isArray(messageDto) && messageDto.length > 0 ? (
-                        messageDto.sort(compareMessagesByDate).map((messagedto: GetMessageDto) => (
-                            <div key={messagedto.id_Message} className={`flex items-center p-2 ${messagedto.idUserIssuer === userDto?.id_User ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`mx-2 p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
-                                    <a href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User ? userDto?.id_User : messagedto.idUserIssuer}`}>
-                                    <p><strong>{messagedto.idUserIssuer === userDto?.id_User ? userDto?.pseudo : messagedto.userIssuerPseudo}</strong></p>
-                                    </a>
-                                    <p>{messagedto.message_content}</p>
-                                    <p className="text-xs text-gray-500">{messagedto.date_of_request.toLocaleString()}</p>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Aucun message</p>
-                    )}
+                    <div className="h-[60vh] overflow-y-auto px-4"> {/* Chat container with scrollable feature */}
+                        {Array.isArray(messageDto) && messageDto.length > 0 ? (
+                            messageDto
+                                .sort(compareMessagesByDate)
+                                .map((messagedto: GetMessageDto) => (
+                                    <div
+                                        key={messagedto.id_Message}
+                                        className={`flex items-center p-2 ${messagedto.idUserIssuer === userDto?.id_User
+                                                ? 'justify-end'
+                                                : 'justify-start'
+                                            }`}
+                                    >
+                                        <div
+                                            className={`mx-2 max-w-[70%] p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User
+                                                    ? 'bg-blue-500 text-white'
+                                                    : 'bg-gray-200'
+                                                }`}
+                                        >
+                                            <a
+                                                href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User
+                                                        ? userDto?.id_User
+                                                        : messagedto.idUserIssuer
+                                                    }`}
+                                            >
+                                                <p>
+                                                    <strong>
+                                                        {messagedto.idUserIssuer === userDto?.id_User
+                                                            ? userDto?.pseudo
+                                                            : messagedto.userIssuerPseudo}
+                                                    </strong>
+                                                </p>
+                                            </a>
+                                            <p>{messagedto.message_content}</p>
+                                            <p className="text-xs text-gray-500">
+                                                {messagedto.date_of_request.toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <p>Chargement...</p>
+                        )}
+                    </div>
                     <div className="flex items-center p-2">
                         <input
                             type="text"
                             value={messageContent}
                             onChange={(e) => setMessageContent(e.target.value)}
-                            className="flex-1 px-2 py-1 rounded-lg border border-gray-300"
+                            className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none"
                             placeholder="ecrire un message"
                         />
                         <button
                             onClick={handleSendMessage}
-                            className="ml-2 px-4 py-1 rounded-lg bg-blue-500 text-white"
+                            className="ml-2 px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600"
                         >
                             Envoyer
                         </button>
                     </div>
                 </div>
-                <a href={`/request`} className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                <a
+                    href={`/request`}
+                    className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
+                >
                     Voir mes matchs
                 </a>
             </div>

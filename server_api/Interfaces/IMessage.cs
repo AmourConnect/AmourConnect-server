@@ -7,5 +7,6 @@ namespace server_api.Interfaces
     {
         void AddMessage(Message Message);
         ICollection<GetMessageDto> GetMessages(int idUserIssuer, int idUserReceiver);
+        bool DeleteMessage(int Id_Message);
     }
 }
