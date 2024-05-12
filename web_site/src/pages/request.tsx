@@ -150,6 +150,7 @@ export default function Request() {
                         </div>
                     </div>
                 </div>
+                <a href="/welcome" className="block mt-4 text-center underline">Aller a la page welcome pour chercher des proies</a>
             </div>
         );
     }

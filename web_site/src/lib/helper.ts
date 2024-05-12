@@ -1,3 +1,5 @@
+import { GetMessageDto } from "../Hook/type";
+
 export function ConvertingADateToAge(date_of_birth: Date): number {
     const today = new Date();
     const birthDate = new Date(date_of_birth);
@@ -18,3 +20,13 @@ export const isValidDate = (date: string) => {
     const d = new Date(date);
     return d instanceof Date && !isNaN(d.getTime());
 };
+
+export const compareMessagesByDate = (a: GetMessageDto, b: GetMessageDto) => {
+    if (a.date_of_request < b.date_of_request) {
+        return -1;
+    }
+    if (a.date_of_request > b.date_of_request) {
+        return 1;
+    }
+    return 0;
+}

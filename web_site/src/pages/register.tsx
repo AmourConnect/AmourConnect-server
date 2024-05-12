@@ -13,7 +13,7 @@ export default function Register() {
 
 
 
-    const { status, UserGetConnected, AuthRegister, errorMessage } = UseAuth();
+    const { status, UserGetConnected, AuthRegister, MessageApi } = UseAuth();
     const router = useRouter();
 
 
@@ -70,7 +70,7 @@ export default function Register() {
 
                         <form onSubmit={handleSubmit} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
 
-                            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+                            {MessageApi && <p style={{ color: "red" }}>{MessageApi}</p>}
 
                                 <div>
                                     <label htmlFor="pseudo" className="sr-only">Pseudo</label>

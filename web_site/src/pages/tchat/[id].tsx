@@ -5,7 +5,7 @@ import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-
+import { compareMessagesByDate } from '../../lib/helper';
 
 
 export default function TchatID() {
@@ -26,10 +26,10 @@ export default function TchatID() {
         if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
                 router.push('/login');
-            }, 1000);
+            }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, UserGetConnected, router]);
+    }, [status, UserGetConnected, GetTchatID, idNumber,router]);
 
 
 
@@ -38,9 +38,6 @@ export default function TchatID() {
         SendMessage(idNumber, messageContent);
         setMessageContent('');
     };
-
-
-
 
     if (status === AuthStatus.Authenticated) {
         return (
@@ -51,9 +48,12 @@ export default function TchatID() {
                 </Head>
                 <div className="w-full max-w-xl mx-auto">
                     {Array.isArray(messageDto) && messageDto.length > 0 ? (
-                        messageDto.map((messagedto: GetMessageDto) => (
+                        messageDto.sort(compareMessagesByDate).map((messagedto: GetMessageDto) => (
                             <div key={messagedto.id_Message} className={`flex items-center p-2 ${messagedto.idUserIssuer === userDto?.id_User ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`mx-2 p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+                                    <a href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User ? userDto?.id_User : messagedto.idUserIssuer}`}>
+                                    <p><strong>{messagedto.idUserIssuer === userDto?.id_User ? userDto?.pseudo : messagedto.userIssuerPseudo}</strong></p>
+                                    </a>
                                     <p>{messagedto.message_content}</p>
                                     <p className="text-xs text-gray-500">{messagedto.date_of_request.toLocaleString()}</p>
                                 </div>
@@ -78,6 +78,9 @@ export default function TchatID() {
                         </button>
                     </div>
                 </div>
+                <a href={`/request`} className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                    Voir mes matchs
+                </a>
             </div>
         );
     }

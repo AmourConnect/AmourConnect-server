@@ -10,7 +10,7 @@ export function UseAuth() {
     const [userDto, setUserDto] = useState<GetUserDto | null>(null);
     const [requestFriendsDto, setRequestFriendsDto] = useState<GetRequestFriendsDto | null>(null);
     const [messageDto, setMessageDto] = useState<GetMessageDto | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [MessageApi, setMessageApi] = useState<string | null>(null);
 
     let status: AuthStatus;
 
@@ -36,12 +36,12 @@ export function UseAuth() {
         apiFetch<GetUserDto>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
             .then(response => {
                 setUserDto(response);
-                setErrorMessage(null);
+                setMessageApi(null);
                 window.location.reload();
             })
             .catch(error => {
                 if (error instanceof ApiError) {
-                    setErrorMessage(error.message);
+                    setMessageApi(error.message);
                 }
                 setUserDto(null)
             });
@@ -94,8 +94,16 @@ export function UseAuth() {
 
     const RequestFriendsAdd = useCallback((Id_User :number) => {
         apiFetch<GetRequestFriendsDto>("/RequestFriends/AddRequest/" + Id_User, { method: 'POST' })
-            .then(response => setRequestFriendsDto(response))
-            .catch(() => setRequestFriendsDto(null))
+            .then(response => {
+                setRequestFriendsDto(response);
+                setMessageApi(null);
+            })
+            .catch(error => {
+                if (error instanceof ApiError) {
+                    setMessageApi(error.message);
+                }
+                setRequestFriendsDto(null)
+            });
     }, []);
   
 
@@ -131,7 +139,7 @@ export function UseAuth() {
 
       return {
         status,
-        errorMessage,
+        MessageApi,
         GetRequestFriends,
         AcceptRequestFriends,
         SendMessage,

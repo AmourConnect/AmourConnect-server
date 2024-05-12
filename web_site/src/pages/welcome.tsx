@@ -1,9 +1,10 @@
 import { AuthStatus, GetUserDto } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
+import PopUp from "../app/components/pop_up1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { ConvertingADateToAge } from "../lib/helper";
@@ -13,8 +14,7 @@ import { motion } from 'framer-motion';
 export default function Welcome() {
 
 
-
-    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd } = UseAuth();
+    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd, MessageApi } = UseAuth();
     const router = useRouter();
 
 
@@ -32,6 +32,25 @@ export default function Welcome() {
 
 
 
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if (show && MessageApi) {
+            const timer = setTimeout(() => {
+                setShow(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [show, MessageApi]);
+
+
+    function button_requestfriendsAdd(id_user: number)
+    {
+        RequestFriendsAdd(id_user);
+        setShow(true);
+    }
+
+
     if (status === AuthStatus.Authenticated) {
         return (
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -39,10 +58,8 @@ export default function Welcome() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
-                <a href={`/profile`} className="text-white bg-pink-700 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                    Voir mon profil
-                </a>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    {show && MessageApi && <PopUp title="Message" description={MessageApi} />}
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         {Array.isArray(userDto) && userDto.length > 0 ? (
                             userDto.map((account: GetUserDto) => (
@@ -64,13 +81,15 @@ export default function Welcome() {
                                     )}
                                     <div className="text-xl font-medium text-black dark:text-white">
                                         {account.sex === 'F' ? 'Mme ' : 'Mr '}
-                                        {account.pseudo}
+                                        <a href={`/profil-details/${account.id_User}`}>
+                                            {account.pseudo}
+                                        </a>
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(account.date_of_birth)} ans</div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400">Sex : {account.sex}</div>
                                     <button
                                         className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                                        onClick={() => RequestFriendsAdd(account.id_User)}
+                                        onClick={() => button_requestfriendsAdd(account.id_User)}
                                     >
                                         Demande de match
                                     </button>
@@ -80,7 +99,15 @@ export default function Welcome() {
                             <div className="text-sm text-gray-500 dark:text-gray-400">Aucun utilisateur à afficher à cause de vos critères (ville, âge, sexe...) modifier votre profil</div>
                         )}
                     </div>
-                   </div>
+                </div>
+                <div className="md:w-1/2 flex items-center justify-end">
+                    <a href={`/profile`} className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                        Voir mon profil
+                    </a>
+                    <a href={`/request`} className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                        Voir mes matchs
+                    </a>
+                </div>
             </div>
         );
     }
