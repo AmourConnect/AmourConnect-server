@@ -11,7 +11,7 @@ namespace server_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUserConnectAsync))]
     public class MessageController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -30,10 +30,13 @@ namespace server_api.Controllers
         [HttpPost("SendMessage")]
         public async Task<IActionResult> SendMessage([FromBody] SetMessageDto setmessageDto)
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(data_user_now_connect.Id_User, setmessageDto.IdUserReceiver);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, setmessageDto.IdUserReceiver);
 
             if (existingRequest != null)
             {
@@ -49,7 +52,7 @@ namespace server_api.Controllers
 
                 var message = new Message
                 {
-                    IdUserIssuer = data_user_now_connect.Id_User,
+                    IdUserIssuer = dataUserNowConnect.Id_User,
                     Id_UserReceiver = setmessageDto.IdUserReceiver,
                     message_content = setmessageDto.MessageContent,
                     Date_of_request = DateTime.Now.ToUniversalTime(),
@@ -68,10 +71,13 @@ namespace server_api.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetMessageDto>))]
         public async Task<IActionResult> GetUserMessage([FromRoute] int Id_UserReceiver)
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(data_user_now_connect.Id_User, Id_UserReceiver);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
 
             if (existingRequest != null)
             {
@@ -80,7 +86,7 @@ namespace server_api.Controllers
                     return Conflict(new { message = "There must be validation of the friend request to chat" });
                 }
 
-                ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(data_user_now_connect.Id_User, Id_UserReceiver);
+                ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
 
                 if (!ModelState.IsValid)
                 {

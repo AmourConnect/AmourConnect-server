@@ -20,7 +20,7 @@ namespace server_api.Utils
 
 
 
-        public static async Task<byte[]> ConvertImageToByteArray(IFormFile image)
+        public static async Task<byte[]> ConvertImageToByteArrayAsync(IFormFile image)
         {
             if (image == null)
             {

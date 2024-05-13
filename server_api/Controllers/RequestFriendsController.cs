@@ -10,7 +10,7 @@ namespace server_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUserConnectAsync))]
     public class RequestFriendsController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -26,12 +26,12 @@ namespace server_api.Controllers
 
         [HttpGet("GetRequestFriends")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ICollection<GetRequestFriendsDto>>))]
-        public IActionResult GetRequestFriends()
+        public async Task<IActionResult> GetRequestFriends()
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            ICollection<GetRequestFriendsDto> requestFriends = _requestFriendsRepository.GetRequestFriends(data_user_now_connect.Id_User);
+            ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
 
             return Ok(requestFriends);
         }
@@ -39,13 +39,16 @@ namespace server_api.Controllers
 
 
         [HttpPost("AddRequest/{IdUserReceiver}")]
-        public IActionResult RequestFriends([FromRoute] int IdUserReceiver)
+        public async Task<IActionResult> RequestFriends([FromRoute] int IdUserReceiver)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
 
-            User userReceiver = _userRepository.GetUserByIdUser(IdUserReceiver);
+            User userReceiver = await _userRepository.GetUserByIdUserAsync(IdUserReceiver);
 
 
             if (userReceiver == null)
@@ -54,13 +57,13 @@ namespace server_api.Controllers
             }
 
 
-            if (data_user_now_connect.Id_User == userReceiver.Id_User)
+            if (dataUserNowConnect.Id_User == userReceiver.Id_User)
             {
                 return BadRequest(new { message = "User cannot send a friend request to themselves" });
             }
 
 
-            RequestFriends existingRequest = _requestFriendsRepository.GetRequestFriendById(data_user_now_connect.Id_User, IdUserReceiver);
+            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
 
             if (existingRequest != null)
             {
@@ -76,25 +79,28 @@ namespace server_api.Controllers
 
             RequestFriends requestFriends = new RequestFriends
             {
-                UserIssuer = data_user_now_connect,
+                UserIssuer = dataUserNowConnect,
                 UserReceiver = userReceiver,
                 Status = RequestStatus.Onhold,
                 Date_of_request = DateTime.Now.ToUniversalTime()
             };
 
-            _requestFriendsRepository.AddRequestFriend(requestFriends);
+            await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
 
             return Ok(new { message = "Request Friend carried out" });
         }
 
 
         [HttpPatch("AcceptRequestFriends/{IdUserIssuer}")]
-        public IActionResult AcceptFriendRequest([FromRoute] int IdUserIssuer)
+        public async Task<IActionResult> AcceptFriendRequest([FromRoute] int IdUserIssuer)
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            RequestFriends friendRequest = _requestFriendsRepository.GetUserFriendRequestById(data_user_now_connect.Id_User, IdUserIssuer);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            RequestFriends friendRequest = await _requestFriendsRepository.GetUserFriendRequestByIdAsync(dataUserNowConnect.Id_User, IdUserIssuer);
 
             if (friendRequest == null)
             {
@@ -103,7 +109,7 @@ namespace server_api.Controllers
 
             friendRequest.Status = RequestStatus.Accepted;
 
-            _requestFriendsRepository.UpdateStatusRequestFriends(friendRequest);
+            await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
 
             return Ok(new { message = "Request Friend accepted" });
         }

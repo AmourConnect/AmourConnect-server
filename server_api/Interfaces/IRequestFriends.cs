@@ -5,11 +5,10 @@ namespace server_api.Interfaces
 {
     public interface IRequestFriends
     {
-        ICollection<GetRequestFriendsDto> GetRequestFriends(int Id_User);
-        RequestFriends GetRequestFriendById(int IdUserIssuer, int IdUserReceiver);
-        void AddRequestFriend(RequestFriends requestFriends);
-        RequestFriends GetUserFriendRequestById(int Id_User, int IdUserIssuer);
-        void UpdateStatusRequestFriends(RequestFriends friendRequest);
+        Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User);
         Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver);
+        Task AddRequestFriendAsync(RequestFriends requestFriends);
+        Task<RequestFriends> GetUserFriendRequestByIdAsync(int Id_User, int IdUserIssuer);
+        Task UpdateStatusRequestFriendsAsync(RequestFriends friendRequest);
     }
 }

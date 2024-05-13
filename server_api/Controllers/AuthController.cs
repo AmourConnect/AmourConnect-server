@@ -47,11 +47,11 @@ namespace server_api.Controllers
                 return BadRequest();
             }
 
-            int? Id_User = _userRepository.GetUserIdWithGoogleId(EmailGoogle, userIdGoogle);
+            int? Id_User = await _userRepository.GetUserIdWithGoogleIdAsync(EmailGoogle, userIdGoogle);
 
             if (Id_User > 0)
             {
-                return CreateSessionLoginAndReturnResponse(Id_User.Value);
+                return await CreateSessionLoginAndReturnResponseAsync(Id_User.Value);
             }
             else
             {
@@ -63,8 +63,11 @@ namespace server_api.Controllers
 
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] SetUserRegistrationDto setuserRegistrationDto)
+        public async Task<IActionResult> Register([FromBody] SetUserRegistrationDto setuserRegistrationDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var (userIdGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
@@ -79,25 +82,25 @@ namespace server_api.Controllers
                 return result; // return IActionResult
             }
 
-            if (_userRepository.GetUserByPseudo(setuserRegistrationDto.Pseudo))
+            if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
             {
                 return BadRequest(new { message = "Pseudo Already use" });
             }
 
-            int? id_user = _userRepository.GetUserIdWithGoogleId(emailGoogle, userIdGoogle);
+            int? id_user = await _userRepository.GetUserIdWithGoogleIdAsync(emailGoogle, userIdGoogle);
 
             if (id_user > 0)
             {
-                return CreateSessionLoginAndReturnResponse(id_user.Value);
+                return await CreateSessionLoginAndReturnResponseAsync(id_user.Value);
             }
 
             else 
             {
-                int? id_user2 = _userRepository.CreateUser(userIdGoogle, emailGoogle, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.Pseudo, setuserRegistrationDto.city);
+                int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.Pseudo, setuserRegistrationDto.city);
 
                 if (id_user2.HasValue)
                 {
-                    ALSessionUserDto sessionData = _userRepository.UpdateSessionUser(id_user2.Value);
+                    ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
                     return Ok(new { message = "Register finish" });
                 }
@@ -110,9 +113,9 @@ namespace server_api.Controllers
 
 
 
-        private IActionResult CreateSessionLoginAndReturnResponse(int Id_User)
+        private async Task<IActionResult> CreateSessionLoginAndReturnResponseAsync(int Id_User)
         {
-            ALSessionUserDto sessionData = _userRepository.UpdateSessionUser(Id_User);
+            ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
             CookieUtils.CreateSessionCookie(Response, sessionData);
             return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
         }

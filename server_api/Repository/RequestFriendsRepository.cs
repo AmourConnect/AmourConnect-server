@@ -16,9 +16,9 @@ namespace server_api.Repository
         }
 
 
-        public ICollection<GetRequestFriendsDto> GetRequestFriends(int Id_User)
+        public async Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User)
         {
-            return _context.RequestFriends
+            return await _context.RequestFriends
                 .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
                 .Select(r => new GetRequestFriendsDto
                 {
@@ -30,17 +30,7 @@ namespace server_api.Repository
                     Status = r.Status,
                     Date_of_request = r.Date_of_request
                 })
-                .ToList();
-        }
-
-
-
-        public RequestFriends GetRequestFriendById(int IdUserIssuer, int IdUserReceiver)
-        {
-            return _context.RequestFriends
-            .Where(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == IdUserReceiver)
-                || (r.IdUserIssuer == IdUserReceiver && r.Id_UserReceiver == IdUserIssuer))
-                .FirstOrDefault();
+                .ToListAsync();
         }
 
         public async Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver)
@@ -52,26 +42,25 @@ namespace server_api.Repository
         }
 
 
-        public void AddRequestFriend(RequestFriends requestFriends)
+        public async Task AddRequestFriendAsync(RequestFriends requestFriends)
         {
-            _context.RequestFriends.Add(requestFriends);
-            _context.SaveChanges();
+            await _context.RequestFriends.AddAsync(requestFriends);
+            await _context.SaveChangesAsync();
         }
 
 
-        public RequestFriends GetUserFriendRequestById(int Id_User, int IdUserIssuer)
+        public async Task<RequestFriends> GetUserFriendRequestByIdAsync(int Id_User, int IdUserIssuer)
         {
-            return _context.RequestFriends
-        .FirstOrDefault(r =>
-            (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
+            return await _context.RequestFriends
+        .FirstOrDefaultAsync(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
         }
 
 
 
-        public void UpdateStatusRequestFriends(RequestFriends friendRequest)
+        public async Task UpdateStatusRequestFriendsAsync(RequestFriends friendRequest)
         {
             _context.Entry(friendRequest).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

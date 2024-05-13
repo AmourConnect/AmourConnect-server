@@ -22,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessage, MessageRepository>();
 builder.Services.AddScoped<IRequestFriends, RequestFriendsRepository>();
-builder.Services.AddScoped<AuthorizeUserConnect>();
+builder.Services.AddScoped<AuthorizeUserConnectAsync>();
 
 
 builder.Services.AddCors(options =>

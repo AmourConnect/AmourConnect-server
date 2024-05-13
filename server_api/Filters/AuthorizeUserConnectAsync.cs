@@ -6,16 +6,16 @@ using server_api.Utils;
 
 namespace server_api.Filters
 {
-    public class AuthorizeUserConnect : Attribute, IAuthorizationFilter
+    public class AuthorizeUserConnectAsync : Attribute, IAsyncAuthorizationFilter
     {
         private readonly IUserRepository _userRepository;
 
-        public AuthorizeUserConnect(IUserRepository userRepository)
+        public AuthorizeUserConnectAsync(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var cookieValue = CookieUtils.GetCookieUser(context.HttpContext);
             if (string.IsNullOrEmpty(cookieValue))
@@ -24,7 +24,7 @@ namespace server_api.Filters
             }
             else
             {
-                User user = _userRepository.GetUserWithCookie(cookieValue);
+                User user = await _userRepository.GetUserWithCookieAsync(cookieValue);
                 if (user == null)
                 {
                     context.Result = new UnauthorizedResult();

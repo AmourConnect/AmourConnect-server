@@ -5,12 +5,13 @@ using server_api.Filters;
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Utils;
+using server_api.mappers;
 
 namespace server_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUserConnectAsync))]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -24,17 +25,16 @@ namespace server_api.Controllers
 
         [HttpGet("GetUsersToMach")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
-        public IActionResult GetUsersToMach()
+        public async Task<IActionResult> GetUsersToMach()
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
-
-            ICollection<GetUserDto> users = _userRepository.GetUsersToMatch(data_user_now_connect);
-
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            ICollection<GetUserDto> users = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
+
             return Ok(users);
         }
 
@@ -42,20 +42,15 @@ namespace server_api.Controllers
 
         [HttpGet("GetUserConnected")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
-        public IActionResult GetUserOnly()
+        public async Task<IActionResult> GetUserOnly()
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = _userRepository.GetUserWithCookie(token_session_user);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            GetUserDto userDto = new GetUserDto
-            {
-                Id_User = data_user_now_connect.Id_User,
-                Pseudo = data_user_now_connect.Pseudo,
-                Profile_picture = data_user_now_connect.Profile_picture,
-                city = data_user_now_connect.city,
-                sex = data_user_now_connect.sex,
-                date_of_birth = data_user_now_connect.date_of_birth
-            };
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            GetUserDto userDto = dataUserNowConnect.ToGetUserDto();
             return Ok(userDto);
         }
 
@@ -63,60 +58,59 @@ namespace server_api.Controllers
         [HttpPatch("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromForm] SetUserUpdateDto setUserUpdateDto)
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User data_user_now_connect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var imageData = await MessUtils.ConvertImageToByteArray(setUserUpdateDto.Profile_picture);
+            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            var imageData = await MessUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
 
             var newsValues = new
             {
                 Profile_picture = RegexUtils.CheckPicture(setUserUpdateDto.Profile_picture)
                                 ? imageData
-                                : data_user_now_connect.Profile_picture,
+                                : dataUserNowConnect.Profile_picture,
 
                 city = RegexUtils.CheckCity(setUserUpdateDto.city)
                           ? setUserUpdateDto.city
-                          : data_user_now_connect.city,
+                          : dataUserNowConnect.city,
 
                 sex = RegexUtils.CheckSex(setUserUpdateDto.sex)
                          ? setUserUpdateDto.sex
-                         : data_user_now_connect.sex,
+                         : dataUserNowConnect.sex,
 
                 date_of_birth = RegexUtils.CheckDate(setUserUpdateDto.date_of_birth)
                             ? setUserUpdateDto.date_of_birth ?? DateTime.MinValue
-                            : data_user_now_connect.date_of_birth,
+                            : dataUserNowConnect.date_of_birth,
             };
 
-            data_user_now_connect.Profile_picture = newsValues.Profile_picture;
-            data_user_now_connect.city = newsValues.city;
-            data_user_now_connect.sex = newsValues.sex;
-            data_user_now_connect.date_of_birth = newsValues.date_of_birth;
+            dataUserNowConnect.Profile_picture = newsValues.Profile_picture;
+            dataUserNowConnect.city = newsValues.city;
+            dataUserNowConnect.sex = newsValues.sex;
+            dataUserNowConnect.date_of_birth = newsValues.date_of_birth;
 
-            await _userRepository.UpdateUser(data_user_now_connect.Id_User, data_user_now_connect);
+            await _userRepository.UpdateUserAsync(dataUserNowConnect.Id_User, dataUserNowConnect);
 
             return NoContent();
         }
 
 
         [HttpGet("GetUser/{Id_User}")]
-        public IActionResult GetUser([FromRoute] int Id_User)
+        public async Task<IActionResult> GetUser([FromRoute] int Id_User)
         {
-            User user = _userRepository.GetUserByIdUser(Id_User);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            GetUserDto userDto = new GetUserDto
-            {
-                Id_User = user.Id_User,
-                Pseudo = user.Pseudo,
-                Profile_picture = user.Profile_picture,
-                city = user.city,
-                sex = user.sex,
-                date_of_birth = user.date_of_birth
-            };
+            GetUserDto userDto = user.ToGetUserDto();
+
             return Ok(userDto);
         }
     }
