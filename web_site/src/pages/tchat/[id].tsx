@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { compareMessagesByDate } from '../../lib/helper';
-import Image from 'next/image';
 
 
 export default function TchatID() {

@@ -100,9 +100,9 @@ namespace server_api.Controllers
 
                 if (id_user2.HasValue)
                 {
-                    await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
                     ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
+                    await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
                     return Ok(new ALApiResponse { message = "Register finish", succes = true });
                 }
                 else

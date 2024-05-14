@@ -3,17 +3,18 @@ import Loader1 from "../../app/components/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { ConvertingADateToAge } from "../../lib/helper";
+import PopUp from "@/app/components/pop_up1";
 
 
 
 export default function ProfileDetailID() {
 
 
-    const { status, UserGetUserID, userDto } = UseAuth();
+    const { status, UserGetUserID, userDto, requestFriendsDto, MessageApi, RequestFriendsAdd } = UseAuth();
     const router = useRouter();
     const { id } = router.query;
     const idNumber = Number(id);
@@ -31,6 +32,24 @@ export default function ProfileDetailID() {
     }, [status, UserGetUserID, router]);
 
 
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if (show && MessageApi || requestFriendsDto) {
+            const timer = setTimeout(() => {
+                setShow(false);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [show, MessageApi, requestFriendsDto]);
+
+
+    function button_requestfriendsAdd(id_user: number)
+    {
+        RequestFriendsAdd(id_user);
+        setShow(true);
+    }
+
 
     if (status === AuthStatus.Authenticated) {
 
@@ -40,6 +59,9 @@ export default function ProfileDetailID() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
+                {show && (MessageApi || requestFriendsDto) && (
+                        <PopUp title="Message" description={MessageApi || requestFriendsDto?.message} />
+                )}
                 {userDto ? (
                     <>
                         <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Le detail dune proie</h1>
@@ -67,6 +89,12 @@ export default function ProfileDetailID() {
                                 <div className="text-pink-700">Age : {ConvertingADateToAge(userDto.date_of_birth)} ans</div>
                             </div>
                         </div>
+                        <button
+                                        className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
+                                        onClick={() => button_requestfriendsAdd(userDto.id_User)}
+                                    >
+                                        Demande de match
+                        </button>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                         </div>
                         <a href="/welcome" className="block mt-4 text-center underline text-pink-700">Aller a la page welcome pour chercher des proies</a>
