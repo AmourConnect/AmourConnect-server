@@ -5,7 +5,7 @@ using server_api.Filters;
 using server_api.Interfaces;
 using server_api.Models;
 using server_api.Utils;
-using server_api.mappers;
+using server_api.Mappers;
 
 namespace server_api.Controllers
 {
@@ -75,6 +75,10 @@ namespace server_api.Controllers
                 city = RegexUtils.CheckCity(setUserUpdateDto.city)
                           ? setUserUpdateDto.city
                           : dataUserNowConnect.city,
+                
+                Description = RegexUtils.CheckDescription(setUserUpdateDto.Description)
+                          ? setUserUpdateDto.Description
+                          : dataUserNowConnect.Description,
 
                 sex = RegexUtils.CheckSex(setUserUpdateDto.sex)
                          ? setUserUpdateDto.sex
@@ -88,6 +92,7 @@ namespace server_api.Controllers
             dataUserNowConnect.Profile_picture = newsValues.Profile_picture;
             dataUserNowConnect.city = newsValues.city;
             dataUserNowConnect.sex = newsValues.sex;
+            dataUserNowConnect.Description = newsValues.Description;
             dataUserNowConnect.date_of_birth = newsValues.date_of_birth;
 
             await _userRepository.UpdateUserAsync(dataUserNowConnect.Id_User, dataUserNowConnect);
@@ -97,6 +102,7 @@ namespace server_api.Controllers
 
 
         [HttpGet("GetUser/{Id_User}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
         public async Task<IActionResult> GetUser([FromRoute] int Id_User)
         {
             if (!ModelState.IsValid)

@@ -8,6 +8,7 @@ using server_api.Utils;
 using DotNetEnv;
 using server_api.Dto.AppLayerDto;
 using server_api.Dto.SetDto;
+using server_api.Mappers;
 
 namespace server_api.Controllers
 {
@@ -72,10 +73,10 @@ namespace server_api.Controllers
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return BadRequest(new { message = "Please login with Google before register" });
+                return BadRequest(new ApiResponse { message = "Please login with Google before register", succes = false });
             }
 
-            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.city, setuserRegistrationDto.Pseudo);
+            IActionResult result = RegexUtils.CheckBodyAuthRegister(this, setuserRegistrationDto);
             
             if (result != null)
             {
@@ -84,7 +85,7 @@ namespace server_api.Controllers
 
             if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
             {
-                return BadRequest(new { message = "Pseudo Already use" });
+                return BadRequest(new ApiResponse { message = "Pseudo Already use", succes = false });
             }
 
             int? id_user = await _userRepository.GetUserIdWithGoogleIdAsync(emailGoogle, userIdGoogle);
@@ -96,17 +97,17 @@ namespace server_api.Controllers
 
             else 
             {
-                int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto.date_of_birth, setuserRegistrationDto.sex, setuserRegistrationDto.Pseudo, setuserRegistrationDto.city);
+                int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
 
                 if (id_user2.HasValue)
                 {
                     ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
-                    return Ok(new { message = "Register finish" });
+                    return Ok(new ApiResponse { message = "Register finish", succes = true });
                 }
                 else
                 {
-                    return BadRequest(new { message = "Failed to create user" });
+                    return BadRequest(new ApiResponse { message = "Failed to create user", succes = false });
                 }
             }
         }

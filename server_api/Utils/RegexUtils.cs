@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using server_api.Dto.SetDto;
+using server_api.Mappers;
 using System.Text.RegularExpressions;
 
 namespace server_api.Utils
@@ -10,20 +12,25 @@ namespace server_api.Utils
         private static readonly Regex PseudoRegex = new Regex(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
         private static readonly Regex MessageRegex = new Regex(@"^.{1,200}$", RegexOptions.Compiled);
 
+        private static readonly Regex DescriptionRegex = new Regex(@"^.{1,50}$", RegexOptions.Compiled);
 
-        public static IActionResult CheckBodyAuthRegister(ControllerBase controller, DateTime? date_of_birth, string sex, string city, string Pseudo)
+
+        public static IActionResult CheckBodyAuthRegister(ControllerBase controller, SetUserRegistrationDto setUserRegistrationDto)
         {
-            if (!CheckDate(date_of_birth))
-                return controller.BadRequest(new { message = "Invalid date of birth format" });
+            if (!CheckDate(setUserRegistrationDto.date_of_birth))
+                return controller.BadRequest(new ApiResponse { message = "Invalid date of birth format", succes = false });
 
-            if (!CheckSex(sex))
-                return controller.BadRequest(new { message = "Invalid sex value" });
+            if (!CheckSex(setUserRegistrationDto.sex))
+                return controller.BadRequest(new ApiResponse { message = "Invalid sex value", succes = false });
 
-            if (!CheckCity(city))
-                return controller.BadRequest(new { message = "Invalid city format" });
+            if (!CheckCity(setUserRegistrationDto.city))
+                return controller.BadRequest(new ApiResponse { message = "Invalid city format", succes = false });
 
-            if (!CheckPseudo(Pseudo))
-                return controller.BadRequest(new { message = "Invalid pseudo format" });
+            if (!CheckPseudo(setUserRegistrationDto.Pseudo))
+                return controller.BadRequest(new ApiResponse { message = "Invalid pseudo format", succes = false });
+
+            if (!CheckDescription(setUserRegistrationDto.Description))
+                return controller.BadRequest(new ApiResponse { message = "Invalid description format", succes = false });
             
             return null; // the check regex is okay :)
         }
@@ -101,6 +108,17 @@ namespace server_api.Utils
                 return false;
             
             if (!PseudoRegex.IsMatch(Pseudo))
+                return false;
+            
+            return true;
+        }
+
+        public static bool CheckDescription(string Description)
+        {
+            if (string.IsNullOrEmpty(Description))
+                return false;
+            
+            if (!DescriptionRegex.IsMatch(Description))
                 return false;
             
             return true;

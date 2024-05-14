@@ -15,6 +15,7 @@ namespace server_api.Data
                     User newUser = new User
                     {
                         Pseudo = _GenerateRandomName(),
+                        Description = _GenerateRandomName() + _GenerateRandomPassword(),
                         EmailGoogle = _GenerateRandomEmail(),
                         userIdGoogle = _GenerateRandomPassword(),
                         city = _GenerateRandomCity(),

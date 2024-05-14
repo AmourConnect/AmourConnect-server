@@ -18,6 +18,10 @@ namespace server_api.Models
 
         [Required]
         [MaxLength(50)]
+        public string? Description { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string? EmailGoogle { get; set; }
 
         public byte[]? Profile_picture { get; set; }

@@ -12,7 +12,7 @@ using server_api.Data;
 namespace server_api.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240511130908_InitialCreate")]
+    [Migration("20240514084758_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -91,6 +91,11 @@ namespace server_api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id_User"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("EmailGoogle")
                         .IsRequired()

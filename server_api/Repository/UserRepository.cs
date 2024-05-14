@@ -5,7 +5,8 @@ using server_api.Utils;
 using Microsoft.EntityFrameworkCore;
 using server_api.Dto.AppLayerDto;
 using server_api.Dto.GetDto;
-using server_api.mappers;
+using server_api.Mappers;
+using server_api.Dto.SetDto;
 
 namespace server_api.Repository
 {
@@ -50,16 +51,17 @@ namespace server_api.Repository
 
 
 
-        public async Task<int?> CreateUserAsync(string userIdGoogle, string EmailGoogle, DateTime? date_of_birth, string sex, string Pseudo, string city)
+        public async Task<int?> CreateUserAsync(string userIdGoogle, string EmailGoogle, SetUserRegistrationDto setUserRegistrationDto)
         {
             var user = new User
             {
                 userIdGoogle = userIdGoogle,
                 EmailGoogle = EmailGoogle,
-                date_of_birth = date_of_birth.HasValue ? date_of_birth.Value.ToUniversalTime() : DateTime.MinValue,
-                sex = sex,
-                Pseudo = Pseudo,
-                city = city,
+                Description = setUserRegistrationDto.Description,
+                date_of_birth = setUserRegistrationDto.date_of_birth.HasValue ? setUserRegistrationDto.date_of_birth.Value.ToUniversalTime() : DateTime.MinValue,
+                sex = setUserRegistrationDto.sex,
+                Pseudo = setUserRegistrationDto.Pseudo,
+                city = setUserRegistrationDto.city,
                 account_created_at = DateTime.Now.ToUniversalTime(),
             };
 
@@ -95,7 +97,7 @@ namespace server_api.Repository
                 user.token_session_user = newSessionToken;
                 user.date_token_session_expiration = expirationDate;
 
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             return new ALSessionUserDto

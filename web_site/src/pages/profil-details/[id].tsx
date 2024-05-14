@@ -60,7 +60,8 @@ export default function ProfileDetailID() {
                                     {userDto.sex === 'F' ? 'Mme ' : 'Mr '}
                                     <span className="font-bold text-pink-700">{userDto.pseudo}</span>
                                 </div>
-                                <p className="text-pink-700">Sexe : <span className="font-bold">{userDto.sex}</span></p>
+                                <p className="text-pink-700">Description : <span className="font-bold">{userDto.description}</span></p>
+                                <p className="text-pink-700">Sex : <span className="font-bold">{userDto.sex}</span></p>
                                 <p className="text-pink-700">Ville : <span className="font-bold">{userDto.city}</span></p>
                                 <p className="text-pink-700">Date de naissance : {new Date(userDto.date_of_birth).toLocaleString()}</p>
                                 <div className="text-pink-700">Age : {ConvertingADateToAge(userDto.date_of_birth)} ans</div>

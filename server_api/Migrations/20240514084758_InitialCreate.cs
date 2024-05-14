@@ -20,6 +20,7 @@ namespace server_api.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     userIdGoogle = table.Column<string>(type: "text", nullable: false),
                     Pseudo = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: false),
+                    Description = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     EmailGoogle = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Profile_picture = table.Column<byte[]>(type: "bytea", nullable: true),
                     date_token_session_expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),

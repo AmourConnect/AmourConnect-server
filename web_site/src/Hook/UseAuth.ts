@@ -32,8 +32,8 @@ export function UseAuth() {
 
 
 
-    const AuthRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date) => {
-        apiFetch<GetUserDto>("/Auth/register", { json: { pseudo, sex, city, date_of_birth } })
+    const AuthRegister = useCallback((pseudo: string, sex: string, city: string, date_of_birth: Date, description: string) => {
+        apiFetch<GetUserDto>("/Auth/register", { json: { pseudo, sex, city, date_of_birth, description } })
             .then(response => {
                 setUserDto(response);
                 setMessageApi(null);

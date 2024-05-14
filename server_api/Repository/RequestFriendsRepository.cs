@@ -2,6 +2,7 @@
 using server_api.Data;
 using server_api.Dto.GetDto;
 using server_api.Interfaces;
+using server_api.Mappers;
 using server_api.Models;
 
 namespace server_api.Repository
@@ -19,17 +20,10 @@ namespace server_api.Repository
         public async Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User)
         {
             return await _context.RequestFriends
+                .Include(r => r.UserIssuer)
+                .Include(r => r.UserReceiver)
                 .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
-                .Select(r => new GetRequestFriendsDto
-                {
-                    Id_RequestFriends = r.Id_RequestFriends,
-                    IdUserIssuer = r.IdUserIssuer,
-                    UserIssuerPseudo = r.UserIssuer.Pseudo,
-                    Id_UserReceiver = r.Id_UserReceiver,
-                    UserReceiverPseudo = r.UserReceiver.Pseudo,
-                    Status = r.Status,
-                    Date_of_request = r.Date_of_request
-                })
+                .Select(r => r.ToGetRequestFriendsDto())
                 .ToListAsync();
         }
 
@@ -52,7 +46,8 @@ namespace server_api.Repository
         public async Task<RequestFriends> GetUserFriendRequestByIdAsync(int Id_User, int IdUserIssuer)
         {
             return await _context.RequestFriends
-        .FirstOrDefaultAsync(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
+        .FirstOrDefaultAsync(r =>
+            (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
         }
 
 

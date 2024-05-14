@@ -19,6 +19,7 @@ export default function Profile() {
 
 
     const [sex, setSex] = useState('');
+    const [Description, setDescription] = useState('');
     const [city, setCity] = useState('');
     const [date_of_birth, setdate_of_birth] = useState('');
 
@@ -56,6 +57,7 @@ export default function Profile() {
             }
             formData.append("city", city);
             formData.append("sex", sex);
+            formData.append("Description", Description);
             UserPatch(formData);
         };
 
@@ -101,6 +103,7 @@ export default function Profile() {
                                     {userDto?.pseudo}
                                 </div>
                                 <p>Date de naissance : {new Date(userDto?.date_of_birth || 0).toLocaleString()}</p>
+                                <p>Description : {userDto?.description}</p>
                                 <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(userDto?.date_of_birth || new Date())} ans</div>
                             </div>
                         </div>
@@ -142,6 +145,21 @@ export default function Profile() {
                                     <option value="F">Feminin</option>
                                 </select>
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Sex</button>
+                            </form>
+                            <form onSubmit={handleSubmit} className="w-full sm:w-auto">
+                                    <label htmlFor="description" className="sr-only">Description</label>
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="descripton"
+                                            value={Description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                            className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                                            placeholder="Enter Description"
+                                            required
+                                        />
+                                    </div>
+                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Description</button>
                             </form>
                         </div>
                         <a href="/welcome" className="block mt-4 text-center underline">Aller à la page welcome pour chercher des proies</a>

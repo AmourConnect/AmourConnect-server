@@ -1,7 +1,7 @@
 using server_api.Dto.GetDto;
 using server_api.Models;
 
-namespace server_api.mappers
+namespace server_api.Mappers
 {
     public static class UserMapper
     {
@@ -16,6 +16,7 @@ namespace server_api.mappers
             {
                 Id_User = user.Id_User,
                 Pseudo = user.Pseudo,
+                Description = user.Description,
                 Profile_picture = user.Profile_picture,
                 city = user.city,
                 sex = user.sex,

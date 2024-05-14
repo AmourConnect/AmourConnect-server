@@ -2,6 +2,7 @@
 using server_api.Data;
 using server_api.Dto.GetDto;
 using server_api.Interfaces;
+using server_api.Mappers;
 using server_api.Models;
 
 namespace server_api.Repository
@@ -17,7 +18,7 @@ namespace server_api.Repository
 
         public async Task AddMessageAsync(Message message)
         {
-            _context.Message.Add(message);
+            await _context.Message.AddAsync(message);
             await _context.SaveChangesAsync();
         }
 
@@ -25,18 +26,11 @@ namespace server_api.Repository
         public async Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver)
         {
             return await _context.Message
+                        .Include(m => m.UserIssuer)
+                        .Include(m => m.UserReceiver)
                         .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
                                     (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
-                        .Select(m => new GetMessageDto
-                        {
-                            Id_Message = m.Id_Message,
-                            message_content = m.message_content,
-                            IdUserIssuer = m.IdUserIssuer,
-                            UserIssuerPseudo = m.UserIssuer.Pseudo,
-                            Id_UserReceiver = m.Id_UserReceiver,
-                            UserReceiverPseudo = m.UserReceiver.Pseudo,
-                            Date_of_request = m.Date_of_request
-                        })
+                        .Select(m => m.ToGetMessageDto())
                         .ToListAsync();
         }
 

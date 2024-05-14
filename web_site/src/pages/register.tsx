@@ -19,6 +19,7 @@ export default function Register() {
 
 
     const [pseudo, setPseudo] = useState('');
+    const [Description, setDescription] = useState('');
     const [sex, setSex] = useState('');
     const [city, setCity] = useState('');
     const [date_of_birth, setdate_of_birth] = useState('');
@@ -49,11 +50,12 @@ export default function Register() {
             }
             const user = {
                 pseudo: pseudo,
+                description: Description,
                 sex: sex,
                 city: city,
                 date_of_birth: new Date(date_of_birth)
             };
-            AuthRegister(user.pseudo, user.sex, user.city, user.date_of_birth);
+            AuthRegister(user.pseudo, user.sex, user.city, user.date_of_birth, user.description);
         };
 
 
@@ -77,7 +79,7 @@ export default function Register() {
 
                                     <div className="relative">
                                         <input
-                                            type="pseudo"
+                                            type="text"
                                             id="pseudo"
                                             value={pseudo}
                                             onChange={(e) => setPseudo(e.target.value)}
@@ -158,6 +160,31 @@ export default function Register() {
                                 </div>
                             </div>
 
+
+                            <div>
+                                    <label htmlFor="description" className="sr-only">Description</label>
+
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            id="descripton"
+                                            value={Description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                            className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+                                            placeholder="Enter Description"
+                                            required
+                                        />
+
+                                       <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+                                            <Image
+                                            src="/assets/images/tchat_icon.svg"
+                                            alt="Tchat icon"
+                                            width={20}
+                                            height={20}
+                                            />
+                                        </span>
+                                    </div>
+                                </div>
 
 
                             <div>

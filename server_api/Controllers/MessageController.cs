@@ -3,6 +3,7 @@ using server_api.Dto.GetDto;
 using server_api.Dto.SetDto;
 using server_api.Filters;
 using server_api.Interfaces;
+using server_api.Mappers;
 using server_api.Models;
 using server_api.Utils;
 
@@ -42,12 +43,12 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new { message = "There must be validation of the friend request to chat" });
+                    return Conflict(new ApiResponse { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 if (!RegexUtils.CheckMessage(setmessageDto.MessageContent))
                 {
-                    return BadRequest(new { message = "Message no valid" });
+                    return BadRequest(new ApiResponse { message = "Message no valid", succes = false });
                 }
 
                 var message = new Message
@@ -60,7 +61,7 @@ namespace server_api.Controllers
 
                 await _messageRepository.AddMessageAsync(message);
 
-                return Ok("Message send succes");
+                return Ok(new ApiResponse { message = "Message send succes", succes = true});
             }
             return Conflict(new { message = "You are not friends to talk together" });
         }
@@ -83,15 +84,10 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new { message = "There must be validation of the friend request to chat" });
+                    return Conflict(new ApiResponse { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 var sortedMessages = msg.OrderBy(m => m.Date_of_request);
 
@@ -106,7 +102,7 @@ namespace server_api.Controllers
 
                 return Ok(msg);
             }
-            return Conflict(new { message = "You are not friends to talk together" });
+            return Conflict(new ApiResponse { message = "You are not friends to talk together", succes = false });
         }
     }
 }
