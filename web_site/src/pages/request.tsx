@@ -120,7 +120,7 @@ export default function Request() {
                                                     <a href={`/profil-details/${item.idUserIssuer}`}>
                                                         <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo}</div>
                                                     </a>
-                                                    <div className="text-sm text-gray-500">{new Date(item.date_of_request).toLocaleString()}</div>
+                                                    Date demande<div className="text-sm text-gray-500">{new Date(item.date_of_request).toLocaleString()}</div>
                                                 </div>
                                             </div>
                                         </td>

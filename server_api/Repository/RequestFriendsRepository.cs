@@ -46,6 +46,8 @@ namespace server_api.Repository
         public async Task<RequestFriends> GetUserFriendRequestByIdAsync(int Id_User, int IdUserIssuer)
         {
             return await _context.RequestFriends
+        .Include(r => r.UserIssuer)
+        .Include(r => r.UserReceiver)
         .FirstOrDefaultAsync(r =>
             (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
         }

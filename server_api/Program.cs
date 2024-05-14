@@ -101,4 +101,4 @@ app.MapControllers();
 
 app.UseCors("web_site_Front");
 
-app.Run();
+await app.RunAsync();

@@ -8,7 +8,6 @@ using server_api.Utils;
 using DotNetEnv;
 using server_api.Dto.AppLayerDto;
 using server_api.Dto.SetDto;
-using server_api.Mappers;
 
 namespace server_api.Controllers
 {
@@ -73,7 +72,7 @@ namespace server_api.Controllers
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return BadRequest(new ApiResponse { message = "Please login with Google before register", succes = false });
+                return BadRequest(new ALApiResponse { message = "Please login with Google before register", succes = false });
             }
 
             IActionResult result = RegexUtils.CheckBodyAuthRegister(this, setuserRegistrationDto);
@@ -85,7 +84,7 @@ namespace server_api.Controllers
 
             if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
             {
-                return BadRequest(new ApiResponse { message = "Pseudo Already use", succes = false });
+                return BadRequest(new ALApiResponse { message = "Pseudo Already use", succes = false });
             }
 
             int? id_user = await _userRepository.GetUserIdWithGoogleIdAsync(emailGoogle, userIdGoogle);
@@ -101,13 +100,14 @@ namespace server_api.Controllers
 
                 if (id_user2.HasValue)
                 {
+                    await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
                     ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(id_user2.Value);
                     CookieUtils.CreateSessionCookie(Response, sessionData);
-                    return Ok(new ApiResponse { message = "Register finish", succes = true });
+                    return Ok(new ALApiResponse { message = "Register finish", succes = true });
                 }
                 else
                 {
-                    return BadRequest(new ApiResponse { message = "Failed to create user", succes = false });
+                    return BadRequest(new ALApiResponse { message = "Failed to create user", succes = false });
                 }
             }
         }

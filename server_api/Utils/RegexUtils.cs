@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using server_api.Dto.SetDto;
-using server_api.Mappers;
+using server_api.Dto.AppLayerDto;
 using System.Text.RegularExpressions;
 
 namespace server_api.Utils
@@ -18,19 +18,19 @@ namespace server_api.Utils
         public static IActionResult CheckBodyAuthRegister(ControllerBase controller, SetUserRegistrationDto setUserRegistrationDto)
         {
             if (!CheckDate(setUserRegistrationDto.date_of_birth))
-                return controller.BadRequest(new ApiResponse { message = "Invalid date of birth format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid date of birth format", succes = false });
 
             if (!CheckSex(setUserRegistrationDto.sex))
-                return controller.BadRequest(new ApiResponse { message = "Invalid sex value", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid sex value", succes = false });
 
             if (!CheckCity(setUserRegistrationDto.city))
-                return controller.BadRequest(new ApiResponse { message = "Invalid city format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid city format", succes = false });
 
             if (!CheckPseudo(setUserRegistrationDto.Pseudo))
-                return controller.BadRequest(new ApiResponse { message = "Invalid pseudo format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid pseudo format", succes = false });
 
             if (!CheckDescription(setUserRegistrationDto.Description))
-                return controller.BadRequest(new ApiResponse { message = "Invalid description format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid description format", succes = false });
             
             return null; // the check regex is okay :)
         }

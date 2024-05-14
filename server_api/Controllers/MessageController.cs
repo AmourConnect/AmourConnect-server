@@ -3,7 +3,7 @@ using server_api.Dto.GetDto;
 using server_api.Dto.SetDto;
 using server_api.Filters;
 using server_api.Interfaces;
-using server_api.Mappers;
+using server_api.Dto.AppLayerDto;
 using server_api.Models;
 using server_api.Utils;
 
@@ -43,12 +43,12 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ApiResponse { message = "There must be validation of the friend request to chat", succes = false });
+                    return Conflict(new ALApiResponse { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 if (!RegexUtils.CheckMessage(setmessageDto.MessageContent))
                 {
-                    return BadRequest(new ApiResponse { message = "Message no valid", succes = false });
+                    return BadRequest(new ALApiResponse { message = "Message no valid", succes = false });
                 }
 
                 var message = new Message
@@ -61,7 +61,7 @@ namespace server_api.Controllers
 
                 await _messageRepository.AddMessageAsync(message);
 
-                return Ok(new ApiResponse { message = "Message send succes", succes = true});
+                return Ok(new ALApiResponse { message = "Message send succes", succes = true});
             }
             return Conflict(new { message = "You are not friends to talk together" });
         }
@@ -84,7 +84,7 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ApiResponse { message = "There must be validation of the friend request to chat", succes = false });
+                    return Conflict(new ALApiResponse { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
@@ -102,7 +102,7 @@ namespace server_api.Controllers
 
                 return Ok(msg);
             }
-            return Conflict(new ApiResponse { message = "You are not friends to talk together", succes = false });
+            return Conflict(new ALApiResponse { message = "You are not friends to talk together", succes = false });
         }
     }
 }

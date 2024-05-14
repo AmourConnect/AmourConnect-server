@@ -2,7 +2,7 @@
 using server_api.Dto.GetDto;
 using server_api.Filters;
 using server_api.Interfaces;
-using server_api.Mappers;
+using server_api.Dto.AppLayerDto;
 using server_api.Models;
 using server_api.Utils;
 
@@ -54,13 +54,13 @@ namespace server_api.Controllers
 
             if (userReceiver == null)
             {
-                return BadRequest(new ApiResponse { message = "User receiver do not exist", succes = false });
+                return BadRequest(new ALApiResponse { message = "User receiver do not exist", succes = false });
             }
 
 
             if (dataUserNowConnect.Id_User == userReceiver.Id_User)
             {
-                return BadRequest(new ApiResponse { message = "User cannot send a friend request to themselves", succes = false });
+                return BadRequest(new ALApiResponse { message = "User cannot send a friend request to themselves", succes = false });
             }
 
 
@@ -70,11 +70,11 @@ namespace server_api.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ApiResponse { message = "A friend request is already pending between these users", succes = false });
+                    return Conflict(new ALApiResponse { message = "A friend request is already pending between these users", succes = false });
                 }
                 else
                 {
-                    return Conflict(new ApiResponse { message = "These users are already friends", succes = false });
+                    return Conflict(new ALApiResponse { message = "These users are already friends", succes = false });
                 }
             }
 
@@ -88,7 +88,9 @@ namespace server_api.Controllers
 
             await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
 
-            return Ok(new ApiResponse { message = "Request Friend carried out", succes = true });
+            await EmailUtils.RequestFriendMailAsync(userReceiver.EmailGoogle, userReceiver.Pseudo , dataUserNowConnect.Pseudo);
+
+            return Ok(new ALApiResponse { message = "Request Friend carried out", succes = true });
         }
 
 
@@ -112,7 +114,9 @@ namespace server_api.Controllers
 
             await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
 
-            return Ok(new ApiResponse { message = "Request Friend accepted", succes = true });
+            await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer.EmailGoogle, friendRequest.UserIssuer.Pseudo, dataUserNowConnect.Pseudo);
+
+            return Ok(new ALApiResponse { message = "Request Friend accepted", succes = true });
         }
     }
 }
