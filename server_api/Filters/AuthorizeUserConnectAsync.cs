@@ -18,25 +18,17 @@ namespace server_api.Filters
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var cookieValue = CookieUtils.GetCookieUser(context.HttpContext);
-            if (string.IsNullOrEmpty(cookieValue))
+            User user = await _userRepository.GetUserWithCookieAsync(cookieValue);
+            if (string.IsNullOrEmpty(cookieValue) || user == null)
             {
                 context.Result = new UnauthorizedResult();
+                return;
             }
-            else
+            DateTime expirationDate = DateTime.UtcNow;
+            if (user.date_token_session_expiration < expirationDate)
             {
-                User user = await _userRepository.GetUserWithCookieAsync(cookieValue);
-                if (user == null)
-                {
-                    context.Result = new UnauthorizedResult();
-                }
-                else
-                {
-                    DateTime expirationDate = DateTime.UtcNow;
-                    if (user.date_token_session_expiration < expirationDate)
-                    {
-                        context.Result = new UnauthorizedResult();
-                    }
-                }
+                context.Result = new UnauthorizedResult();
+                return;
             }
         }
     }

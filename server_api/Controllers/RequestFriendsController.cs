@@ -72,10 +72,8 @@ namespace server_api.Controllers
                 {
                     return Conflict(new ALApiResponse { message = "A friend request is already pending between these users", succes = false });
                 }
-                else
-                {
-                    return Conflict(new ALApiResponse { message = "These users are already friends", succes = false });
-                }
+                
+                return Conflict(new ALApiResponse { message = "These users are already friends", succes = false });
             }
 
             RequestFriends requestFriends = new RequestFriends

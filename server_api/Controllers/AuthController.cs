@@ -53,11 +53,9 @@ namespace server_api.Controllers
             {
                 return await CreateSessionLoginAndReturnResponseAsync(Id_User.Value);
             }
-            else
-            {
-                CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, EmailGoogle);
-                return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
-            }
+            
+            CookieUtils.CreateCookieToSaveIdGoogle(Response, userIdGoogle, EmailGoogle);
+            return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
         }
 
 
@@ -94,21 +92,16 @@ namespace server_api.Controllers
                 return await CreateSessionLoginAndReturnResponseAsync(id_user.Value);
             }
 
-            else 
-            {
-                int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
+            int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
 
-                if (id_user2.HasValue)
-                {
-                    await CreateSessionLoginAndReturnResponseAsync(id_user2.Value);
-                    await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
-                    return Ok(new ALApiResponse { message = "Register finish", succes = true });
-                }
-                else
-                {
-                    return BadRequest(new ALApiResponse { message = "Failed to create user", succes = false });
-                }
+            if (id_user2.HasValue)
+            {
+                await CreateSessionLoginAndReturnResponseAsync(id_user2.Value);
+                await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
+                return Ok(new ALApiResponse { message = "Register finish", succes = true });
             }
+            
+            return BadRequest(new ALApiResponse { message = "Failed to create user", succes = false });
         }
 
 
