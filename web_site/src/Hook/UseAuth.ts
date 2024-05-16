@@ -37,7 +37,6 @@ export function UseAuth() {
             .then(response => {
                 setUserDto(response);
                 setMessageApi(null);
-                window.location.reload();
             })
             .catch(error => {
                 if (error instanceof ApiError) {

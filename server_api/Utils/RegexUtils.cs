@@ -14,6 +14,8 @@ namespace server_api.Utils
 
         private static readonly Regex DescriptionRegex = new Regex(@"^.{1,50}$", RegexOptions.Compiled);
 
+        private static readonly Regex CookieSessionRegex = new Regex(@"^[a-zA-Z0-9_]{1,64}$", RegexOptions.Compiled);
+
 
         public static IActionResult CheckBodyAuthRegister(ControllerBase controller, SetUserRegistrationDto setUserRegistrationDto)
         {
@@ -69,7 +71,16 @@ namespace server_api.Utils
             return true;
         }
 
-
+        public static bool CheckCookieSession(string cookie)
+        {
+            if(string.IsNullOrEmpty(cookie))
+                return false;
+            
+            if(!CookieSessionRegex.IsMatch(cookie))
+                return false;
+            
+            return true;
+        }
 
         public static bool CheckSex(string sex)
         {

@@ -20,11 +20,18 @@ namespace server_api.Utils
             mail.Body = body;
             mail.IsBodyHtml = true;
 
-            SmtpServer.Port = 587;
+            SmtpServer.Port = int.Parse(Env.GetString("PORT_SMTP"));
             SmtpServer.Credentials = new System.Net.NetworkCredential(Env.GetString("EMAIL_USER"), Env.GetString("EMAIL_MDP"));
             SmtpServer.EnableSsl = true;
 
-            await SmtpServer.SendMailAsync(mail);
+            try
+            {
+                await SmtpServer.SendMailAsync(mail);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to send email to {toEmail}: {ex.Message}");
+            }
         }
 
 

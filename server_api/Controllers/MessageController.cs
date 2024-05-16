@@ -63,7 +63,7 @@ namespace server_api.Controllers
 
                 return Ok(new ALApiResponse { message = "Message send succes", succes = true});
             }
-            return Conflict(new { message = "You are not friends to talk together" });
+            return Conflict(new ALApiResponse { message = "You are not friends to talk together", succes = false });
         }
 
 

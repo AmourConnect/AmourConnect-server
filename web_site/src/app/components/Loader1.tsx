@@ -7,7 +7,7 @@ export default function Loader1() {
             <div className="max-w-xs mx-auto">
                 <Image
                     src="/assets/gif/loading_heart.gif"
-                    alt="Description de l'image"
+                    alt="Loading"
                     width={200}
                     height={200}
                     className="img-fluid"

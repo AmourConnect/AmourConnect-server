@@ -13,7 +13,7 @@ namespace server_api.Utils
         {
             var cookie = httpContext.Request.Cookies["User-AmourConnect"];
 
-            if (cookie == null)
+            if (cookie == null || !RegexUtils.CheckCookieSession(cookie))
             {
                 return string.Empty;
             }

@@ -10,6 +10,7 @@ Dating site to match with a man VS woman and look for his love❤️
 EMAIL_USER=""
 EMAIL_MDP=""
 SERVICE="smtp.gmail.com"
+PORT_SMTP="465"
 
 # OAuth Google
 ClientId=""

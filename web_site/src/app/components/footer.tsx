@@ -30,7 +30,7 @@ export default function Footer() {
             />
           <div className="order-1 md:order-2">
             <a
-              href="https://www.github.com/lyamss/amour_connect"
+              href="https://www.github.com/lyamss/AmourConnect"
               className="transition duration-300 hover:text-gray-300"
             >
               Code source du projet
