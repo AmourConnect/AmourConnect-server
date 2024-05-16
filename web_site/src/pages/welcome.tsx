@@ -1,6 +1,7 @@
 import { AuthStatus, GetUserDto } from "@/Hook/type";
 import Loader1 from "../app/components/Loader1";
 import PopUp from "../app/components/pop_up1";
+import PopUp2 from "../app/components/pop_up2";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
@@ -73,8 +74,10 @@ export default function Welcome() {
                     </a>
                 </div>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                    {show && (MessageApi || requestFriendsDto) && (
-                        <PopUp title="Message" description={MessageApi || requestFriendsDto?.message} />
+                    {show && (requestFriendsDto) && (
+                        <PopUp title="Message" description={requestFriendsDto?.message} />
+                    )} : { show &&(MessageApi) && (
+                        <PopUp2 title="Attention" description={MessageApi} />
                     )}
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         {Array.isArray(userDto) && userDto.length > 0 ? (
@@ -121,16 +124,13 @@ export default function Welcome() {
                                         Âge : {ConvertingADateToAge(account.date_of_birth)} ans
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400 md:text-base">
-                                        Sex : {account.sex}
-                                        <br>
-                                        </br>
                                         Description : {account.description}
                                     </div>
                                     <button
                                         className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
                                         onClick={() => button_requestfriendsAdd(account.id_User)}
                                     >
-                                        Demande de match
+                                        Demander un match 🥰
                                     </button>
                                 </motion.div>
                             ))

@@ -12,7 +12,7 @@ namespace server_api.Utils
         private static readonly Regex PseudoRegex = new Regex(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
         private static readonly Regex MessageRegex = new Regex(@"^.{1,200}$", RegexOptions.Compiled);
 
-        private static readonly Regex DescriptionRegex = new Regex(@"^.{1,50}$", RegexOptions.Compiled);
+        private static readonly Regex DescriptionRegex = new Regex(@"^.{1,100}$", RegexOptions.Compiled);
 
         private static readonly Regex CookieSessionRegex = new Regex(@"^[a-zA-Z0-9_]{1,64}$", RegexOptions.Compiled);
 
@@ -20,19 +20,19 @@ namespace server_api.Utils
         public static IActionResult CheckBodyAuthRegister(ControllerBase controller, SetUserRegistrationDto setUserRegistrationDto)
         {
             if (!CheckDate(setUserRegistrationDto.date_of_birth))
-                return controller.BadRequest(new ALApiResponse { message = "Invalid date of birth format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid date of birth format or length", succes = false });
 
             if (!CheckSex(setUserRegistrationDto.sex))
-                return controller.BadRequest(new ALApiResponse { message = "Invalid sex value", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid sex value or length", succes = false });
 
             if (!CheckCity(setUserRegistrationDto.city))
-                return controller.BadRequest(new ALApiResponse { message = "Invalid city format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid city format or length", succes = false });
 
             if (!CheckPseudo(setUserRegistrationDto.Pseudo))
-                return controller.BadRequest(new ALApiResponse { message = "Invalid pseudo format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid pseudo format or length", succes = false });
 
             if (!CheckDescription(setUserRegistrationDto.Description))
-                return controller.BadRequest(new ALApiResponse { message = "Invalid description format", succes = false });
+                return controller.BadRequest(new ALApiResponse { message = "Invalid description format or length", succes = false });
             
             return null; // the check regex is okay :)
         }

@@ -88,23 +88,23 @@ export default function Profile() {
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
                                 {userDto?.sex === 'F' && !userDto?.profile_picture && (
-                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
+                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-pink-500" />
                                 )}
                                 {userDto?.sex === 'M' && !userDto.profile_picture && (
-                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
+                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-blue-500" />
                                 )}
                                 {userDto?.profile_picture && (
-                                    <Image src={`data:image/jpeg;base64,${userDto.profile_picture}`} width="100" height="100" alt={userDto.pseudo} className="rounded-full" />
+                                    <Image src={`data:image/jpeg;base64,${userDto.profile_picture}`} width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-pink-500" />
                                 )}
                             </div>
                             <div className="text-center sm:text-left">
                                 <div className="text-xl font-medium text-black dark:text-white">
-                                    {userDto?.sex === 'F' ? 'Mme ' : 'Mr '}
-                                    {userDto?.pseudo}
+                                    <p className="text-pink-700"><span className="font-bold">{userDto.sex === 'F' ? 'Mme ' : 'Mr '}</span><span className="font-bold text-pink-700">{userDto.pseudo}</span></p>
                                 </div>
-                                <p>Date de naissance : {new Date(userDto?.date_of_birth || 0).toLocaleString()}</p>
-                                <p>Description : {userDto?.description}</p>
-                                <div className="text-sm text-gray-500 dark:text-gray-400">Âge : {ConvertingADateToAge(userDto?.date_of_birth || new Date())} ans</div>
+                                <p className="text-pink-700">ID user : <span className="font-bold">{userDto.id_User}</span></p>
+                                <p className="text-pink-700">Description : <span className="font-bold">{userDto.description}</span></p>
+                                <p className="text-pink-700">Date de naissance : {new Date(userDto.date_of_birth).toLocaleDateString()}</p>
+                                <div className="text-pink-700">Age : {ConvertingADateToAge(userDto.date_of_birth)} ans</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
@@ -162,7 +162,7 @@ export default function Profile() {
                                 <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Description</button>
                             </form>
                         </div>
-                        <a href="/welcome" className="block mt-4 text-center underline">Aller à la page welcome pour chercher des proies</a>
+                        <a href="/welcome" className="block mt-4 text-center underline text-pink-700">Retour à la page welcome pour chercher des proies</a>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Chargement du profil...</h1>

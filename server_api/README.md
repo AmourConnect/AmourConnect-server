@@ -6,7 +6,6 @@ Dating site to match with a man VS woman and look for his love❤️
 
 ```
 #identifier for mail
-
 EMAIL_USER=""
 EMAIL_MDP=""
 SERVICE="smtp.gmail.com"

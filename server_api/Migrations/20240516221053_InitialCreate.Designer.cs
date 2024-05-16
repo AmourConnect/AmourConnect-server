@@ -12,7 +12,7 @@ using server_api.Data;
 namespace server_api.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240514084758_InitialCreate")]
+    [Migration("20240516221053_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -94,8 +94,8 @@ namespace server_api.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("EmailGoogle")
                         .IsRequired()

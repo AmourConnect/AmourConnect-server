@@ -17,7 +17,7 @@ namespace server_api.Models
         public string? Pseudo { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(100)]
         public string? Description { get; set; }
 
         [Required]
