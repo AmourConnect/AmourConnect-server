@@ -7,6 +7,7 @@ import Loader1 from "../app/components/Loader1";
 import Head from 'next/head';
 import Image from 'next/image';
 import { ConvertingADateToAge, isValidDate } from "../lib/helper";
+import { Button_1Loading } from '../app/components/Button_1';
 
 
 export default function Profile() {
@@ -41,7 +42,6 @@ export default function Profile() {
 
     if (status === AuthStatus.Authenticated) {
 
-        console.log(status);
         const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const inputElement = event.currentTarget.elements.namedItem("profile_picture") as HTMLInputElement;
@@ -111,11 +111,19 @@ export default function Profile() {
                             <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <input type="file" name="profile_picture" accept="image/*" />
                                 <p className="text-sm text-red-500">Veuillez télécharger une image de maximum de 1 Mo.</p>
-                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Picture Profile</button>
+                                <Button_1Loading
+                                            onClick={() => {handleSubmit}}
+                                            title="Update Picture Profile"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded mt-2"
+                                />
                             </form>
                             <form onSubmit={handleSubmitDate} className="w-full sm:w-auto">
                                 <input type="date" value={date_of_birth} onChange={(e) => setdate_of_birth(e.target.value)} className="p-2 border rounded mt-2" />
-                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Date</button>
+                                <Button_1Loading
+                                            onClick={() => {handleSubmitDate}}
+                                            title="Update Date"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded mt-2"
+                                />
                             </form>
                             <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <select
@@ -131,7 +139,11 @@ export default function Profile() {
                                     <option value="Strasbourg">Strasbourg</option>
                                     <option value="Toulouse">Toulouse</option>
                                 </select>
-                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update City</button>
+                                <Button_1Loading
+                                            onClick={() => {handleSubmit}}
+                                            title="Update City"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded mt-2"
+                                />
                             </form>
                             <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                 <select
@@ -144,7 +156,11 @@ export default function Profile() {
                                     <option value="M">Masculin</option>
                                     <option value="F">Feminin</option>
                                 </select>
-                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Sex</button>
+                                <Button_1Loading
+                                            onClick={() => {handleSubmit}}
+                                            title="Update Sex"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded mt-2"
+                                />
                             </form>
                             <form onSubmit={handleSubmit} className="w-full sm:w-auto">
                                     <label htmlFor="description" className="sr-only">Description</label>
@@ -159,10 +175,14 @@ export default function Profile() {
                                             required
                                         />
                                     </div>
-                                <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded mt-2">Update Description</button>
+                                <Button_1Loading
+                                            onClick={() => {handleSubmit}}
+                                            title="Update Description"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded mt-2"
+                                />
                             </form>
                         </div>
-                        <a href="/welcome" className="block mt-4 text-center underline text-pink-700">Retour à la page welcome pour chercher des proies</a>
+                        <a href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Retour à la page welcome pour chercher des proies</a>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Chargement du profil...</h1>

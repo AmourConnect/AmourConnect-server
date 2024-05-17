@@ -46,7 +46,7 @@ docker build . -t apinetcore
 ```
 
 ```
-docker run --network database_amour_connect -p 3110:5267 -e ASPNETCORE_URLS=http://+:5267 apinetcore
+docker run --network database_amour_connect -p 5266:5267 -e ASPNETCORE_URLS=http://+:5267 apinetcore
 ```
 
 **Clean the caches if that doesn't work :**

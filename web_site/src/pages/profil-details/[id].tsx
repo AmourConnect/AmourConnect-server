@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { ConvertingADateToAge } from "../../lib/helper";
 import PopUp from "@/app/components/pop_up1";
 import PopUp2 from "../../app/components/pop_up2";
+import { Button_1Loading } from '../../app/components/Button_1';
 
 
 export default function ProfileDetailID() {
@@ -59,7 +60,7 @@ export default function ProfileDetailID() {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
                 </Head>
-                {show && (requestFriendsDto) && (
+                {show && (requestFriendsDto?.message) && (
                         <PopUp title="Message" description={requestFriendsDto?.message} />
                     )} : { show &&(MessageApi) && (
                         <PopUp2 title="Attention" description={MessageApi} />
@@ -91,15 +92,14 @@ export default function ProfileDetailID() {
                                 <div className="text-pink-700">Age : {ConvertingADateToAge(userDto.date_of_birth)} ans</div>
                             </div>
                         </div>
-                        <button
-                                        className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
-                                        onClick={() => button_requestfriendsAdd(userDto.id_User)}
-                                    >
-                                        Demande de match
-                        </button>
+                        <Button_1Loading
+                            onClick={() => button_requestfriendsAdd(userDto.id_User)}
+                            title="Demande de match"
+                            className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
+                        />
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                         </div>
-                        <a href="/welcome" className="block mt-4 text-center underline text-pink-700">Retour à la page welcome pour chercher des proies</a>
+                        <a href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Retour à la page welcome pour chercher des proies</a>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Aucun profil trouve...</h1>

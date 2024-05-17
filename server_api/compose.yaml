@@ -10,7 +10,7 @@ services:
     image: docker.io/library/apinetcore
     container_name: services-api-amourconnect
     ports:
-      - "3212:5267"
+      - "5266:5267"
     restart: on-failure:5
     volumes:
       - .env:/app/.env

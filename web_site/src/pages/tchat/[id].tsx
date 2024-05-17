@@ -5,7 +5,9 @@ import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { compareMessagesByDate } from '../../lib/helper';
+import { compareByProperty } from '../../lib/helper';
+import { Button_1Loading } from '../../app/components/Button_1';
+import { LoaderCustombg } from '../../app/components/ui/LoaderCustombg';
 
 
 export default function TchatID() {
@@ -60,7 +62,7 @@ export default function TchatID() {
                     <div className="h-[60vh] overflow-y-auto px-4"> {/* Chat container with scrollable feature */}
                         {Array.isArray(messageDto) && messageDto.length > 0 ? (
                             messageDto
-                                .sort(compareMessagesByDate)
+                                .sort((a, b) => compareByProperty(a, b, 'date_of_request'))
                                 .reverse()
                                 .map((messagedto: GetMessageDto) => (
                                     <div
@@ -72,7 +74,7 @@ export default function TchatID() {
                                     >
                                         <div
                                             className={`mx-2 max-w-[70%] p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User
-                                                ? 'bg-blue-500 text-white'
+                                                ? 'bg-pink-400 text-white'
                                                 : 'bg-gray-200'
                                                 }`}
                                         >
@@ -92,13 +94,13 @@ export default function TchatID() {
                                             </a>
                                             <p>{messagedto.message_content}</p>
                                             <p className="text-xs text-gray-500">
-                                                {messagedto.date_of_request.toLocaleString()}
+                                                {new Date(messagedto.date_of_request).toLocaleString()}
                                             </p>
                                         </div>
                                     </div>
                                 ))
                         ) : (
-                                <p className="text-center">Chargement....</p>
+                            <LoaderCustombg />
                         )}
                     </div>
                     <div className="flex items-center p-2">
@@ -109,12 +111,11 @@ export default function TchatID() {
                             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none"
                             placeholder="ecrire un message"
                         />
-                        <button
-                            onClick={handleSendMessage}
+                        <Button_1Loading
+                            onClick={() => {handleSendMessage()}}
+                            title="Envoyer"
                             className="ml-2 px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600"
-                        >
-                            Envoyer
-                        </button>
+                        />
                     </div>
                 </div>
                 <a

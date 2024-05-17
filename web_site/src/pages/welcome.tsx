@@ -10,6 +10,7 @@ import Image from 'next/image';
 import Head from 'next/head';
 import { ConvertingADateToAge } from "../lib/helper";
 import { motion } from 'framer-motion';
+import { Button_1Loading } from '../app/components/Button_1';
 
 
 export default function Welcome() {
@@ -74,7 +75,7 @@ export default function Welcome() {
                     </a>
                 </div>
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-                    {show && (requestFriendsDto) && (
+                {show && (requestFriendsDto?.message) && (
                         <PopUp title="Message" description={requestFriendsDto?.message} />
                     )} : { show &&(MessageApi) && (
                         <PopUp2 title="Attention" description={MessageApi} />
@@ -126,12 +127,11 @@ export default function Welcome() {
                                     <div className="text-sm text-gray-500 dark:text-gray-400 md:text-base">
                                         Description : {account.description}
                                     </div>
-                                    <button
-                                        className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
-                                        onClick={() => button_requestfriendsAdd(account.id_User)}
-                                    >
-                                        Demander un match 🥰
-                                    </button>
+                                    <Button_1Loading
+                                            onClick={() => button_requestfriendsAdd(account.id_User)}
+                                            title="Demander un match 🥰"
+                                            className="px-4 py-2 text-sm font-medium text-white bg-pink-600 rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 md:text-base md:px-6 md:py-3"
+                                    />
                                 </motion.div>
                             ))
                         ) : (

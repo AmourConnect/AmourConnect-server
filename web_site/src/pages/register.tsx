@@ -7,6 +7,7 @@ import Loader1 from "../app/components/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
 import { isValidDate } from "../lib/helper";
+import { Button_1Loading } from '../app/components/Button_1';
 
 
 export default function Register() {
@@ -209,15 +210,11 @@ export default function Register() {
                                     </span>
                                 </div>
                             </div>
-
-
-
-                                <button
-                                    type="submit"
-                                className="block w-full rounded-lg bg-pink-500 hover:bg-pink-600 px-5 py-3 text-sm font-medium text-white"
-                                >
-                                    Valider 😍
-                            </button>
+                            <Button_1Loading
+                                            onClick={() => handleSubmit}
+                                            title="Valider 😍"
+                                            className="block w-full rounded-lg bg-pink-500 hover:bg-pink-600 px-5 py-3 text-sm font-medium text-white"
+                             />
                             </form>
                         </div>
                     </div>

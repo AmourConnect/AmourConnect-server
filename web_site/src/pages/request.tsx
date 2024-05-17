@@ -6,6 +6,10 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
+import { Button_1Loading } from '../app/components/Button_1';
+import { LoaderCustombg } from '../app/components/ui/LoaderCustombg';
+import { compareByProperty } from '../lib/helper';
+
 
 export default function Request() {
 
@@ -87,7 +91,8 @@ export default function Request() {
 
                         <table className="w-full text-left divide-y divide-gray-200">
                             <tbody className="divide-y divide-gray-200">
-                                {sentRequests.map((item, index) => (
+                                {sentRequests.length > 0 ? (
+                                sentRequests.sort((a, b) => compareByProperty(a, b, 'date_of_request')).reverse().map((item, index) => (
                                     <tr key={index}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -100,7 +105,12 @@ export default function Request() {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                ))
+                            ) :
+                            (
+                                <LoaderCustombg />
+                            )
+                        }
                             </tbody>
                         </table>
                     </div>
@@ -112,7 +122,8 @@ export default function Request() {
 
                         <table className="w-full text-left divide-y divide-gray-200">
                             <tbody className="divide-y divide-gray-200">
-                                {receivedRequests.map((item, index) => (
+                                { receivedRequests.length > 0 ? (
+                                receivedRequests.sort((a, b) => compareByProperty(a, b, 'date_of_request')).reverse().map((item, index) => (
                                     <tr key={index}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -125,15 +136,19 @@ export default function Request() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right">
-                                            <button
-                                                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                onClick={() => AcceptRequestFriends(item.idUserIssuer)}
-                                            >
-                                                Accepter
-                                            </button>
+                                           <Button_1Loading
+                                            onClick={() => AcceptRequestFriends(item.idUserIssuer)}
+                                            title="Accepter"
+                                            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            />
                                         </td>
                                     </tr>
-                                ))}
+                                ))
+                            ) : 
+                            (
+                                <LoaderCustombg />
+                            )
+                        }
                             </tbody>
                         </table>
                     </div>
@@ -145,7 +160,8 @@ export default function Request() {
 
                         <table className="w-full text-left divide-y divide-gray-200">
                             <tbody className="divide-y divide-gray-200">
-                                {friends.map((item, index) => (
+                                { friends.length > 0 ? (
+                                friends.map((item, index) => (
                                     <tr key={index}>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -165,13 +181,16 @@ export default function Request() {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                )) 
+                            )   : (
+                                    <LoaderCustombg />
+                                )}
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <a href="/welcome" className="block mt-4 text-center underline">Aller a la page welcome pour chercher des proies</a>
+                <a href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Aller a la page welcome pour chercher des proies</a>
             </div>
         );
     }

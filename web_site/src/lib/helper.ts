@@ -1,4 +1,4 @@
-import { GetMessageDto } from "../Hook/type";
+import { GetMessageDto, GetRequestFriendsDto } from "../Hook/type";
 
 export function ConvertingADateToAge(date_of_birth: Date): number {
     const today = new Date();
@@ -21,12 +21,13 @@ export const isValidDate = (date: string) => {
     return d instanceof Date && !isNaN(d.getTime());
 };
 
-export const compareMessagesByDate = (a: GetMessageDto, b: GetMessageDto) => {
-    if (a.date_of_request < b.date_of_request) {
-        return -1;
+
+export const compareByProperty = <T, K extends keyof T>(a: T, b: T, prop: K) => {
+    if (a[prop] < b[prop]) {
+      return -1;
     }
-    if (a.date_of_request > b.date_of_request) {
-        return 1;
+    if (a[prop] > b[prop]) {
+      return 1;
     }
     return 0;
-}
+};  
