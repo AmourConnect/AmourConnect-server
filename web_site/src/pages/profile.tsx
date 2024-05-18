@@ -8,6 +8,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { ConvertingADateToAge, isValidDate } from "../lib/helper";
 import { Button_1Loading } from '../app/components/Button_1';
+import Link from 'next/link';
 
 
 export default function Profile() {
@@ -182,7 +183,9 @@ export default function Profile() {
                                 />
                             </form>
                         </div>
-                        <a href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Retour à la page welcome pour chercher des proies</a>
+                        <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                            Retour à la page welcome pour chercher des proies
+                        </Link>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Chargement du profil...</h1>

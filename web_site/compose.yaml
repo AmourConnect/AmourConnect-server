@@ -12,9 +12,6 @@ services:
       context: .
       dockerfile: Dockerfile.node_frontend
     ports:
-      - "5003:3000"
-    volumes:
-      - ./:/app/site/frontend
-    command: sh -c "npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm run dev"
+      - "3000:3000"
     networks:
       - database_amour_connect

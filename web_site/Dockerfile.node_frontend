@@ -1,6 +1,14 @@
-# Dockerfile.node_frontend
+# Dockerfile.node_front
 FROM node:alpine
 
-WORKDIR /app/site/frontend/
+WORKDIR /app/site/front/
 
-CMD [ "tail", "-f", "/dev/null" ]
+COPY package.json package-lock.json ./
+
+RUN npm install
+
+COPY . ./
+
+RUN npm run build
+
+CMD ["npm", "start"]

@@ -34,13 +34,3 @@ npm install -g npm@latest && npm update && npm update --save-dev && npm install 
 ```
 
 ** ⛔ For the IP request api_backend, edit the file src/lib/config.ts**
-
-# For production :
-
-```
-npm run build
-```
-
-```
-npm start
-```

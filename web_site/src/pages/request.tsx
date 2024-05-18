@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Button_1Loading } from '../app/components/Button_1';
 import { LoaderCustombg } from '../app/components/ui/LoaderCustombg';
 import { compareByProperty } from '../lib/helper';
+import Link from 'next/link';
 
 
 export default function Request() {
@@ -53,7 +54,7 @@ export default function Request() {
 
 
     useEffect(() => {
-        if (requestFriendsDto) {
+        if (Array.isArray(requestFriendsDto)) {
             const sent: GetRequestFriendsDto[] = [];
             const received: GetRequestFriendsDto[] = [];
             const friendsList: GetRequestFriendsDto[] = [];
@@ -189,8 +190,9 @@ export default function Request() {
                         </table>
                     </div>
                 </div>
-
-                <a href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">Aller a la page welcome pour chercher des proies</a>
+                <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
+                        Aller a la page welcome pour chercher des proies
+                </Link>
             </div>
         );
     }

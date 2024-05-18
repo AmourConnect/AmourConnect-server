@@ -3,7 +3,7 @@ import { Button } from './ui/button';
 import { LoaderCustombg } from './ui/LoaderCustombg';
 
 interface ButtonGet {
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   title?: string;
   className?: string;
 }
@@ -20,15 +20,20 @@ export const Button_1Loading = ({ onClick, title, className }: ButtonGet) => {
     }
   }, [isPending]);
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (isPending) {
+      return;
+    }
+    setIsPending(true);
+    onClick && onClick(e);
+  };
+
   return (
     <Button
-      onClick={() => {
-        setIsPending(true);
-        onClick && onClick();
-      }}
+      onClick={handleClick}
       className={className}
     >
       {isPending ? <LoaderCustombg /> : title }
     </Button>
   );
-}
+};

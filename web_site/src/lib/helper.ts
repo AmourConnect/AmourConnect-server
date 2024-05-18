@@ -1,5 +1,3 @@
-import { GetMessageDto, GetRequestFriendsDto } from "../Hook/type";
-
 export function ConvertingADateToAge(date_of_birth: Date): number {
     const today = new Date();
     const birthDate = new Date(date_of_birth);

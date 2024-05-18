@@ -118,8 +118,10 @@ export default function Welcome() {
                                         />
                                     )}
                                     <div className="text-xl font-medium text-black dark:text-white md:text-2xl">
+                                    <a href={`/profil-details/${account.id_User}`}>
                                         {account.sex === "F" ? "Mme " : "Mr "}
-                                        <a href={`/profil-details/${account.id_User}`}>{account.pseudo}</a>
+                                        {account.pseudo}
+                                    </a>
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400 md:text-base">
                                         Âge : {ConvertingADateToAge(account.date_of_birth)} ans
