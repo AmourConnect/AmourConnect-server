@@ -25,6 +25,9 @@ SecretKeyJWT=""
 ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
+URL Redirection in Google Console API
+![Alt Text](./api_google_redirect_config_credentials.png "Config Google OAuth")
+
 # To start API
 
 *⛔ Start the Database first before*
