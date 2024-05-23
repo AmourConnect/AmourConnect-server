@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Button_1Loading } from '../app/components/Button_1';
-import { LoaderCustombg } from '../app/components/ui/LoaderCustombg';
 import { compareByProperty } from '../lib/helper';
 import Link from 'next/link';
 
@@ -42,14 +41,16 @@ export default function Request() {
 
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-
         if (status === AuthStatus.Authenticated) {
-            timer = setInterval(() => {
+            const fetchData = () => {
                 GetRequestFriends();
-            }, 3000);
+                timer = setTimeout(fetchData, 10000);
+            };
+    
+            fetchData();
         }
 
-        return () => clearInterval(timer);
+        return () => clearTimeout(timer);
     }, [status, GetRequestFriends]);
 
 
@@ -109,7 +110,9 @@ export default function Request() {
                 ))
                 ) :
                 (
-                    <LoaderCustombg />
+                    <div className="flex justify-center">
+                    <p className="text-center text-black">Rien à afficher ici 🫠</p>
+                </div>
                 )
                 }
             </tbody>
@@ -147,7 +150,9 @@ export default function Request() {
                 ))
                 ) :
                 (
-                    <LoaderCustombg />
+                    <div className="flex justify-center">
+                    <p className="text-center text-black">Rien à afficher ici 🫠</p>
+                </div>
                 )
                 }
             </tbody>
@@ -184,7 +189,9 @@ export default function Request() {
                     </tr>
                 ))
                 )   : (
-                        <LoaderCustombg />
+                    <div className="flex justify-center">
+                    <p className="text-center text-black">Rien à afficher ici 🫠</p>
+                </div>
                     )}
             </tbody>
         </table>

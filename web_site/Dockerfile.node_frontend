@@ -1,7 +1,14 @@
-# Dockerfile.node_front
+# Dockerfile.node_frontend
 FROM node:alpine
 
 WORKDIR /app/site/front/
+
+ARG NEXT_PUBLIC_API_URL
+ARG PORT
+ENV PORT=$PORT
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+EXPOSE $PORT
 
 COPY package.json package-lock.json ./
 

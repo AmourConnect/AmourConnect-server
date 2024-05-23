@@ -7,13 +7,12 @@ networks:
 services:
 
   apinetcore:
-    image: docker.io/library/apinetcore
     container_name: services-api-amourconnect
     ports:
       - "5266:5267"
     restart: on-failure:5
-    volumes:
-      - .env:/app/.env
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile

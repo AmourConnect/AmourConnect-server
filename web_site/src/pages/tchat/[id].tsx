@@ -3,12 +3,11 @@ import Loader1 from "../../app/components/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import { compareByProperty } from '../../lib/helper';
 import { Button_1Loading } from '../../app/components/Button_1';
 import { LoaderCustombg } from '../../app/components/ui/LoaderCustombg';
-
 
 export default function TchatID() {
 
@@ -18,7 +17,7 @@ export default function TchatID() {
     const { id } = router.query;
     const idNumber = Number(id);
     const [messageContent, setMessageContent] = useState('');
-
+    const [isLoaderVisible, setIsLoaderVisible] = useState(false);
 
 
     useEffect(() => {
@@ -35,20 +34,30 @@ export default function TchatID() {
 
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-
         if (status === AuthStatus.Authenticated) {
-            timer = setInterval(() => {
+            const fetchData = () => {
                 GetTchatID(idNumber);
-            }, 3000);
+                timer = setTimeout(fetchData, 3000);
+            };
+            fetchData();
         }
 
-        return () => clearInterval(timer);
+        return () => clearTimeout(timer);
     }, [status, GetTchatID, idNumber]);
 
 
     const handleSendMessage = () => {
         SendMessage(idNumber, messageContent);
         setMessageContent('');
+    };
+
+    const handleSendMessage2 = () => {
+        setIsLoaderVisible(true);
+        SendMessage(idNumber, messageContent);
+        setMessageContent('');
+        setTimeout(() => {
+            setIsLoaderVisible(false);
+          }, 2000);
     };
 
     if (status === AuthStatus.Authenticated) {
@@ -100,19 +109,30 @@ export default function TchatID() {
                                     </div>
                                 ))
                         ) : (
-                            <LoaderCustombg />
+                            <div className="flex justify-center">
+                                <p className="text-center text-black">Rien à afficher ici 🫠</p>
+                            </div>
                         )}
                     </div>
                     <div className="flex items-center p-2">
+                    {isLoaderVisible && <LoaderCustombg />}
                         <input
                             type="text"
                             value={messageContent}
                             onChange={(e) => setMessageContent(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  handleSendMessage2();
+                                }
+                              }}
                             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none"
                             placeholder="ecrire un message"
                         />
                         <Button_1Loading
-                            onClick={() => {handleSendMessage()}}
+                            onClick={() => {
+                                handleSendMessage();
+                            }}                              
                             title="Envoyer"
                             className="ml-2 px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600"
                         />

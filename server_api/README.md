@@ -32,24 +32,18 @@ URL Redirection in Google Console API
 
 *⛔ Start the Database first before*
 
-*If you use Docker, the database URL will be =>*
+
+*If you use Docker, the .env config =>*
 
 ```
+IP_NOW_FRONTEND="http://localhost:3005"
+IP_NOW_BACKENDAPI="http://apinetcore:5267"
 ConnectionDB="Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
 Start API .NET Core
 ```
 docker-compose -f .\compose.yaml up -d
-```
-
-OR not recommended, because the .env file will not be included in the build, you will need to put the ConnectionDb value directly in options.UseNpgsql();
-```
-docker build . -t apinetcore
-```
-
-```
-docker run --network database_amour_connect -p 5266:5267 -e ASPNETCORE_URLS=http://+:5267 apinetcore
 ```
 
 **Clean the caches if that doesn't work :**
