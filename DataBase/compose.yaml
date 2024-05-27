@@ -20,6 +20,8 @@ services:
         volumes:
           - pgdata-amourconnect:/var/lib/postgresql/data:rw
           - ./user.sql:/docker-entrypoint-initdb.d/user.sql:ro
+        labels:
+          - traefik.enable=false
         networks:
           - amour_connect
 
@@ -35,6 +37,8 @@ services:
             - "127.0.0.1:9089:80"
         depends_on:
             - postgresdb
+        labels:
+            - traefik.enable=false
         networks:
             - amour_connect
 

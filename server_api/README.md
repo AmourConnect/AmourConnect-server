@@ -33,7 +33,7 @@ URL Redirection in Google Console API
 *⛔ Start the Database first before*
 
 
-*If you use Docker, the .env config =>*
+*If you use Docker, edit the .env config =>*
 
 ```
 IP_NOW_FRONTEND="http://localhost:3005"

@@ -15,7 +15,7 @@ NEXT_PUBLIC_API_URL="http://localhost:5266"
 *⛔ Start the Database first before*
 
 ```
-docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:5266 --build-arg PORT=3005 -t web_site_amourconnect -f Dockerfile.node_frontend .
+docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:5266 --build-arg PORT=3005 --build-arg IP_FRONT=http://localhost:3005 -t web_site_amourconnect -f Dockerfile.node_frontend .
 ```
 
 ```
