@@ -1,6 +1,13 @@
 name: NodeJS, .NET Core Audit and Docker Push Image
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - test_before_prod
+  pull_request:
+    branches:
+      - main
 
 jobs:
 
