@@ -1,11 +1,6 @@
 name: NodeJS, .NET Core Audit and Docker Push Image
 
-# on: [push, pull_request]
-on:
-  push:
-  pull_request:
-    branches:
-      - '**'
+on: [push, pull_request]
 
 jobs:
 
@@ -40,14 +35,6 @@ jobs:
   docker-push-image:
     runs-on: ubuntu-latest
 
-    # env:
-    #   PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
-    #   PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
-    #   DB_USER: ${{ secrets.DB_USER }}
-    #   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #   DB_DATABASE: ${{ secrets.DB_DATABASE }}
-
-
     steps:
       - name: Docker setup
         uses: actions/checkout@v4
@@ -64,7 +51,7 @@ jobs:
           context: web_site
           file: web_site/Dockerfile.node_frontend
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/test_prod_amourconnect:WebSiteFront
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:WebSiteFront
           services: web_site_amourconnect
           build-args: |
                 NEXT_PUBLIC_API_URL=${{ secrets.IP_NOW_BACKENDAPI }}
