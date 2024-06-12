@@ -1,0 +1,44 @@
+networks:
+  amour_connect:
+      driver: bridge
+  
+services:
+
+    postgresdb:
+        image: postgres:latest
+        container_name: postgresdb
+        restart: on-failure:5
+        environment:
+          POSTGRES_USER: ${DB_USER}
+          POSTGRES_PASSWORD: ${DB_PASSWORD}
+          POSTGRES_DB: ${DB_DATABASE}
+        ports:
+           - "127.0.0.1:5433:5432"
+        volumes:
+          - pgdata-amourconnect:/var/lib/postgresql/data:rw
+          - ./user.sql:/docker-entrypoint-initdb.d/user.sql:ro
+        labels:
+          - traefik.enable=false
+        networks:
+          - amour_connect
+
+
+    pgadmin-amourconnect:
+        image: dpage/pgadmin4:latest
+        container_name: pgadmin-amourconnect
+        restart: on-failure:5
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+        ports:
+            - "127.0.0.1:9089:80"
+        depends_on:
+            - postgresdb
+        labels:
+            - traefik.enable=false
+        networks:
+            - amour_connect
+
+
+volumes:
+  pgdata-amourconnect:

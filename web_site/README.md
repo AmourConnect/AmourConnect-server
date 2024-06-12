@@ -4,15 +4,9 @@ Dating site to match with a man VS woman and look for his love❤️
 
 # To start front
 
-*Set .env in the root folder*
-
-```
-NEXT_PUBLIC_API_URL="http://localhost:5266"
-```
-
 *If you have Docker*
 
-*⛔ Start the Database first before*
+*⛔ Start the Database first before (in the folder server_api/DataBase)*
 
 ```
 docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:5266 --build-arg PORT=3005 --build-arg IP_FRONT=http://localhost:3005 -t web_site_amourconnect -f Dockerfile.node_frontend .

@@ -2,38 +2,15 @@
 
 Dating site to match with a man VS woman and look for his love❤️
 
-# CONFIG .env at the root of the project
-
-```
-#identifier for mail
-EMAIL_USER=""
-EMAIL_MDP=""
-SERVICE="smtp.gmail.com"
-PORT_SMTP="465"
-
-# OAuth Google
-ClientId=""
-ClientSecret=""
-
-IP_NOW_FRONTEND="http://localhost:3000"
-IP_NOW_BACKENDAPI="http://localhost:5266"
-
-# The HS256 algorithm requires a key of at least 256 bits (32 characters)
-SecretKeyJWT=""
-
-#Database
-ConnectionDB="Host=localhost;Port=5433;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
-```
-
 URL Redirection in Google Console API
 ![Alt Text](./api_google_redirect_config_credentials.png "Config Google OAuth")
 
 # To start API
 
-*⛔ Start the Database first before*
+*⛔ Start the Database first before (in the folder server_api/DataBase)*
 
 
-*If you use Docker, edit the .env config =>*
+*If you use Docker, update the .env config =>*
 
 ```
 IP_NOW_FRONTEND="http://localhost:3005"
@@ -58,14 +35,13 @@ docker image prune --force
 
 **Otherwise do this manually if you don't have Docker**
 
-Restore dependances
+*To play Migration (not necessary) in VS => Tools/Nuget Package Manager/ Package Manager Console. After select AmourConenct.Infrastructure*
 ```
-dotnet restore
+add-migration AmourConnectClass
 ```
 
-*To play Migration (not necessary)*
 ```
-dotnet tool install --global dotnet-ef && dotnet build && dotnet ef migrations add InitialCreate && dotnet ef database update
+dotnet tool install --global dotnet-ef && dotnet build
 ```
 
 *Start*
