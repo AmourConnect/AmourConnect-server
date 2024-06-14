@@ -49,18 +49,51 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: amourconnect
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and push web site image
-        uses: docker/build-push-action@v5
-        with:
-          context: web_site
-          file: web_site/Dockerfile.node_frontend
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REGISTRY }}:WebSiteFront
-          services: web_site_amourconnect
-          build-args: |
-                NEXT_PUBLIC_API_URL=${{ secrets.IP_NOW_BACKENDAPI }}
-                PORT=${{ secrets.PORT_FRONT }}
-                IP_FRONT=${{ secrets.IP_NOW_FRONTEND }}
+      - name: Create .env file
+        run: |
+          echo 'PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}' > server_api/DataBase/.env
+          echo 'PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}' >> server_api/DataBase/.env
+          echo 'DB_USER=${DB_USER}' >> server_api/DataBase/.env
+          echo 'DB_PASSWORD=${DB_PASSWORD}' >> server_api/DataBase/.env
+          echo 'DB_DATABASE=${DB_DATABASE}' >> server_api/DataBase/.env
+          echo 'EMAIL_USER=${EMAIL_USER}' > server_api/.env
+          echo 'EMAIL_MDP=${EMAIL_MDP}' >> server_api/.env
+          echo 'SERVICE=${SERVICE}' >> server_api/.env
+          echo 'PORT_SMTP=${PORT_SMTP}' >> server_api/.env
+          echo 'ClientId=${ClientId}' >> server_api/.env
+          echo 'ClientSecret=${ClientSecret}' >> server_api/.env
+          echo 'IP_NOW_FRONTEND=${IP_NOW_FRONTEND}' >> server_api/.env
+          echo 'IP_NOW_BACKENDAPI=${IP_NOW_BACKENDAPI}' >> server_api/.env
+          echo 'SecretKeyJWT=${SecretKeyJWT}' >> server_api/.env
+          echo 'ConnectionDB=${ConnectionDB}' >> server_api/.env
+          echo 'IP_NOW_FRONTEND=${IP_NOW_FRONTEND}' > web_site/.env
+          echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}' >> web_site/.env
+          echo 'NEXT_PUBLIC_PORT=${NEXT_PUBLIC_PORT}' >> web_site/.env
+
+      - name: Build image Database
+        run: |
+          cd server_api/DataBase
+          docker-compose -f compose.yaml up -d
+      
+      - name: Build image Server Api and Push
+        run: |
+           cd server_api/
+           docker-compose -f compose.yaml up -d
+           CONTAINER_ID=$(docker ps -q --filter "name=apinetcore")
+           IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
+           docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
+           docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:ApiAmourConnect
+           docker push $IMAGE_NAME_REPOSITORY:ApiAmourConnect
+
+      - name: Build image Web Site and Push
+        run: |
+           cd web_site/
+           docker-compose -f compose.yaml up -d
+           CONTAINER_ID=$(docker ps -q --filter "name=frontend-amourconnect")
+           IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
+           docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
+           docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:FrontAmourConnect
+           docker push $IMAGE_NAME_REPOSITORY:FrontAmourConnect

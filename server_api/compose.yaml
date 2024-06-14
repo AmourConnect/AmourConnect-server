@@ -5,7 +5,7 @@ networks:
 services:
 
   apinetcore:
-    container_name: services-api-amourconnect
+    container_name: apinetcore
     ports:
       - "5266:5267"
     restart: on-failure:5
