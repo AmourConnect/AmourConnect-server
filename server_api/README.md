@@ -35,16 +35,7 @@ docker image prune --force
 
 **Otherwise do this manually if you don't have Docker**
 
-*To play Migration (not necessary) in VS => Tools/Nuget Package Manager/ Package Manager Console. After select AmourConenct.Infrastructure*
+*To play Migration (not necessary) in VS => Tools/Nuget Package Manager/ Package Manager Console. After select AmourConnect.Infra*
 ```
 add-migration AmourConnectClass
-```
-
-```
-dotnet tool install --global dotnet-ef && dotnet build
-```
-
-*Start*
-```
-dotnet build & dotnet run
 ```

@@ -9,11 +9,7 @@ Dating site to match with a man VS woman and look for his love❤️
 *⛔ Start the Database first before (in the folder server_api/DataBase)*
 
 ```
-docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:5266 --build-arg PORT=3005 --build-arg IP_FRONT=http://localhost:3005 -t web_site_amourconnect -f Dockerfile.node_frontend .
-```
-
-```
-docker run --name web_site_amourconnect --network database_amour_connect -p 3005:3005 web_site_amourconnect
+docker-compose -f .\compose.yaml up -d
 ```
 
 **Clean the caches if that doesn't work :**
@@ -31,3 +27,5 @@ docker image prune --force
 ```
 npm install -g npm@latest && npm update && npm update --save-dev && npm install && npm run dev
 ```
+
+**☢️WARNING, you can use npm run build and start, you can only start it in a Unix/Linux OS. (You will need to modify the start port in the package.json)**

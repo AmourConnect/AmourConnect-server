@@ -1,24 +1,15 @@
 # Dockerfile.node_frontend
 FROM node:alpine
 
-WORKDIR /app/site/front/
-
+ARG NEXT_PUBLIC_PORT
 ARG NEXT_PUBLIC_API_URL
-ARG PORT
-ARG IP_FRONT
-ENV DOMAIN=$IP_FRONT
-ENV PORT=$PORT
+ARG IP_NOW_FRONTEND
+
+ENV IP_NOW_FRONTEND=$IP_NOW_FRONTEND
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_PORT=$NEXT_PUBLIC_PORT
 
-
-LABEL traefik.enable=true
-LABEL traefik.http.routers.web_site.rule="Host(`${DOMAIN}`)"
-LABEL traefik.http.routers.web_site.tls=true
-LABEL traefik.http.routers.web_site.tls.certresolver=prodresolver
-LABEL traefik.http.routers.web_site.entrypoints=websecure
-LABEL traefik.http.services.web_site.loadbalancer.server.port=80
-
-EXPOSE $PORT
+WORKDIR /app/site/front/
 
 COPY package.json package-lock.json ./
 

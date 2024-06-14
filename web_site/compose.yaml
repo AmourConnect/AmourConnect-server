@@ -1,0 +1,29 @@
+networks:
+  database_amour_connect:
+      external: true
+
+services:
+
+  frontend-amourconnect:
+    container_name: frontend-amourconnect
+    restart: on-failure:5
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile.node_frontend
+      args:
+        - NEXT_PUBLIC_PORT=${NEXT_PUBLIC_PORT}
+        - IP_NOW_FRONTEND=${IP_NOW_FRONTEND}
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3005:3005"
+    labels:
+      - "traefik.enable=true"
+      - traefik.http.routers.frontend.rule=Host(`${IP_NOW_FRONTEND}`)
+      - traefik.http.routers.frontend.tls=true
+      - traefik.http.routers.frontend.tls.certresolver=prodresolver
+      - traefik.http.routers.frontend.entrypoints=websecure
+      - traefik.http.services.frontend.loadbalancer.server.port=80
+    networks:
+      - database_amour_connect
