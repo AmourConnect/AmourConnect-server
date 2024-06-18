@@ -19,8 +19,8 @@ namespace AmourConnect.Infra.Extensions
             services.AddScoped<IUserSeeder, UserSeeder>();
             services.AddScoped<IAmourConnectDbContext, AmourConnectDbContext>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IMessage, MessageRepository>();
-            services.AddScoped<IRequestFriends, RequestFriendsRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IRequestFriendsRepository, RequestFriendsRepository>();
         }
     }
 }

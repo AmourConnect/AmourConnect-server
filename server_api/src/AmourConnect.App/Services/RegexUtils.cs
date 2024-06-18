@@ -1,40 +1,38 @@
 ﻿using AmourConnect.Domain.Dtos.SetDtos;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using AmourConnect.Domain.Dtos.AppLayerDtos;
 namespace AmourConnect.API.Services
 {
     public static class RegexUtils
     {
-        private static readonly Regex DateRegex = new Regex(@"^\d{4}-\d{2}-\d{2}$", RegexOptions.Compiled); // (format : YYYY-MM-DD)
-        private static readonly Regex CityRegex = new Regex(@"^[a-zA-Z\s]{1,50}$", RegexOptions.Compiled);
-        private static readonly Regex PseudoRegex = new Regex(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
-        private static readonly Regex MessageRegex = new Regex(@"^.{1,200}$", RegexOptions.Compiled);
+        private static readonly Regex DateRegex = new(@"^\d{4}-\d{2}-\d{2}$", RegexOptions.Compiled); // (format : YYYY-MM-DD)
+        private static readonly Regex CityRegex = new(@"^[a-zA-Z\s]{1,50}$", RegexOptions.Compiled);
+        private static readonly Regex PseudoRegex = new(@"^[a-zA-Z0-9_]{1,15}$", RegexOptions.Compiled);
+        private static readonly Regex MessageRegex = new(@"^.{1,200}$", RegexOptions.Compiled);
 
-        private static readonly Regex DescriptionRegex = new Regex(@"^.{1,100}$", RegexOptions.Compiled);
+        private static readonly Regex DescriptionRegex = new(@"^.{1,100}$", RegexOptions.Compiled);
 
-        private static readonly Regex CookieSessionRegex = new Regex(@"^[a-zA-Z0-9_]{1,64}$", RegexOptions.Compiled);
+        private static readonly Regex CookieSessionRegex = new(@"^[a-zA-Z0-9_]{1,64}$", RegexOptions.Compiled);
 
 
-        public static IActionResult CheckBodyAuthRegister(Controller controller, SetUserRegistrationDto setUserRegistrationDto)
+        public static (bool success, string message) CheckBodyAuthRegister(SetUserRegistrationDto setUserRegistrationDto)
         {
             if (!CheckDate(setUserRegistrationDto.date_of_birth))
-                return controller.BadRequest(new ApiResponseDto { message = "Invalid date of birth format or length", succes = false });
+                return (false, "Invalid date of birth format or length");
 
             if (!CheckSex(setUserRegistrationDto.sex))
-                return controller.BadRequest(new ApiResponseDto { message = "Invalid sex value or length", succes = false });
+                return (false, "Invalid sex value or length");
 
             if (!CheckCity(setUserRegistrationDto.city))
-                return controller.BadRequest(new ApiResponseDto { message = "Invalid city format or length", succes = false });
+                return (false, "Invalid city format or length" );
 
             if (!CheckPseudo(setUserRegistrationDto.Pseudo))
-                return controller.BadRequest(new ApiResponseDto { message = "Invalid pseudo format or length", succes = false });
+                return (false, "Invalid pseudo format or length");
 
             if (!CheckDescription(setUserRegistrationDto.Description))
-                return controller.BadRequest(new ApiResponseDto { message = "Invalid description format or length", succes = false });
+                return (false, "Invalid description format or length");
 
-            return null; // the check regex is okay :)
+            return (true, string.Empty);
         }
 
 
