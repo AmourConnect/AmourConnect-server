@@ -1,7 +1,6 @@
 ﻿using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
-using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using AmourConnect.API.Filters;
 using AmourConnect.App.Interfaces.Controllers;
@@ -12,12 +11,10 @@ namespace AmourConnect.API.Controllers
     [ServiceFilter(typeof(AuthorizeUser))]
     public class UserController : Controller
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserCase _userCase;
 
-        public UserController(IUserRepository userRepository, IUserCase userCase)
+        public UserController(IUserCase userCase)
         {
-            _userRepository = userRepository;
             _userCase = userCase;
         }
 
