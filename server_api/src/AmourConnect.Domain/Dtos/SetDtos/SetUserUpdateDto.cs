@@ -1,4 +1,6 @@
-﻿namespace AmourConnect.Api.Dtos.SetDtos
+﻿using Microsoft.AspNetCore.Http;
+
+namespace AmourConnect.Domain.Dtos.SetDtos
 {
     public class SetUserUpdateDto
     {

@@ -15,8 +15,8 @@
 	<PackageReference Include="DotNetEnv" Version="3.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AmourConnect.App\AmourConnect.App.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\AmourConnect.Domain\AmourConnect.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

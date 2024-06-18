@@ -1,10 +1,11 @@
-﻿using AmourConnect.Domain.Dtos.AppLayerDto;
+﻿using AmourConnect.Domain.Dtos.AppLayerDtos;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
 using System.Text;
 using AmourConnect.API.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.Services
 {
@@ -23,7 +24,7 @@ namespace AmourConnect.App.Services
 
 
 
-        public static void CreateSessionCookie(HttpResponse Response, ALSessionUserDto sessionData)
+        public static void CreateSessionCookie(HttpResponse Response, SessionUserDto sessionData)
         {
             DateTimeOffset dateExpiration = sessionData.date_token_session_expiration;
             DateTimeOffset currentDate = DateTimeOffset.UtcNow;
@@ -124,18 +125,6 @@ namespace AmourConnect.App.Services
             {
                 return (null, null);
             }
-        }
-
-
-        public static async Task<byte[]> ConvertImageToByteArrayAsync(IFormFile image)
-        {
-            if (image == null)
-            {
-                return null;
-            }
-            using var memoryStream = new MemoryStream();
-            await image.CopyToAsync(memoryStream);
-            return memoryStream.ToArray();
         }
     }
 }

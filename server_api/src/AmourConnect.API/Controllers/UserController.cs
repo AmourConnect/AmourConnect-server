@@ -1,7 +1,7 @@
 ﻿using AmourConnect.API.Services;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
-using AmourConnect.Api.Dtos.SetDtos;
+using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUser))]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -64,7 +64,7 @@ namespace AmourConnect.API.Controllers
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            var imageData = await CookieUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
+            var imageData = await MessUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
 
             var newsValues = new
             {

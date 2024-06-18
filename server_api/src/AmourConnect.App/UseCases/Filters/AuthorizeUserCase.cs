@@ -1,16 +1,17 @@
-﻿using AmourConnect.Domain.Entities;
+﻿using AmourConnect.App.Interfaces.Filters;
+using AmourConnect.App.Services;
+using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using AmourConnect.App.Services;
 
-namespace AmourConnect.API.Filters
+namespace AmourConnect.App.UseCases.Filters
 {
-    public class AuthorizeUserConnect : Attribute, IAsyncAuthorizationFilter
+    internal class AuthorizeUserCase : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
     {
         private readonly IUserRepository _userRepository;
 
-        public AuthorizeUserConnect(IUserRepository userRepository)
+        public AuthorizeUserCase(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
