@@ -10,6 +10,7 @@
     <PackageReference Include="DotNetEnv" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
 	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.6" />
   </ItemGroup>
 
   <ItemGroup>

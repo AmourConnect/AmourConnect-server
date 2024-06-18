@@ -7,7 +7,7 @@ using AmourConnect.Infra.Mappers;
 
 namespace AmourConnect.Infra.Repository
 {
-    internal class MessageRepository(AmourConnectDbContext _context) : IMessage
+    internal class MessageRepository(AmourConnectDbContext _context) : IMessageRepository
     {
 
         public async Task AddMessageAsync(Message message)

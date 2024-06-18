@@ -1,10 +1,9 @@
 ﻿using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.GetDtos;
-using AmourConnect.Domain.Entities;
-using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using AmourConnect.API.Filters;
+using AmourConnect.App.Interfaces.Controllers;
 namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
@@ -12,13 +11,11 @@ namespace AmourConnect.API.Controllers
     [ServiceFilter(typeof(AuthorizeUser))]
     public class RequestFriendsController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRequestFriends _requestFriendsRepository;
+        private readonly IRequestFriendsCase _requestFriendsCase;
 
-        public RequestFriendsController(IUserRepository userRepository, IRequestFriends RequestFriendsRepository)
+        public RequestFriendsController(IRequestFriendsCase requestFriendsCase)
         {
-            _userRepository = userRepository;
-            _requestFriendsRepository = RequestFriendsRepository;
+            _requestFriendsCase = requestFriendsCase;
         }
 
 
@@ -28,11 +25,14 @@ namespace AmourConnect.API.Controllers
         public async Task<IActionResult> GetRequestFriends()
         {
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            var result = await _requestFriendsCase.GetRequestFriendsAsync(token_session_user);
 
-            ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
+            if (result.success)
+            {
+                return Ok(result.requestFriends);
+            }
 
-            return Ok(requestFriends);
+            return BadRequest(new ApiResponseDto { message = result.message, succes = false });
         }
 
 
@@ -44,49 +44,25 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
+            var result = await _requestFriendsCase.RequestFriendsAsync(token_session_user, IdUserReceiver);
 
-            User userReceiver = await _userRepository.GetUserByIdUserAsync(IdUserReceiver);
-
-
-            if (userReceiver == null)
+            if (result.success)
             {
-                return BadRequest(new ApiResponseDto { message = "User receiver do not exist", succes = false });
+                return Ok(new ApiResponseDto { message = result.message, succes = true });
             }
 
-
-            if (dataUserNowConnect.Id_User == userReceiver.Id_User)
+            if (result.message == "User receiver does not exist")
             {
-                return BadRequest(new ApiResponseDto { message = "User cannot send a friend request to themselves", succes = false });
+                return BadRequest(new ApiResponseDto { message = result.message, succes = false });
             }
 
-
-            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
-
-            if (existingRequest != null)
+            if (result.message == "A friend request is already pending between these users")
             {
-                if (existingRequest.Status == RequestStatus.Onhold)
-                {
-                    return Conflict(new ApiResponseDto { message = "A friend request is already pending between these users", succes = false });
-                }
-
-                return Conflict(new ApiResponseDto { message = "These users are already friends", succes = false });
+                return Conflict(new ApiResponseDto { message = result.message, succes = false });
             }
 
-            RequestFriends requestFriends = new RequestFriends
-            {
-                UserIssuer = dataUserNowConnect,
-                UserReceiver = userReceiver,
-                Status = RequestStatus.Onhold,
-                Date_of_request = DateTime.Now.ToUniversalTime()
-            };
-
-            await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
-
-            await EmailUtils.RequestFriendMailAsync(userReceiver.EmailGoogle, userReceiver.Pseudo, dataUserNowConnect.Pseudo);
-
-            return Ok(new ApiResponseDto { message = "Request Friend carried out", succes = true });
+            return Conflict(new ApiResponseDto { message = result.message, succes = false });
         }
 
 
@@ -97,22 +73,14 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            var result = await _requestFriendsCase.AcceptFriendRequestAsync(token_session_user, IdUserIssuer);
 
-            RequestFriends friendRequest = await _requestFriendsRepository.GetUserFriendRequestByIdAsync(dataUserNowConnect.Id_User, IdUserIssuer);
-
-            if (friendRequest == null)
+            if (result.success)
             {
-                return NotFound();
+                return Ok(new ApiResponseDto { message = result.message, succes = true });
             }
 
-            friendRequest.Status = RequestStatus.Accepted;
-
-            await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
-
-            await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer.EmailGoogle, friendRequest.UserIssuer.Pseudo, dataUserNowConnect.Pseudo);
-
-            return Ok(new ApiResponseDto { message = "Request Friend accepted", succes = true });
+            return NotFound(new ApiResponseDto { message = result.message, succes = false });
         }
     }
 }

@@ -7,7 +7,7 @@ using AmourConnect.Infra.Mappers;
 
 namespace AmourConnect.Infra.Repository
 {
-    internal class RequestFriendsRepository(AmourConnectDbContext _context) : IRequestFriends
+    internal class RequestFriendsRepository(AmourConnectDbContext _context) : IRequestFriendsRepository
     {
 
 

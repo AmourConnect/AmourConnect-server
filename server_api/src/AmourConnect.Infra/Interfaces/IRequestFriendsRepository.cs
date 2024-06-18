@@ -3,7 +3,7 @@ using AmourConnect.Domain.Dtos.GetDtos;
 
 namespace AmourConnect.Infra.Interfaces
 {
-    public interface IRequestFriends
+    public interface IRequestFriendsRepository
     {
         Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User);
         Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver);
