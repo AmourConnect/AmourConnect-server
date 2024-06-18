@@ -52,41 +52,21 @@ jobs:
           username: amourconnect
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Create .env file
+      - name: Create .env file DataBase
         run: |
-          echo 'PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}' > server_api/DataBase/.env
-          echo 'PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}' >> server_api/DataBase/.env
-          echo 'DB_USER=${DB_USER}' >> server_api/DataBase/.env
-          echo 'DB_PASSWORD=${DB_PASSWORD}' >> server_api/DataBase/.env
-          echo 'DB_DATABASE=${DB_DATABASE}' >> server_api/DataBase/.env
-          echo 'EMAIL_USER=${EMAIL_USER}' > server_api/.env
-          echo 'EMAIL_MDP=${EMAIL_MDP}' >> server_api/.env
-          echo 'SERVICE=${SERVICE}' >> server_api/.env
-          echo 'PORT_SMTP=${PORT_SMTP}' >> server_api/.env
-          echo 'ClientId=${ClientId}' >> server_api/.env
-          echo 'ClientSecret=${ClientSecret}' >> server_api/.env
-          echo 'IP_NOW_FRONTEND=${IP_NOW_FRONTEND}' >> server_api/.env
-          echo 'IP_NOW_BACKENDAPI=${IP_NOW_BACKENDAPI}' >> server_api/.env
-          echo 'SecretKeyJWT=${SecretKeyJWT}' >> server_api/.env
-          echo 'ConnectionDB=${ConnectionDB}' >> server_api/.env
-          echo 'IP_NOW_FRONTEND=${IP_NOW_FRONTEND}' > web_site/.env
-          echo 'NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}' >> web_site/.env
-          echo 'NEXT_PUBLIC_PORT=${NEXT_PUBLIC_PORT}' >> web_site/.env
+          touch server_api/DataBase/.env
+          echo "${{ secrets.DATABASE_ENV_PROD }}" > server_api/DataBase/.env
 
       - name: Build image Database
         run: |
           cd server_api/DataBase
           docker-compose -f compose.yaml up -d
-      
-      - name: Build image Server Api and Push
+
+
+      - name: Create .env file WebSite
         run: |
-           cd server_api/
-           docker-compose -f compose.yaml up -d
-           CONTAINER_ID=$(docker ps -q --filter "name=apinetcore")
-           IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
-           docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
-           docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:ApiAmourConnect
-           docker push $IMAGE_NAME_REPOSITORY:ApiAmourConnect
+          touch web_site/.env
+          echo "${{ secrets.WEBSITE_ENV_PROD }}" > web_site/.env
 
       - name: Build image Web Site and Push
         run: |
@@ -97,3 +77,19 @@ jobs:
            docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
            docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:FrontAmourConnect
            docker push $IMAGE_NAME_REPOSITORY:FrontAmourConnect
+
+
+      - name: Create .env file Server Api
+        run: |
+            touch server_api/.env
+            echo "${{ secrets.SERVER_ENV_PROD }}" > server_api/.env
+      
+      - name: Build image Server Api and Push
+        run: |
+            cd server_api/
+            docker-compose -f compose.yaml up -d
+            CONTAINER_ID=$(docker ps -q --filter "name=apinetcore")
+            IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
+            docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
+            docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:ApiAmourConnect
+            docker push $IMAGE_NAME_REPOSITORY:ApiAmourConnect
