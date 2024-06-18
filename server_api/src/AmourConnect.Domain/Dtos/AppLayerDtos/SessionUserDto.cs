@@ -1,6 +1,6 @@
-﻿namespace AmourConnect.Domain.Dtos.AppLayerDto
+﻿namespace AmourConnect.Domain.Dtos.AppLayerDtos
 {
-    public class ALSessionUserDto
+    public class SessionUserDto
     {
         public string token_session_user { get; set; }
         public DateTime date_token_session_expiration { get; set; }

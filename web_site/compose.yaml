@@ -17,7 +17,7 @@ services:
         - IP_NOW_FRONTEND=${IP_NOW_FRONTEND}
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     ports:
-      - "3005:3005"
+      - ${NEXT_PUBLIC_PORT}:${NEXT_PUBLIC_PORT}
     labels:
       - "traefik.enable=true"
       - traefik.http.routers.frontend.rule=Host(`${IP_NOW_FRONTEND}`)

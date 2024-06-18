@@ -1,6 +1,6 @@
-﻿namespace AmourConnect.Domain.Dtos.AppLayerDto
+﻿namespace AmourConnect.Domain.Dtos.AppLayerDtos
 {
-    public class ALGoogleUserValueDto
+    public class GoogleUserValueDto
     {
         public string userIdGoogle { get; set; }
         public string EmailGoogle { get; set; }

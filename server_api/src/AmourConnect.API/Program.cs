@@ -4,13 +4,18 @@ using AmourConnect.API.Filters;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using AmourConnect.App.Extensions;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCaseControllers();
+
 builder.Services.AddInfrastructure();
 
-builder.Services.AddScoped<AuthorizeUserConnect>();
+builder.Services.AddScoped<AuthorizeUser>();
 
 builder.Services.AddCors(options =>
 {

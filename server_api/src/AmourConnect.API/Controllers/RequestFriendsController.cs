@@ -1,5 +1,5 @@
 ﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.AppLayerDto;
+using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
@@ -9,7 +9,7 @@ namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUser))]
     public class RequestFriendsController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -52,13 +52,13 @@ namespace AmourConnect.API.Controllers
 
             if (userReceiver == null)
             {
-                return BadRequest(new ALApiResponse { message = "User receiver do not exist", succes = false });
+                return BadRequest(new ApiResponseDto { message = "User receiver do not exist", succes = false });
             }
 
 
             if (dataUserNowConnect.Id_User == userReceiver.Id_User)
             {
-                return BadRequest(new ALApiResponse { message = "User cannot send a friend request to themselves", succes = false });
+                return BadRequest(new ApiResponseDto { message = "User cannot send a friend request to themselves", succes = false });
             }
 
 
@@ -68,10 +68,10 @@ namespace AmourConnect.API.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ALApiResponse { message = "A friend request is already pending between these users", succes = false });
+                    return Conflict(new ApiResponseDto { message = "A friend request is already pending between these users", succes = false });
                 }
 
-                return Conflict(new ALApiResponse { message = "These users are already friends", succes = false });
+                return Conflict(new ApiResponseDto { message = "These users are already friends", succes = false });
             }
 
             RequestFriends requestFriends = new RequestFriends
@@ -86,7 +86,7 @@ namespace AmourConnect.API.Controllers
 
             await EmailUtils.RequestFriendMailAsync(userReceiver.EmailGoogle, userReceiver.Pseudo, dataUserNowConnect.Pseudo);
 
-            return Ok(new ALApiResponse { message = "Request Friend carried out", succes = true });
+            return Ok(new ApiResponseDto { message = "Request Friend carried out", succes = true });
         }
 
 
@@ -112,7 +112,7 @@ namespace AmourConnect.API.Controllers
 
             await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer.EmailGoogle, friendRequest.UserIssuer.Pseudo, dataUserNowConnect.Pseudo);
 
-            return Ok(new ALApiResponse { message = "Request Friend accepted", succes = true });
+            return Ok(new ApiResponseDto { message = "Request Friend accepted", succes = true });
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AmourConnect.API.Services;
 using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.AppLayerDto;
+using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Infra.Interfaces;
 using DotNetEnv;
@@ -70,7 +70,7 @@ namespace AmourConnect.API.Controllers
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return BadRequest(new ALApiResponse { message = "Please login with Google before register", succes = false });
+                return BadRequest(new ApiResponseDto { message = "Please login with Google before register", succes = false });
             }
 
             IActionResult result = RegexUtils.CheckBodyAuthRegister(this, setuserRegistrationDto);
@@ -82,7 +82,7 @@ namespace AmourConnect.API.Controllers
 
             if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
             {
-                return BadRequest(new ALApiResponse { message = "Pseudo Already use", succes = false });
+                return BadRequest(new ApiResponseDto { message = "Pseudo Already use", succes = false });
             }
 
             int? id_user = await _userRepository.GetUserIdWithGoogleIdAsync(emailGoogle, userIdGoogle);
@@ -98,17 +98,17 @@ namespace AmourConnect.API.Controllers
             {
                 await CreateSessionLoginAndReturnResponseAsync(id_user2.Value);
                 await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
-                return Ok(new ALApiResponse { message = "Register finish", succes = true });
+                return Ok(new ApiResponseDto { message = "Register finish", succes = true });
             }
 
-            return BadRequest(new ALApiResponse { message = "Failed to create user", succes = false });
+            return BadRequest(new ApiResponseDto { message = "Failed to create user", succes = false });
         }
 
 
 
         private async Task<IActionResult> CreateSessionLoginAndReturnResponseAsync(int Id_User)
         {
-            ALSessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
+            SessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
             CookieUtils.CreateSessionCookie(Response, sessionData);
             return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
         }

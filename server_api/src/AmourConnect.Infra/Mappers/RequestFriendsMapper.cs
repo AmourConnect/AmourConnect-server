@@ -3,7 +3,7 @@ using AmourConnect.Domain.Dtos.GetDtos;
 
 namespace AmourConnect.Infra.Mappers
 {
-    public static class UserMapperRequestFriendsMapper
+    public static class RequestFriendsMapper
     {
         public static GetRequestFriendsDto ToGetRequestFriendsDto(this RequestFriends requestFriends)
         {

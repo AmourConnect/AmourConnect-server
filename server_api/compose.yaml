@@ -6,16 +6,16 @@ services:
 
   apinetcore:
     container_name: apinetcore
-    ports:
-      - "5266:5267"
     restart: on-failure:5
     env_file:
       - .env
+    ports:
+      - ${PORT_BACKEND}:${PORT_BACKEND}
     build:
       context: .
       dockerfile: Dockerfile
     environment:
-        - ASPNETCORE_URLS=http://+:5267
+        - ASPNETCORE_URLS=http://+:${PORT_BACKEND}
         - ASPNETCORE_ENVIRONMENT=Production
     labels:
       - "traefik.enable=true"

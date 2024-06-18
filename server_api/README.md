@@ -13,8 +13,6 @@ URL Redirection in Google Console API
 *If you use Docker, update the .env config =>*
 
 ```
-IP_NOW_FRONTEND="http://localhost:3005"
-IP_NOW_BACKENDAPI="http://apinetcore:5267"
 ConnectionDB="Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 

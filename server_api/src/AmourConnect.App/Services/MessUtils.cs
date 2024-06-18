@@ -1,21 +1,18 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.Services
 {
     public static class MessUtils
     {
-        public static string GeneratePassword(int length)
+        public static async Task<byte[]> ConvertImageToByteArrayAsync(IFormFile image)
         {
-            const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random rand = new Random();
-            StringBuilder password = new StringBuilder(length);
-
-            for (int i = 0; i < length; i++)
+            if (image == null)
             {
-                password.Append(allowedChars[rand.Next(allowedChars.Length)]);
+                return null;
             }
-
-            return password.ToString();
+            using var memoryStream = new MemoryStream();
+            await image.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
         }
     }
 }

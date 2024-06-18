@@ -1,8 +1,8 @@
 ﻿using AmourConnect.API.Services;
 using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.AppLayerDto;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
+using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,7 @@ namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUserConnect))]
+    [ServiceFilter(typeof(AuthorizeUser))]
     public class MessageController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -42,12 +42,12 @@ namespace AmourConnect.API.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ALApiResponse { message = "There must be validation of the friend request to chat", succes = false });
+                    return Conflict(new ApiResponseDto { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 if (!RegexUtils.CheckMessage(setmessageDto.MessageContent))
                 {
-                    return BadRequest(new ALApiResponse { message = "Message no valid", succes = false });
+                    return BadRequest(new ApiResponseDto { message = "Message no valid", succes = false });
                 }
 
                 var message = new Message
@@ -60,9 +60,9 @@ namespace AmourConnect.API.Controllers
 
                 await _messageRepository.AddMessageAsync(message);
 
-                return Ok(new ALApiResponse { message = "Message send succes", succes = true });
+                return Ok(new ApiResponseDto { message = "Message send succes", succes = true });
             }
-            return Conflict(new ALApiResponse { message = "You are not friends to talk together", succes = false });
+            return Conflict(new ApiResponseDto { message = "You are not friends to talk together", succes = false });
         }
 
 
@@ -83,7 +83,7 @@ namespace AmourConnect.API.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return Conflict(new ALApiResponse { message = "There must be validation of the friend request to chat", succes = false });
+                    return Conflict(new ApiResponseDto { message = "There must be validation of the friend request to chat", succes = false });
                 }
 
                 ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
@@ -101,7 +101,7 @@ namespace AmourConnect.API.Controllers
 
                 return Ok(msg);
             }
-            return Conflict(new ALApiResponse { message = "You are not friends to talk together", succes = false });
+            return Conflict(new ApiResponseDto { message = "You are not friends to talk together", succes = false });
         }
     }
 }
