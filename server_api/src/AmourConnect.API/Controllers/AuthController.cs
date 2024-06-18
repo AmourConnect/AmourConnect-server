@@ -1,7 +1,6 @@
 ﻿using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
-using AmourConnect.Infra.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +12,11 @@ namespace AmourConnect.API.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly IUserRepository _userRepository;
-
         private readonly IAuthCase _authCase;
 
 
-        public AuthController(IUserRepository userRepository, IAuthCase authCase)
+        public AuthController(IAuthCase authCase)
         {
-            _userRepository = userRepository;
             _authCase = authCase;
         }
 
