@@ -23,6 +23,6 @@ services:
       - traefik.http.routers.apinet.tls=true
       - traefik.http.routers.apinet.tls.certresolver=prodresolver
       - traefik.http.routers.apinet.entrypoints=websecure
-      - traefik.http.services.apinet.loadbalancer.server.port=80
+     # - traefik.http.services.apinet.loadbalancer.server.port=80
     networks:
         - database_amour_connect
