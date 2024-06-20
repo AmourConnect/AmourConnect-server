@@ -72,7 +72,7 @@ jobs:
         run: |
            cd web_site/
            docker-compose -f compose.yaml up -d
-           CONTAINER_ID=$(docker ps -q --filter "name=frontend-amourconnect")
+           CONTAINER_ID=$(docker ps -q --filter "name=frontamourconnect")
            IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
            docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
            docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:FrontAmourConnect
@@ -88,7 +88,7 @@ jobs:
         run: |
             cd server_api/
             docker-compose -f compose.yaml up -d
-            CONTAINER_ID=$(docker ps -q --filter "name=apinetcore")
+            CONTAINER_ID=$(docker ps -q --filter "name=apiamourconnect")
             IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
             docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
             docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:ApiAmourConnect

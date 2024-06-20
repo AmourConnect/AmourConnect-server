@@ -18,10 +18,6 @@ docker-compose -f .\compose.yaml up -d
 docker builder prune --force
 ```
 
-```
-docker image prune --force
-```
-
 **Otherwise do this manually if you don't have Docker**
 
 ```

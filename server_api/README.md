@@ -2,9 +2,6 @@
 
 Dating site to match with a man VS woman and look for his love❤️
 
-URL Redirection in Google Console API
-![Alt Text](./api_google_redirect_config_credentials.png "Config Google OAuth")
-
 # To start API
 
 *⛔ Start the Database first before (in the folder server_api/DataBase)*
@@ -25,10 +22,6 @@ docker-compose -f .\compose.yaml up -d
 
 ```
 docker builder prune --force
-```
-
-```
-docker image prune --force
 ```
 
 **Otherwise do this manually if you don't have Docker**
