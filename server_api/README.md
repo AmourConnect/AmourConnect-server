@@ -10,7 +10,7 @@ Dating site to match with a man VS woman and look for his love❤️
 *If you use Docker, update the .env config =>*
 
 ```
-ConnectionDB="Host=postgresdb;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
+ConnectionDB="Host=postgresdbsqlamourconnect;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
 Start API .NET Core
@@ -33,5 +33,5 @@ add-migration AmourConnectClass
 
 *In prod, when you setup the secrets in Github Action, don't forget to set the connection DB escape special characters in your connection strings to prevent them from being interpreted as command separators in the shell*
 ```
-ConnectionDB="Host=postgresdb\;Port=5432\;Username=tchoulo\;Password=123tchoulo123\;Database=amourconnect_dev\;"
+ConnectionDB="Host=postgresdbsqlamourconnect\;Port=5432\;Username=tchoulo\;Password=123tchoulo123\;Database=amourconnect_dev\;"
 ```
