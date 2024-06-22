@@ -1,4 +1,4 @@
-# Projet AmourConnect - Frontend Site Web
+# Projet AmourConnect - Front Site Web
 
 Dating site to match with a man VS woman and look for his love❤️
 
