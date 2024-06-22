@@ -20,7 +20,7 @@ services:
       - ${NEXT_PUBLIC_PORT}:${NEXT_PUBLIC_PORT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontamourconnect.rule=Host(`${IP_NOW_FRONTEND}`)"
+      - "traefik.http.routers.frontamourconnect.rule=Host(`tubevideo.shop`)"
       - "traefik.http.routers.frontamourconnect.tls=true"
       - "traefik.http.routers.frontamourconnect.tls.certresolver=prodresolver"
       - "traefik.http.routers.frontamourconnect.entrypoints=websecure"
