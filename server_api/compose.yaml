@@ -19,7 +19,7 @@ services:
         - ASPNETCORE_ENVIRONMENT=Production
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.apiamourconnect.rule=Host(`${IP_NOW_BACKENDAPI}`)"
+      - "traefik.http.routers.apiamourconnect.rule=Host(`api.tubevideo.shop`)"
       - "traefik.http.routers.apiamourconnect.tls=true"
       - "traefik.http.routers.apiamourconnect.tls.certresolver=prodresolver"
       - "traefik.http.routers.apiamourconnect.entrypoints=websecure"
