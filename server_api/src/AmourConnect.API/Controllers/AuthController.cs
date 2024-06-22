@@ -24,7 +24,7 @@ namespace AmourConnect.API.Controllers
         [HttpGet("login")]
         public IActionResult Login()
         {
-            var props = new AuthenticationProperties { RedirectUri = "/api/Auth/signin-google" };
+            var props = new AuthenticationProperties { RedirectUri = Env.GetString("IP_NOW_BACKENDAPI") + "/api/Auth/signin-google" };
             return Challenge(props, GoogleDefaults.AuthenticationScheme);
         }
 
