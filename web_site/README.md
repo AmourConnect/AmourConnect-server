@@ -9,7 +9,7 @@ Dating site to match with a man VS woman and look for his love❤️
 *⛔ Start the Database first before (in the folder server_api/DataBase)*
 
 ```
-docker-compose -f .\compose.yaml up -d
+docker compose -f .\compose.yaml up -d
 ```
 
 **Clean the caches if that doesn't work :**

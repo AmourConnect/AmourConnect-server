@@ -1,16 +1,17 @@
 import { AuthStatus, GetUserDto } from "@/Hook/type";
-import Loader1 from "../app/components/Loader1";
-import PopUp from "../app/components/pop_up1";
-import PopUp2 from "../app/components/pop_up2";
+import Loader1 from "../app/components/Loading/Loader1";
+import PopUp from "../app/components/PopUp/pop_up1";
+import PopUp2 from "../app/components/PopUp/pop_up2";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import { ConvertingADateToAge } from "../lib/helper";
+import { ConvertingADateToAge } from "../utils/helper";
 import { motion } from 'framer-motion';
-import { Button_1Loading } from '../app/components/Button_1';
+import { Button_1Loading } from '../app/components/Button/Button_1';
+import Link from "next/link";
 
 
 export default function Welcome() {
@@ -58,7 +59,7 @@ export default function Welcome() {
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <div className="sticky top-0 z-10 flex justify-between w-full mb-4">
                     <a
@@ -118,10 +119,10 @@ export default function Welcome() {
                                         />
                                     )}
                                     <div className="text-xl font-medium text-black dark:text-white md:text-2xl">
-                                    <a href={`/profil-details/${account.id_User}`}>
+                                    <Link href={`/profil-details/${account.id_User}`}>
                                         {account.sex === "F" ? "Mme " : "Mr "}
                                         {account.pseudo}
-                                    </a>
+                                    </Link>
                                     </div>
                                     <div className="text-sm text-gray-500 dark:text-gray-400 md:text-base">
                                         Âge : {ConvertingADateToAge(account.date_of_birth)} ans

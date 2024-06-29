@@ -1,12 +1,12 @@
 import { AuthStatus, GetMessageDto } from "@/Hook/type";
-import Loader1 from "../../app/components/Loader1";
+import Loader1 from "../../app/components/Loading/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { compareByProperty } from '../../lib/helper';
-import { Button_1Loading } from '../../app/components/Button_1';
+import { compareByProperty } from '../../utils/helper';
+import { Button_1Loading } from '../../app/components/Button/Button_1';
 import { LoaderCustombg } from '../../app/components/ui/LoaderCustombg';
 
 export default function TchatID() {
@@ -65,7 +65,7 @@ export default function TchatID() {
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <div className="w-full max-w-xl mx-auto">
                     <div className="h-[60vh] overflow-y-auto px-4"> {/* Chat container with scrollable feature */}
@@ -88,10 +88,9 @@ export default function TchatID() {
                                                 }`}
                                         >
                                             <a
-                                                href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User
-                                                    ? userDto?.id_User
-                                                    : messagedto.idUserIssuer
-                                                    }`}
+                                                href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User 
+                                                    ? userDto?.id_User 
+                                                    : messagedto.idUserIssuer }`}
                                             >
                                                 <p>
                                                     <strong>

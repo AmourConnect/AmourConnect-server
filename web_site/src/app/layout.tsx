@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "Amour connect est une plateforme de rencontre amoureuse",
   icons: {
-    icon: "/amour_connect_logo.jpg",
+    icon: "/favicon.ico",
   },
 };
 

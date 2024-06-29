@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
-import Loader1 from "../app/components/Loader1";
+import Loader1 from "../app/components/Loading/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
-import { isValidDate } from "../lib/helper";
-import { Button_1Loading } from '../app/components/Button_1';
+import { isValidDate } from "../utils/helper";
+import { Button_1Loading } from '../app/components/Button/Button_1';
 
 
 export default function Register() {
@@ -65,7 +65,7 @@ export default function Register() {
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
                     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
                         <div className="mx-auto max-w-lg">
@@ -91,7 +91,7 @@ export default function Register() {
 
                                        <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                             <Image
-                                            src="/assets/images/circle-user-round.svg"
+                                            src="/assets/svg/circle-user-round.svg"
                                             alt="Pseudo icon"
                                             width={20}
                                             height={20}
@@ -120,8 +120,8 @@ export default function Register() {
 
                                     <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                         <Image
-                                            src="/assets/images/dna.svg"
-                                            alt="Pseudo icon"
+                                            src="/assets/svg/dna.svg"
+                                            alt="Sex icon"
                                             width={20}
                                             height={20}
                                         />
@@ -152,8 +152,8 @@ export default function Register() {
 
                                     <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                         <Image
-                                            src="/assets/images/home.svg"
-                                            alt="Pseudo icon"
+                                            src="/assets/svg/home.svg"
+                                            alt="City icon"
                                             width={20}
                                             height={20}
                                         />
@@ -178,7 +178,7 @@ export default function Register() {
 
                                        <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                             <Image
-                                            src="/assets/images/tchat_icon.svg"
+                                            src="/assets/svg/tchat_icon.svg"
                                             alt="Tchat icon"
                                             width={20}
                                             height={20}
@@ -202,8 +202,8 @@ export default function Register() {
                                     />
                                     <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                                         <Image
-                                            src="/assets/images/calendar-days.svg"
-                                            alt="Pseudo icon"
+                                            src="/assets/svg/calendar-days.svg"
+                                            alt="Calendar icon"
                                             width={20}
                                             height={20}
                                         />

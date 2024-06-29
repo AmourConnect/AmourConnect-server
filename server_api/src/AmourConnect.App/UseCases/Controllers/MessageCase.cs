@@ -30,7 +30,7 @@ namespace AmourConnect.App.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "There must be validation of the friend request to chat");
+                    return (false, "There must be validation of the match request to chat");
                 }
 
                 if (!RegexUtils.CheckMessage(setmessageDto.MessageContent))
@@ -50,7 +50,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
                 return (true, "Message send succes");
             }
-            return (false, "You are not friends to talk together");
+            return (false, "You have to match to talk together");
         }
 
         public async Task<(bool success, string message, IEnumerable<GetMessageDto> messages)> GetUserMessagesAsync(string token_session_user, int Id_UserReceiver)
@@ -63,7 +63,7 @@ namespace AmourConnect.App.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "There must be validation of the friend request to chat", null);
+                    return (false, "There must be validation of the match request to chat", null);
                 }
 
                 ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
@@ -81,7 +81,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
                 return (true, "Messages retrieved successfully", msg);
             }
-            return (false, "You are not friends to talk together", null);
+            return (false, "You have to match to talk together", null);
         }
 
     }

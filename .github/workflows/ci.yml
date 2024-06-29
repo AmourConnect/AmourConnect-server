@@ -60,7 +60,7 @@ jobs:
       - name: Build image Database
         run: |
           cd server_api/DataBase
-          docker-compose -f compose.yaml up -d
+          docker compose -f compose.yaml up -d
 
 
       - name: Create .env file WebSite
@@ -71,7 +71,7 @@ jobs:
       - name: Build image Web Site and Push
         run: |
            cd web_site/
-           docker-compose -f compose.yaml up -d
+           docker compose -f compose.yaml up -d
            CONTAINER_ID=$(docker ps -q --filter "name=frontamourconnect")
            IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
            docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
@@ -87,7 +87,7 @@ jobs:
       - name: Build image Server Api and Push
         run: |
             cd server_api/
-            docker-compose -f compose.yaml up -d
+            docker compose -f compose.yaml up -d
             CONTAINER_ID=$(docker ps -q --filter "name=apiamourconnect")
             IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
             docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY

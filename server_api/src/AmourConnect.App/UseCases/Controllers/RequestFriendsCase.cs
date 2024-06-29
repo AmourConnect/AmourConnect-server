@@ -34,16 +34,16 @@ namespace AmourConnect.App.UseCases.Controllers
 
             if (friendRequest == null)
             {
-                return (false, "Friend request not found");
+                return (false, "Match request not found");
             }
 
             friendRequest.Status = RequestStatus.Accepted;
 
             await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
 
-            await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer.EmailGoogle, friendRequest.UserIssuer.Pseudo, dataUserNowConnect.Pseudo);
+            await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
 
-            return (true, "Request friend accepted");
+            return (true, "Request match accepted");
         }
 
         public async Task<(bool success, string message)> RequestFriendsAsync(string token_session_user, int IdUserReceiver)
@@ -59,7 +59,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             if (dataUserNowConnect.Id_User == userReceiver.Id_User)
             {
-                return (false, "User cannot send a friend request to themselves");
+                return (false, "User cannot send a match request to themselves");
             }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
@@ -68,13 +68,13 @@ namespace AmourConnect.App.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "A friend request is already pending between these users");
+                    return (false, "A match request is already pending between these users");
                 }
 
-                return (false, "These users are already friends");
+                return (false, "These users are already matches");
             }
 
-            RequestFriends requestFriends = new RequestFriends
+            RequestFriends requestFriends = new()
             {
                 UserIssuer = dataUserNowConnect,
                 UserReceiver = userReceiver,
@@ -84,9 +84,9 @@ namespace AmourConnect.App.UseCases.Controllers
 
             await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
 
-            await EmailUtils.RequestFriendMailAsync(userReceiver.EmailGoogle, userReceiver.Pseudo, dataUserNowConnect.Pseudo);
+            await EmailUtils.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
 
-            return (true, "Request friend carried out");
+            return (true, "Your match request has been made successfully 💕");
         }
     }
 }
