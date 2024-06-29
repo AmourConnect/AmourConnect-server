@@ -1,4 +1,4 @@
-import { API_BACKEND_URL } from "../lib/config";
+import { API_BACKEND_URL } from "../utils/config";
 
 export async function apiFetch<T>(
     url: string,

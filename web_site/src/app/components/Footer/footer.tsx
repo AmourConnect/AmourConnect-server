@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="flex justify-center">
           <Image
             alt="AmourConnect logo"
-            src="/assets/images/amour_connect_logo.jpg"
+            src="/favicon.ico"
             width={70}
             height={70}
             className="rounded-md bg-white p-1"

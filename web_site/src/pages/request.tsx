@@ -1,15 +1,14 @@
 import { AuthStatus, GetRequestFriendsDto } from "@/Hook/type";
-import Loader1 from "../app/components/Loader1";
+import Loader1 from "../app/components/Loading/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Button_1Loading } from '../app/components/Button_1';
-import { compareByProperty } from '../lib/helper';
+import { Button_1Loading } from '../app/components/Button/Button_1';
+import { compareByProperty } from '../utils/helper';
 import Link from 'next/link';
-
 
 export default function Request() {
 
@@ -82,7 +81,7 @@ export default function Request() {
             <div className="min-h-screen bg-pink-200 flex flex-col items-center justify-center sm:p-6">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
 
                 <div className="w-full max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden md:flex md:flex-row">
@@ -99,9 +98,9 @@ export default function Request() {
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                                 <div className="ml-4">
-                                    <a href={`/profil-details/${item.id_UserReceiver}`}>
+                                    <Link href={`/profil-details/${item.id_UserReceiver}`}>
                                         <div className="text-sm font-medium text-gray-900">{item.userReceiverPseudo}</div>
-                                    </a>
+                                    </Link>
                                     <div className="text-pink-700">{new Date(item.date_of_request).toLocaleString()}</div>
                                 </div>
                             </div>
@@ -132,9 +131,9 @@ export default function Request() {
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                                 <div className="ml-4">
-                                    <a href={`/profil-details/${item.idUserIssuer}`}>
+                                    <Link href={`/profil-details/${item.idUserIssuer}`}>
                                         <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo}</div>
-                                    </a>
+                                    </Link>
                                     <div className="text-sm text-gray-500">Date demande {new Date(item.date_of_request).toLocaleString()}</div>
                                 </div>
                             </div>
@@ -172,17 +171,17 @@ export default function Request() {
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                                 <div className="ml-4">
-                                    <a href={`/profil-details/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                    <Link href={`/profil-details/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                         <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === userDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
-                                    </a>
-                                    <a href={`/tchat/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                    </Link>
+                                    <Link href={`/tchat/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                         <Image
-                                            src="/assets/images/tchat_icon.svg"
+                                            src="/assets/svg/tchat_icon.svg"
                                             alt="Tchater avec"
                                             width={20}
                                             height={20}
                                         />
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </td>
@@ -198,7 +197,7 @@ export default function Request() {
     </div>
 </div>
                 <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                        Aller a la page welcome pour chercher des proies
+                Retour à la page welcome pour rencontrer de nouvelles personnes
                 </Link>
             </div>
         );

@@ -15,7 +15,7 @@ ConnectionDB="Host=postgresdbsqlamourconnect;Port=5432;Username=tchoulo;Password
 
 Start API .NET Core
 ```
-docker-compose -f .\compose.yaml up -d
+docker compose -f .\compose.yaml up -d
 ```
 
 **Clean the caches if that doesn't work :**

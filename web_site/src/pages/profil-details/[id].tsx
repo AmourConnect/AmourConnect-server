@@ -1,15 +1,15 @@
 import { AuthStatus} from "@/Hook/type";
-import Loader1 from "../../app/components/Loader1";
+import Loader1 from "../../app/components/Loading/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import { ConvertingADateToAge } from "../../lib/helper";
-import PopUp from "@/app/components/pop_up1";
-import PopUp2 from "../../app/components/pop_up2";
-import { Button_1Loading } from '../../app/components/Button_1';
+import { ConvertingADateToAge } from "../../utils/helper";
+import PopUp from "@/app/components/PopUp/pop_up1";
+import PopUp2 from "../../app/components/PopUp/pop_up2";
+import { Button_1Loading } from '../../app/components/Button/Button_1';
 import Link from 'next/link';
 
 export default function ProfileDetailID() {
@@ -58,7 +58,7 @@ export default function ProfileDetailID() {
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
                 {show && (requestFriendsDto?.message) && (
                         <PopUp title="Message" description={requestFriendsDto?.message} />
@@ -67,7 +67,7 @@ export default function ProfileDetailID() {
                     )}
                 {userDto ? (
                     <>
-                        <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Une proie</h1>
+                        <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Un partenaire potentiel 😏💖</h1>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
                                 {userDto.sex === 'F' && !userDto.profile_picture && (
@@ -100,7 +100,7 @@ export default function ProfileDetailID() {
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                         </div>
                         <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                                Retour à la page welcome pour chercher des proies
+                        Retour à la page welcome pour rencontrer de nouvelles personnes
                         </Link>
                     </>
                 ) : (

@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
-import Loader1 from "../app/components/Loader1";
+import Loader1 from "../app/components/Loading/Loader1";
 import Head from 'next/head';
 import Image from 'next/image';
-import { ConvertingADateToAge, isValidDate } from "../lib/helper";
-import { Button_1Loading } from '../app/components/Button_1';
+import { ConvertingADateToAge, isValidDate } from "../utils/helper";
+import { Button_1Loading } from '../app/components/Button/Button_1';
 import Link from 'next/link';
 
 
@@ -81,11 +81,11 @@ export default function Profile() {
             <div className="bg-pink-200 flex flex-col items-center justify-center h-screen sm:p-6">
                 <Head>
                     <title>AmourConnect</title>
-                    <link rel="icon" href="/assets/images/amour_connect_logo.jpg" />
+                    <link rel="icon" href="/favicon.ico" />
                 </Head>
                 {userDto ? (
                     <>
-                        <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Améliore ton profil pour attirer plus de proies ❤</h1>
+                        <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Mets en valeur tes atouts pour séduire sur notre site ❤</h1>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
                                 {userDto?.sex === 'F' && !userDto?.profile_picture && (
@@ -184,7 +184,7 @@ export default function Profile() {
                             </form>
                         </div>
                         <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                            Retour à la page welcome pour chercher des proies
+                        Retour à la page welcome pour rencontrer de nouvelles personnes
                         </Link>
                     </>
                 ) : (

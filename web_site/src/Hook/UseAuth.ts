@@ -2,7 +2,7 @@
 import { useCallback, useState } from "react";
 import { GetUserDto, AuthStatus, GetMessageDto, GetRequestFriendsDto } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
-import { GOOGLE_LOGIN_URL } from "../lib/config";
+import { GOOGLE_LOGIN_URL } from "../utils/config";
 
 
 export function UseAuth() {

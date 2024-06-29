@@ -6,9 +6,10 @@ import { Spotlight } from "../ui/Spotlight";
 import { SparklesCore } from "../ui/sparkles";
 import { TextGenerateEffect } from "../ui/text-generate-effect";
 import TextShimmer from "../ui/text-shimmer";
+import Link from "next/link";
 
 const words =
-  "Rechercher votre Amour à la vitesse de la lumière⚡";
+  "Recherchez votre Amour à la vitesse de la lumière⚡";
 export function SpotlightPreview() {
   return (
     <Fade triggerOnce>
@@ -16,7 +17,7 @@ export function SpotlightPreview() {
         <div className="h-[35rem] md:h-[45rem] relative w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
           <Spotlight
             className="-top-20 left-0 md:-top-20 md:left-50"
-            fill="white"
+            fill="pink"
           />
 
           <div className="w-full absolute inset-0 h-screen">
@@ -24,22 +25,22 @@ export function SpotlightPreview() {
               id="tsparticlesfullpage"
               background="transparent"
               minSize={0.6}
-              maxSize={1.5}
+              maxSize={3.5}
               particleDensity={20}
               className="w-full h-full"
-              particleColor="#FFFFFF"
+              particleColor="#FFC0CB"
             />
           </div>
           <div className="relative flex flex-col items-center">
             <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-center text-white relative z-20 w-[85%] lg:w-[70%]">
-              <span className="border px-2 py-1 rounded-xl hover:rounded-black  animation ease  font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-pink-800 text-3xl md:text-4xl lg:text-6xl">
+              <span className="py-1 rounded-xl hover:rounded-black animation ease font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-pink-800 text-3xl md:text-4xl lg:text-6xl">
               AmourConnect
               </span>
             </h1>
             <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-[50%] blur-sm translate-x-1/2" />
             <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-[50%] translate-x-1/2" />
-            <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-[50%] blur-sm translate-x-1/2" />
-            <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-[50%] translate-x-1/2" />
+            <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-pink-500 to-transparent h-[5px] w-[50%] blur-sm translate-x-1/2" />
+            <div className="absolute inset-x-0 bottom-[60%] bg-gradient-to-r from-transparent via-pink-500 to-transparent h-px w-[50%] translate-x-1/2" />
 
             <div className="mt-8 flex flex-col items-center">
               <TextGenerate />
@@ -60,7 +61,7 @@ export function TextGenerate() {
   );
 }
 
-export async function TextShimmerBadge() {
+export function TextShimmerBadge() {
   return (
     <div className="z-10 my-5 flex items-center justify-center">
       <div
@@ -70,9 +71,9 @@ export async function TextShimmerBadge() {
       >
         <TextShimmer className="inline-flex items-center justify-center px-4 py-1">
           <span>
-            <a href="welcome">
+            <Link href="welcome">
             ❤️ Commencez votre voyage amoureux
-            </a>
+            </Link>
           </span>
           <ArrowRightIcon className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
         </TextShimmer>
