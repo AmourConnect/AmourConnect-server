@@ -20,10 +20,16 @@ services:
       - ${NEXT_PUBLIC_PORT}:${NEXT_PUBLIC_PORT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontamourconnect.rule=Host(`tubevideo.shop`, `www.tubevideo.shop`)"
-      - "traefik.http.routers.frontamourconnect.tls=true"
-      - "traefik.http.routers.frontamourconnect.tls.certresolver=prodresolver"
-      - "traefik.http.routers.frontamourconnect.entrypoints=websecure"
+      - "traefik.http.routers.frontamourconnect-1.rule=Host(`tubevideo.shop`)"
+      - "traefik.http.routers.frontamourconnect-1.tls=true"
+      - "traefik.http.routers.frontamourconnect-1.tls.certresolver=prodresolver"
+      - "traefik.http.routers.frontamourconnect-1.entrypoints=websecure"
+      - "traefik.http.routers.frontamourconnect-1.service=frontamourconnect"
+      - "traefik.http.routers.frontamourconnect-2.rule=Host(`www.tubevideo.shop`)"
+      - "traefik.http.routers.frontamourconnect-2.tls=true"
+      - "traefik.http.routers.frontamourconnect-2.tls.certresolver=prodresolver"
+      - "traefik.http.routers.frontamourconnect-2.entrypoints=websecure"
+      - "traefik.http.routers.frontamourconnect-2.service=frontamourconnect"
       - "traefik.http.services.frontamourconnect.loadbalancer.server.port=${NEXT_PUBLIC_PORT}"
        #Define midleware 
       - "traefik.http.routers.frontamourconnect.middlewares=crowdsec-frontamourconnect@docker" 
