@@ -6,7 +6,7 @@ services:
 
   apiamourconnect:
     container_name: apiamourconnect
-    restart: on-failure:5
+    restart: unless-stopped
     env_file:
       - .env
     ports:

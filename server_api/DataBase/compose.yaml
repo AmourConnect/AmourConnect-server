@@ -7,7 +7,7 @@ services:
     postgresdbsqlamourconnect:
         image: postgres:latest
         container_name: postgresdbsqlamourconnect
-        restart: on-failure:5
+        restart: unless-stopped
         environment:
           POSTGRES_USER: ${DB_USER}
           POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -26,7 +26,7 @@ services:
     pgadminamourconnect:
         image: dpage/pgadmin4:latest
         container_name: pgadminamourconnect
-        restart: on-failure:5
+        restart: unless-stopped
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
