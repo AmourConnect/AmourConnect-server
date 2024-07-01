@@ -20,23 +20,17 @@ services:
       - ${NEXT_PUBLIC_PORT}:${NEXT_PUBLIC_PORT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontamourconnect.rule=Host(`tubevideo.shop`)"
-      - "traefik.http.routers.frontamourconnect.tls=true"
-      - "traefik.http.routers.frontamourconnect.tls.certresolver=prodresolver"
-      - "traefik.http.routers.frontamourconnect.entrypoints=websecure"
-      - "traefik.http.routers.frontamourconnect.service=frontamourconnect"
+      - "traefik.http.routers.frontamourconnect-1.rule=Host(`tubevideo.shop`)"
+      - "traefik.http.routers.frontamourconnect-1.tls=true"
+      - "traefik.http.routers.frontamourconnect-1.tls.certresolver=prodresolver"
+      - "traefik.http.routers.frontamourconnect-1.entrypoints=websecure"
+      - "traefik.http.routers.frontamourconnect-1.service=frontamourconnect"
+      - "traefik.http.routers.frontamourconnect-2.rule=Host(`www.tubevideo.shop`)"
+      - "traefik.http.routers.frontamourconnect-2.tls=true"
+      - "traefik.http.routers.frontamourconnect-2.tls.certresolver=prodresolver"
+      - "traefik.http.routers.frontamourconnect-2.entrypoints=websecure"
+      - "traefik.http.routers.frontamourconnect-2.service=frontamourconnect"
       - "traefik.http.services.frontamourconnect.loadbalancer.server.port=${NEXT_PUBLIC_PORT}"
-      # Configuration for www.tubevideo.shop with redirection
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontamourconnect-www-redirect.rule=Host(`www.tubevideo.shop`)"
-      - "traefik.http.routers.frontamourconnect-www-redirect.tls=true"
-      - "traefik.http.routers.frontamourconnect-www-redirect.tls.certresolver=prodresolver"
-      - "traefik.http.routers.frontamourconnect-www-redirect.entrypoints=websecure"
-      - "traefik.http.routers.frontamourconnect-www-redirect.middlewares=frontamourconnect-www-redirect@docker"
-      # Redirection middleware
-      - "traefik.http.middlewares.frontamourconnect-www-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.frontamourconnect-www-redirect.redirectregex.regex=^https?://www\\.(.*)"
-      - "traefik.http.middlewares.frontamourconnect-www-redirect.redirectregex.replacement=https://$$1"
        #Define midleware 
       - "traefik.http.routers.frontamourconnect.middlewares=crowdsec-frontamourconnect@docker" 
       ## Middleware configuration
