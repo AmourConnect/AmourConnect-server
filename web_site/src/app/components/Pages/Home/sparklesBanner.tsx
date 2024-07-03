@@ -2,10 +2,10 @@
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { Fade } from "react-awesome-reveal";
-import { Spotlight } from "../../ui/Spotlight";
-import { SparklesCore } from "../../ui/sparkles";
-import { TextGenerateEffect } from "../../ui/text-generate-effect";
-import TextShimmer from "../../ui/text-shimmer";
+import { Spotlight } from "@/app/components/ui/Spotlight";
+import { SparklesCore } from "@/app/components/ui/sparkles";
+import { TextGenerateEffect } from "@/app/components/ui/text-generate-effect";
+import TextShimmer from "@/app/components/ui/text-shimmer";
 import Link from "next/link";
 
 const words =

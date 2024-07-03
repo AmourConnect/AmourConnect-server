@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
-import Loader1 from "../app/components/Loading/Loader1";
+import Loader1 from "@/app/components/Loading/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
-import { isValidDate } from "../utils/helper";
-import { Button_1Loading } from '../app/components/Button/Button_1';
+import { isValidDate } from "@/utils/helper";
+import { Button_1Loading } from '@/app/components/Button/Button_1';
 
 
 export default function Register() {

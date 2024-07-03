@@ -23,6 +23,24 @@ namespace AmourConnect.App.UseCases.Controllers
 
             ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
 
+            List<GetRequestFriendsDto> filteredRequestFriends = new List<GetRequestFriendsDto>();
+
+            foreach(GetRequestFriendsDto requestFriend in requestFriends)
+            {
+                if (dataUserNowConnect.Id_User == requestFriend.Id_UserReceiver)
+                {
+                    requestFriend.UserReceiverPictureProfile = null;
+                }
+                else
+                {
+                    requestFriend.UserIssuerPictureProfile = null;
+                }
+
+                filteredRequestFriends.Add(requestFriend);
+            }
+
+            requestFriends = filteredRequestFriends;
+
             return (true, "Request friends retrieved successfully", requestFriends);
         }
 
@@ -71,7 +89,7 @@ namespace AmourConnect.App.UseCases.Controllers
                     return (false, "A match request is already pending between these users");
                 }
 
-                return (false, "These users are already matches");
+                return (false, "You have already matched with this user");
             }
 
             RequestFriends requestFriends = new()

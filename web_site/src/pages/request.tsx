@@ -1,13 +1,14 @@
 import { AuthStatus, GetRequestFriendsDto } from "@/Hook/type";
-import Loader1 from "../app/components/Loading/Loader1";
+import Loader1 from "@/app/components/Loading/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Button_1Loading } from '../app/components/Button/Button_1';
-import { compareByProperty } from '../utils/helper';
+import { Button_link_welcome } from '@/app/components/Button/Button_link_welcome';
+import { Button_1Loading } from '@/app/components/Button/Button_1';
+import { compareByProperty } from '@/utils/helper';
 import Link from 'next/link';
 
 export default function Request() {
@@ -100,8 +101,19 @@ export default function Request() {
                                 <div className="ml-4">
                                     <Link href={`/profil-details/${item.id_UserReceiver}`}>
                                         <div className="text-sm font-medium text-gray-900">{item.userReceiverPseudo}</div>
+                                        <div className="mb-4 sm:mb-0">
+                                            {item.userReceiverSex === 'F' && !item.userReceiverPictureProfile && (
+                                                <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                            {item.userReceiverSex === 'M' && !item.userReceiverPictureProfile && (
+                                                <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-blue-500" />
+                                            )}
+                                            {item.userReceiverPictureProfile && (
+                                                <Image src={`data:image/jpeg;base64,${item.userReceiverPictureProfile}`} width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                        </div>
+                                        <div className="text-pink-700">{new Date(item.date_of_request).toLocaleString()}</div>
                                     </Link>
-                                    <div className="text-pink-700">{new Date(item.date_of_request).toLocaleString()}</div>
                                 </div>
                             </div>
                         </td>
@@ -133,8 +145,19 @@ export default function Request() {
                                 <div className="ml-4">
                                     <Link href={`/profil-details/${item.idUserIssuer}`}>
                                         <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo}</div>
+                                        <div className="mb-4 sm:mb-0">
+                                            {item.userIssuerSex === 'F' && !item.userIssuerPictureProfile && (
+                                                <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                            {item.userIssuerSex === 'M' && !item.userIssuerPictureProfile && (
+                                                <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-blue-500" />
+                                            )}
+                                            {item.userIssuerPictureProfile && (
+                                                <Image src={`data:image/jpeg;base64,${item.userIssuerPictureProfile}`} width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                        </div>
+                                        <div className="text-sm text-gray-500">Date demande {new Date(item.date_of_request).toLocaleString()}</div>
                                     </Link>
-                                    <div className="text-sm text-gray-500">Date demande {new Date(item.date_of_request).toLocaleString()}</div>
                                 </div>
                             </div>
                         </td>
@@ -177,10 +200,30 @@ export default function Request() {
                                     <Link href={`/tchat/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                         <Image
                                             src="/assets/svg/tchat_icon.svg"
-                                            alt="Tchater avec"
+                                            alt="Tchater"
                                             width={20}
                                             height={20}
                                         />
+                                            <div className="mb-4 sm:mb-0">
+                                            {item.idUserIssuer !== userDto?.id_User && item.userIssuerSex === 'F' && !item.userIssuerPictureProfile && (
+                                                <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                            {item.idUserIssuer !== userDto?.id_User && item.userIssuerSex === 'M' && !item.userIssuerPictureProfile && (
+                                                <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-blue-500" />
+                                            )}
+                                            {item.userIssuerPictureProfile && (
+                                                <Image src={`data:image/jpeg;base64,${item.userIssuerPictureProfile}`} width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                            {item.id_UserReceiver !== userDto?.id_User && item.userReceiverSex === 'F' && !item.userReceiverPictureProfile && (
+                                                <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                            {item.id_UserReceiver !== userDto?.id_User && item.userReceiverSex === 'M' && !item.userReceiverPictureProfile && (
+                                                <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-blue-500" />
+                                            )}
+                                            {item.userReceiverPictureProfile && (
+                                                <Image src={`data:image/jpeg;base64,${item.userReceiverPictureProfile}`} width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-pink-500" />
+                                            )}
+                                        </div>
                                     </Link>
                                 </div>
                             </div>
@@ -196,9 +239,7 @@ export default function Request() {
         </table>
     </div>
 </div>
-                <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                Retour à la page welcome pour rencontrer de nouvelles personnes
-                </Link>
+                <Button_link_welcome/>
             </div>
         );
     }

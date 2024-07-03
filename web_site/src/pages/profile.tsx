@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/Hook/type";
 import { UseAuth } from "@/Hook/UseAuth";
-import Loader1 from "../app/components/Loading/Loader1";
+import Loader1 from "@/app/components/Loading/Loader1";
 import Head from 'next/head';
 import Image from 'next/image';
-import { ConvertingADateToAge, isValidDate } from "../utils/helper";
-import { Button_1Loading } from '../app/components/Button/Button_1';
-import Link from 'next/link';
+import { ConvertingADateToAge, isValidDate } from "@/utils/helper";
+import { Button_1Loading } from '@/app/components/Button/Button_1';
+import { Button_link_welcome } from '@/app/components/Button/Button_link_welcome';
+
 
 
 export default function Profile() {
@@ -183,9 +184,7 @@ export default function Profile() {
                                 />
                             </form>
                         </div>
-                        <Link href="/welcome" className="text-white bg-pink-400 hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800">
-                        Retour à la page welcome pour rencontrer de nouvelles personnes
-                        </Link>
+                        <Button_link_welcome/>
                     </>
                 ) : (
                     <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Chargement du profil...</h1>

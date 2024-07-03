@@ -20,7 +20,11 @@ namespace AmourConnect.Infra.Mappers
                 Id_UserReceiver = requestFriends.Id_UserReceiver,
                 UserReceiverPseudo = requestFriends.UserReceiver.Pseudo,
                 Status = requestFriends.Status,
-                Date_of_request = requestFriends.Date_of_request
+                Date_of_request = requestFriends.Date_of_request,
+                UserIssuerPictureProfile = requestFriends.UserIssuer.Profile_picture,
+                UserReceiverPictureProfile = requestFriends.UserReceiver.Profile_picture,
+                UserIssuerSex = requestFriends.UserIssuer.sex,
+                UserReceiverSex = requestFriends.UserReceiver.sex,
             };
         }
     }
