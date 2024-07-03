@@ -9,6 +9,7 @@ import { compareByProperty } from '@/utils/helper';
 import { Button_1Loading } from '@/app/components/Button/Button_1';
 import { LoaderCustombg } from '@/app/components/ui/LoaderCustombg';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const TchatID = () => {
 
@@ -18,35 +19,11 @@ const TchatID = () => {
     const router = useRouter();
     const { id } = router.query;
     const idNumber = Number(id);
-    let idUsserReceiver = "";
-    useEffect (() => {
-        if(Array.isArray(messageDto)) 
-        {
-            messageDto.forEach(( itemo: GetMessageDto) => {
-                if(userDto?.id_User === itemo.idUserIssuer)
-                {
-                    idUsserReceiver = itemo.idUserIssuer.toString();
-                     console.log("le premier IF ");
-                     console.log("userDto.id_User " + userDto.id_User);
-                     console.log("itemo.idUserIssuer " + itemo.idUserIssuer);
-                }
-                else if(userDto?.id_User === itemo.id_UserReceiver)
-                {
-                    idUsserReceiver = itemo.id_UserReceiver.toString();
-                    // console.log("le second IF qui est elseif");
-                    // console.log("userDto.id_User " + userDto.id_User);
-                    // console.log("itemo.id_UserReceiver " + itemo.id_UserReceiver);
-                    //console.log(idUsserReceiver);
-                }
-            });
-        }
-    }, [messageDto, userDto]);
-    const idNumberUser = Number(idUsserReceiver);
 
 
     useEffect(() => {
         UserGetConnected();
-        UserGetUserID(idNumberUser);
+        UserGetUserID(idNumber);
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
@@ -94,6 +71,7 @@ const TchatID = () => {
                 </Head>
                 <div className="w-full max-w-xl mx-auto">
                     <div className="h-[60vh] overflow-y-auto px-4"> {/* Chat container with scrollable feature */}
+                    <Link href={`/profil-details/${userIDDto?.id_User}`}>
                     <div className="mb-4 sm:mb-0">
                         {userIDDto?.sex === 'F' && !userIDDto.profile_picture && (
                             <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={userIDDto.pseudo} className="rounded-full border-4 border-pink-500" />
@@ -105,6 +83,7 @@ const TchatID = () => {
                             <Image src={`data:image/jpeg;base64,${userIDDto.profile_picture}`} width="50" height="50" alt={userIDDto.pseudo} className="rounded-full border-4 border-pink-500" />
                         )}
                     </div>
+                    </Link>
                         {Array.isArray(messageDto) && messageDto.length > 0 ? (
                             messageDto
                                 .sort((a, b) => compareByProperty(a, b, 'date_of_request'))
