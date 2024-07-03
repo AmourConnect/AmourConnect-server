@@ -19,6 +19,10 @@ export type GetRequestFriendsDto =
   userReceiverPseudo: string;
   userIssuerPseudo: string;
   message: string;
+  userReceiverPictureProfile : Blob;
+  userIssuerPictureProfile : Blob;
+  userIssuerSex: string;
+  userReceiverSex: string;
 }
 
 export type GetMessageDto =

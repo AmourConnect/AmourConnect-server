@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CardBody, CardContainer, CardItem } from "../ui/3d-card";
+import { CardBody, CardContainer, CardItem } from "@/app/components/ui/3d-card";
 
 export interface ThreeDCardProps {
   title: string;

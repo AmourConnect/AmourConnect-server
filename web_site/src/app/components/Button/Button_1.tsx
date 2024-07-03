@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
-import { LoaderCustombg } from '../ui/LoaderCustombg';
+import { Button } from '@/app/components/ui/button';
+import { LoaderCustombg } from '@/app/components/ui/LoaderCustombg';
 
 interface ButtonGet {
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;

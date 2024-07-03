@@ -11,5 +11,9 @@ namespace AmourConnect.Domain.Dtos.GetDtos
         public int IdUserIssuer { get; set; }
         public string UserReceiverPseudo { get; set; }
         public string UserIssuerPseudo { get; set; }
+        public byte[] UserIssuerPictureProfile { get; set; }
+        public byte[] UserReceiverPictureProfile { get; set; }
+        public string UserReceiverSex { get; set; }
+        public string UserIssuerSex { get; set; }
     }
 }

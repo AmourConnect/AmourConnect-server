@@ -1,27 +1,29 @@
 import { AuthStatus, GetMessageDto } from "@/Hook/type";
-import Loader1 from "../../app/components/Loading/Loader1";
+import Loader1 from "@/app/components/Loading/Loader1";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { compareByProperty } from '../../utils/helper';
-import { Button_1Loading } from '../../app/components/Button/Button_1';
-import { LoaderCustombg } from '../../app/components/ui/LoaderCustombg';
+import { compareByProperty } from '@/utils/helper';
+import { Button_1Loading } from '@/app/components/Button/Button_1';
+import { LoaderCustombg } from '@/app/components/ui/LoaderCustombg';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function TchatID() {
+const TchatID = () => {
 
-
-    const { status, UserGetConnected, SendMessage, GetTchatID, userDto, messageDto } = UseAuth();
+    const [messageContent, setMessageContent] = useState('');
+    const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+    const { userIDDto, status, UserGetConnected, SendMessage, GetTchatID, UserGetUserID, userDto, messageDto } = UseAuth();
     const router = useRouter();
     const { id } = router.query;
     const idNumber = Number(id);
-    const [messageContent, setMessageContent] = useState('');
-    const [isLoaderVisible, setIsLoaderVisible] = useState(false);
 
 
     useEffect(() => {
         UserGetConnected();
+        UserGetUserID(idNumber);
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
             timer = setTimeout(() => {
@@ -29,7 +31,7 @@ export default function TchatID() {
             }, 3000);
         }
         return () => clearTimeout(timer);
-    }, [status, UserGetConnected, router]);
+    }, [status, UserGetConnected, UserGetUserID, router]);
 
 
     useEffect(() => {
@@ -69,6 +71,19 @@ export default function TchatID() {
                 </Head>
                 <div className="w-full max-w-xl mx-auto">
                     <div className="h-[60vh] overflow-y-auto px-4"> {/* Chat container with scrollable feature */}
+                    <Link href={`/profil-details/${userIDDto?.id_User}`}>
+                    <div className="mb-4 sm:mb-0">
+                        {userIDDto?.sex === 'F' && !userIDDto.profile_picture && (
+                            <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={userIDDto.pseudo} className="rounded-full border-4 border-pink-500" />
+                        )}
+                        {userIDDto?.sex === 'M' && !userIDDto.profile_picture && (
+                            <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={userIDDto.pseudo} className="rounded-full border-4 border-blue-500" />
+                        )}
+                        {userIDDto?.profile_picture && (
+                            <Image src={`data:image/jpeg;base64,${userIDDto.profile_picture}`} width="50" height="50" alt={userIDDto.pseudo} className="rounded-full border-4 border-pink-500" />
+                        )}
+                    </div>
+                    </Link>
                         {Array.isArray(messageDto) && messageDto.length > 0 ? (
                             messageDto
                                 .sort((a, b) => compareByProperty(a, b, 'date_of_request'))
@@ -151,3 +166,5 @@ export default function TchatID() {
         <Loader1 />
     );
 }
+
+export default TchatID;

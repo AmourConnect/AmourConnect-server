@@ -7,8 +7,6 @@ services:
   frontamourconnect:
     container_name: frontamourconnect
     restart: unless-stopped
-    env_file:
-      - .env
     build:
       context: .
       dockerfile: Dockerfile.node_frontend
@@ -31,7 +29,7 @@ services:
       - "traefik.http.routers.frontamourconnect-2.entrypoints=websecure"
       - "traefik.http.routers.frontamourconnect-2.service=frontamourconnect"
       - "traefik.http.services.frontamourconnect.loadbalancer.server.port=${NEXT_PUBLIC_PORT}"
-       #Define midleware 
+      # Define midleware 
       - "traefik.http.routers.frontamourconnect.middlewares=crowdsec-frontamourconnect@docker" 
       ## Middleware configuration
       - "traefik.http.middlewares.crowdsec-frontamourconnect.plugin.crowdsec-bouncer.enabled=true"

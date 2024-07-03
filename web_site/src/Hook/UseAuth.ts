@@ -2,12 +2,13 @@
 import { useCallback, useState } from "react";
 import { GetUserDto, AuthStatus, GetMessageDto, GetRequestFriendsDto } from "./type";
 import { apiFetch, ApiError } from "./apiFetch";
-import { GOOGLE_LOGIN_URL } from "../utils/config";
+import { GOOGLE_LOGIN_URL } from "@/utils/config";
 
 
 export function UseAuth() {
 
     const [userDto, setUserDto] = useState<GetUserDto | null>(null);
+    const [userIDDto, setUserIDDto] = useState<GetUserDto | null>(null);
     const [requestFriendsDto, setRequestFriendsDto] = useState<GetRequestFriendsDto | null>(null);
     const [messageDto, setMessageDto] = useState<GetMessageDto | null>(null);
     const [MessageApi, setMessageApi] = useState<string | null>(null);
@@ -77,8 +78,8 @@ export function UseAuth() {
 
     const UserGetUserID = useCallback((Id_User: number) => {
         apiFetch<GetUserDto>("/User/GetUser/" + Id_User)
-            .then(response => setUserDto(response))
-            .catch(() => setUserDto(null))
+            .then(response => setUserIDDto(response))
+            .catch(() => setUserIDDto(null))
     }, []);
 
 
@@ -148,6 +149,7 @@ export function UseAuth() {
         UserGetUserID,
         userDto,
         messageDto,
-        requestFriendsDto
+        requestFriendsDto,
+        userIDDto
       };
 }

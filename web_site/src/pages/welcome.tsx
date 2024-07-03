@@ -1,16 +1,16 @@
 import { AuthStatus, GetUserDto } from "@/Hook/type";
-import Loader1 from "../app/components/Loading/Loader1";
-import PopUp from "../app/components/PopUp/pop_up1";
-import PopUp2 from "../app/components/PopUp/pop_up2";
+import Loader1 from "@/app/components/Loading/Loader1";
+import PopUp from "@/app/components/PopUp/pop_up1";
+import PopUp2 from "@/app/components/PopUp/pop_up2";
 import { UseAuth } from "@/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
-import { ConvertingADateToAge } from "../utils/helper";
+import { ConvertingADateToAge } from "@/utils/helper";
 import { motion } from 'framer-motion';
-import { Button_1Loading } from '../app/components/Button/Button_1';
+import { Button_1Loading } from '@/app/components/Button/Button_1';
 import Link from "next/link";
 
 
