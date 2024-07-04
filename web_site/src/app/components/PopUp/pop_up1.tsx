@@ -1,3 +1,4 @@
+"use client";
 import 'tailwindcss/tailwind.css';
 
 interface PopUpProps {
@@ -5,7 +6,7 @@ interface PopUpProps {
     description?: string;
 }
 
-export default function PopUp({ title, description }: PopUpProps) {
+const PopUp = ({ title, description }: PopUpProps) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
@@ -37,3 +38,5 @@ export default function PopUp({ title, description }: PopUpProps) {
         </div>
     );
 }
+
+export default PopUp

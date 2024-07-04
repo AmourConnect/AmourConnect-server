@@ -10,7 +10,7 @@ import Link from "next/link";
 
 const words =
   "Recherchez votre Amour à la vitesse de la lumière⚡";
-export function SpotlightPreview() {
+export const SpotlightPreview = () => {
   return (
     <Fade triggerOnce>
         <div className="h-[35rem] md:h-[45rem] relative w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
@@ -51,7 +51,7 @@ export function SpotlightPreview() {
   );
 }
 
-export function TextGenerate() {
+export const TextGenerate = () => {
   return (
     <div className="w-[80%] text-center">
       <TextGenerateEffect words={words} />
@@ -59,7 +59,7 @@ export function TextGenerate() {
   );
 }
 
-export function TextShimmerBadge() {
+export const TextShimmerBadge = () => {
   return (
     <div className="z-10 my-5 flex items-center justify-center">
       <div

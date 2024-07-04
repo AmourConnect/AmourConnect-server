@@ -30,7 +30,7 @@ export const TextRevealCard = ({
     }
   }, []);
 
-  function mouseMoveHandler(event: any) {
+  const mouseMoveHandler = (event: any) => {
     event.preventDefault();
 
     const { clientX } = event;
@@ -40,11 +40,11 @@ export const TextRevealCard = ({
     }
   }
 
-  function mouseLeaveHandler() {
+  const mouseLeaveHandler = () => {
     setIsMouseOver(false);
     setWidthPercentage(0);
   }
-  function mouseEnterHandler() {
+  const mouseEnterHandler = () => {
     setIsMouseOver(true);
   }
 

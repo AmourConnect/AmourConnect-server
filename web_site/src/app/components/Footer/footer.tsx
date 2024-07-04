@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Fade } from "react-awesome-reveal";
 
-export default function Footer() {
+const Footer = () => {
   return (
     <Fade triggerOnce>
     <div className="border-t">
@@ -42,3 +42,5 @@ export default function Footer() {
     </Fade>
   );
 }
+
+export default Footer

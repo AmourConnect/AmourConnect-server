@@ -1,7 +1,7 @@
 import Footer from "./components/Footer/footer";
-import { SpotlightPreview } from "./components/Pages/Home/sparklesBanner";
+import { SpotlightPreview } from "@/interfaceAdapters/ComponentsPages/Home/sparklesBanner";
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="flex flex-col">
       <SpotlightPreview />
@@ -9,3 +9,4 @@ export default function Home() {
     </div>
   );
 }
+export default Home
