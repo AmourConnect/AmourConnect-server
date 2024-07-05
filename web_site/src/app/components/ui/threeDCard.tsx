@@ -10,12 +10,12 @@ export interface ThreeDCardProps {
   buttonText: string;
 }
 
-export function ThreeDCard({
+export const ThreeDCard = ({
   title,
   description,
   imageUrl,
   buttonText,
-}: ThreeDCardProps) {
+}: ThreeDCardProps) => {
   return (
     <CardContainer className="inter-var m-3">
       <CardBody className="group/card relative h-auto w-auto rounded-xl border border-white/[0.2] bg-black/[0.3] p-6 hover:shadow-2xl hover:shadow-emerald-500/[0.1] sm:w-[30rem]  ">

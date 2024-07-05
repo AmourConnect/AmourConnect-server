@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/app/components/ui/button';
 import { LoaderCustombg } from '@/app/components/ui/LoaderCustombg';

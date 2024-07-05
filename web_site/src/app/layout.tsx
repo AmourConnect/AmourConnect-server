@@ -14,14 +14,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="fr">
       <body className={cn("bg-[#0d0d0d]", inter.className)}>{children}</body>
     </html>
   );
 }
+export default RootLayout

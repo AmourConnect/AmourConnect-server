@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import 'tailwindcss/tailwind.css';
 
-export default function Loader2() {
+const Loader2 = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-[#fffbf7]">
             <div className="max-w-xs mx-auto">
@@ -21,3 +21,5 @@ export default function Loader2() {
         </div>
     );
 }
+
+export default Loader2

@@ -5,7 +5,7 @@ interface PopUpProps {
     description?: string;
 }
 
-export default function PopUp2({ title, description }: PopUpProps) {
+const PopUp2 = ({ title, description }: PopUpProps) => {
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
@@ -29,3 +29,5 @@ export default function PopUp2({ title, description }: PopUpProps) {
         </div>
     );
 }
+
+export default PopUp2
