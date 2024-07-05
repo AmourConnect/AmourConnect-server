@@ -24,9 +24,7 @@ services:
       - "traefik.http.routers.apiamourconnect.tls.certresolver=prodresolver"
       - "traefik.http.routers.apiamourconnect.entrypoints=websecure"
       - "traefik.http.services.apiamourconnect.loadbalancer.server.port=${PORT_BACKEND}"
-      # Define midleware 
       - "traefik.http.routers.apiamourconnect.middlewares=crowdsec-apiamourconnect@docker" 
-      ## Middleware configuration
       - "traefik.http.middlewares.crowdsec-apiamourconnect.plugin.crowdsec-bouncer.enabled=true"
       - "traefik.http.middlewares.crowdsec-apiamourconnect.plugin.crowdsec-bouncer.crowdseclapikey=${CrowdSec_BOUNCER_API_KEY}"
     networks:
