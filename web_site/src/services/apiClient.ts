@@ -1,5 +1,5 @@
 import { servicesTools } from "@/services/Tools";
-import FetchOptions from "@/interfaces/FetchOptions";
+import FetchOptions from "@/entities/FetchOptions";
 
 export class apiClient
 {
