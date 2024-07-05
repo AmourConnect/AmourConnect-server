@@ -3,7 +3,9 @@ import { AuthStatus } from "@/entities/AuthStatus";
 import Loader1 from "@/app/components/Loading/Loader1";
 import PopUp from "@/app/components/PopUp/pop_up1";
 import PopUp2 from "@/app/components/PopUp/pop_up2";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
+import { UseRequestFriends } from "@/interfaceAdapters/Hook/UseRequestFriends";
+import { UseUser } from "@/interfaceAdapters/Hook/UseUser";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
@@ -18,12 +20,14 @@ import Link from "next/link";
 const WelcomePage = () => {
 
 
-    const { status, UserGetUsersToMach, userDto, RequestFriendsAdd, MessageApi, requestFriendsDto } = UseFetch();
+    const { status, UserGetConnected } = UseAuth();
+    const { UserGetUsersToMach, usersDto } = UseUser();
+    const { RequestFriendsAdd, MessageApiR, requestFriendsDto } = UseRequestFriends();
     const router = useRouter();
 
 
-
     useEffect(() => {
+        UserGetConnected();
         UserGetUsersToMach();
         let timer: NodeJS.Timeout | undefined;
         if (status === AuthStatus.Unauthenticated) {
@@ -39,13 +43,13 @@ const WelcomePage = () => {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        if (show && MessageApi || requestFriendsDto) {
+        if (show && MessageApiR || requestFriendsDto) {
             const timer = setTimeout(() => {
                 setShow(false);
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [show, MessageApi, requestFriendsDto]);
+    }, [show, MessageApiR, requestFriendsDto]);
 
 
     const button_requestfriendsAdd = (id_user: number): void =>
@@ -79,12 +83,12 @@ const WelcomePage = () => {
                 <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 {show && (requestFriendsDto?.message) && (
                         <PopUp title="Message" description={requestFriendsDto?.message} />
-                    )} : { show &&(MessageApi) && (
-                        <PopUp2 title="Attention" description={MessageApi} />
+                    )} : { show &&(MessageApiR) && (
+                        <PopUp2 title="Attention" description={MessageApiR} />
                     )}
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                        {Array.isArray(userDto) && userDto.length > 0 ? (
-                            userDto.map((account: GetUserDto) => (
+                        {Array.isArray(usersDto) && usersDto.length > 0 ? (
+                            usersDto.map((account: GetUserDto) => (
                                 <motion.div
                                     key={account.id_User}
                                     initial={{ opacity: 0, y: 50 }}

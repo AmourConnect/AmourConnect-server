@@ -1,6 +1,8 @@
 import { AuthStatus } from "@/entities/AuthStatus";
 import Loader1 from "@/app/components/Loading/Loader1";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
+import { UseUser } from "@/interfaceAdapters/Hook/UseUser";
+import { UseRequestFriends } from "@/interfaceAdapters/Hook/UseRequestFriends";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -15,7 +17,9 @@ import { Button_link_welcome } from '@/app/components/Button/Button_link_welcome
 const ProfileDetailID = () => {
 
 
-    const { UserGetConnected, userIDDto, status, UserGetUserID, requestFriendsDto, MessageApi, RequestFriendsAdd } = UseFetch();
+    const { UserGetConnected, status } = UseAuth();
+    const { requestFriendsDto, MessageApiR, RequestFriendsAdd } = UseRequestFriends();
+    const { userIDDto, UserGetUserID } = UseUser();
     const router = useRouter();
     const { id } = router.query;
     const idNumber = Number(id);
@@ -37,13 +41,13 @@ const ProfileDetailID = () => {
     const [show, setShow] = useState(false);
 
     useEffect(() => {
-        if (show && MessageApi || requestFriendsDto) {
+        if (show && MessageApiR || requestFriendsDto) {
             const timer = setTimeout(() => {
                 setShow(false);
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [show, MessageApi, requestFriendsDto]);
+    }, [show, MessageApiR, requestFriendsDto]);
 
 
     const button_requestfriendsAdd = (id_user: number): void =>
@@ -63,8 +67,8 @@ const ProfileDetailID = () => {
                 </Head>
                 {show && (requestFriendsDto?.message) && (
                         <PopUp title="Message" description={requestFriendsDto?.message} />
-                    )} : { show &&(MessageApi) && (
-                        <PopUp2 title="Attention" description={MessageApi} />
+                    )} : { show &&(MessageApiR) && (
+                        <PopUp2 title="Attention" description={MessageApiR} />
                     )}
                 {userIDDto ? (
                     <>

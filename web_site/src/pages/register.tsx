@@ -1,4 +1,4 @@
-﻿import Register from '@/interfaceAdapters/ComponentsPages/Register/Register';
+﻿import Register from '@/interfaceAdapters/Dashboard/Register/Register';
 
 const RegisterUser = () =>
 {

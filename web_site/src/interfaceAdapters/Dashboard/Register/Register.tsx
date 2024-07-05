@@ -2,19 +2,19 @@ import 'tailwindcss/tailwind.css';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/entities/AuthStatus";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
 import Loader1 from "@/app/components/Loading/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
 import { servicesTools } from "@/services/Tools";
 import { Button_1Loading } from '@/app/components/Button/Button_1';
-
+import {SetUserDto} from '@/entities/SetUserDto';
 
 const Register = () => {
 
 
 
-    const { status, UserGetConnected, AuthRegister, MessageApi } = UseFetch();
+    const { status, UserGetConnected, MessageApiAuth, AuthRegister }  = UseAuth();
     const router = useRouter();
 
 
@@ -49,14 +49,14 @@ const Register = () => {
                 alert('Veuillez entrer une date de naissance valide.');
                 return;
             }
-            const user = {
+            const user: SetUserDto = {
                 pseudo: pseudo,
                 description: Description,
                 sex: sex,
                 city: city,
                 date_of_birth: new Date(date_of_birth)
             };
-            AuthRegister(user.pseudo, user.sex, user.city, user.date_of_birth, user.description);
+            AuthRegister(user);
         };
 
 
@@ -73,7 +73,7 @@ const Register = () => {
 
                         <form onSubmit={handleSubmit} className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8">
 
-                            {MessageApi && <p style={{ color: "red" }}>{MessageApi}</p>}
+                            {MessageApiAuth && <p style={{ color: "red" }}>{MessageApiAuth}</p>}
 
                                 <div>
                                     <label htmlFor="pseudo" className="sr-only">Pseudo</label>

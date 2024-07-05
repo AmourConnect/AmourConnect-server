@@ -2,7 +2,8 @@ import 'tailwindcss/tailwind.css';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/entities/AuthStatus";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
+import { UseUser } from "@/interfaceAdapters/Hook/UseUser";
 import Loader1 from "@/app/components/Loading/Loader1";
 import Head from 'next/head';
 import Image from 'next/image';
@@ -16,7 +17,8 @@ const Profile = () => {
 
 
 
-    const { status, UserGetConnected, userDto, UserPatch } = UseFetch();
+    const { status, UserGetConnected, UserAuthDto } = UseAuth();
+    const { UserPatch } = UseUser();
     const router = useRouter()
 
 
@@ -84,29 +86,29 @@ const Profile = () => {
                     <title>AmourConnect</title>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                {userDto ? (
+                {UserAuthDto ? (
                     <>
                         <h1 className="text-3xl font-bold mb-8 text-center sm:text-4xl text-pink-500">Mets en valeur tes atouts pour séduire sur notre site ❤</h1>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
                             <div className="mb-4 sm:mb-0">
-                                {userDto?.sex === 'F' && !userDto?.profile_picture && (
-                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-pink-500" />
+                                {UserAuthDto?.sex === 'F' && !UserAuthDto?.profile_picture && (
+                                    <Image src="/assets/images/femme_anonyme.png" width="100" height="100" alt={UserAuthDto.pseudo} className="rounded-full border-4 border-pink-500" />
                                 )}
-                                {userDto?.sex === 'M' && !userDto.profile_picture && (
-                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-blue-500" />
+                                {UserAuthDto?.sex === 'M' && !UserAuthDto.profile_picture && (
+                                    <Image src="/assets/images/homme_bg.png" width="100" height="100" alt={UserAuthDto.pseudo} className="rounded-full border-4 border-blue-500" />
                                 )}
-                                {userDto?.profile_picture && (
-                                    <Image src={`data:image/jpeg;base64,${userDto.profile_picture}`} width="100" height="100" alt={userDto.pseudo} className="rounded-full border-4 border-pink-500" />
+                                {UserAuthDto?.profile_picture && (
+                                    <Image src={`data:image/jpeg;base64,${UserAuthDto.profile_picture}`} width="100" height="100" alt={UserAuthDto.pseudo} className="rounded-full border-4 border-pink-500" />
                                 )}
                             </div>
                             <div className="text-center sm:text-left">
                                 <div className="text-xl font-medium text-black dark:text-white">
-                                    <p className="text-pink-700"><span className="font-bold">{userDto.sex === 'F' ? 'Mme ' : 'Mr '}</span><span className="font-bold text-pink-700">{userDto.pseudo}</span></p>
+                                    <p className="text-pink-700"><span className="font-bold">{UserAuthDto.sex === 'F' ? 'Mme ' : 'Mr '}</span><span className="font-bold text-pink-700">{UserAuthDto.pseudo}</span></p>
                                 </div>
-                                <p className="text-pink-700">ID user : <span className="font-bold">{userDto.id_User}</span></p>
-                                <p className="text-pink-700">Description : <span className="font-bold">{userDto.description}</span></p>
-                                <p className="text-pink-700">Date de naissance : {new Date(userDto.date_of_birth).toLocaleDateString()}</p>
-                                <div className="text-pink-700">Age : {servicesTools.Tools.ConvertingADateToAge(userDto.date_of_birth)} ans</div>
+                                <p className="text-pink-700">ID user : <span className="font-bold">{UserAuthDto.id_User}</span></p>
+                                <p className="text-pink-700">Description : <span className="font-bold">{UserAuthDto.description}</span></p>
+                                <p className="text-pink-700">Date de naissance : {new Date(UserAuthDto.date_of_birth).toLocaleDateString()}</p>
+                                <div className="text-pink-700">Age : {servicesTools.Tools.ConvertingADateToAge(UserAuthDto.date_of_birth)} ans</div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center sm:flex-row sm:space-x-4">
@@ -134,7 +136,7 @@ const Profile = () => {
                                     onChange={(e) => setCity(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{userDto?.city}</option>
+                                    <option value="">{UserAuthDto?.city}</option>
                                     <option value="Marseille">Marseille</option>
                                     <option value="Paris">Paris</option>
                                     <option value="Lyon">Lyon</option>
@@ -154,7 +156,7 @@ const Profile = () => {
                                     onChange={(e) => setSex(e.target.value)}
                                     className="bg-white w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                                 >
-                                    <option value="">{userDto?.sex}</option>
+                                    <option value="">{UserAuthDto?.sex}</option>
                                     <option value="M">Masculin</option>
                                     <option value="F">Feminin</option>
                                 </select>

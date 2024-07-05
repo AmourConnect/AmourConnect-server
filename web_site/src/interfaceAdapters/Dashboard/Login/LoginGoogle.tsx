@@ -2,7 +2,7 @@ import 'tailwindcss/tailwind.css';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { AuthStatus } from "@/entities/AuthStatus";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
 import Loader1 from "@/app/components/Loading/Loader1";
 import Image from 'next/image';
 import Head from 'next/head';
@@ -13,8 +13,8 @@ const LoginGoogle = () => {
 
 
 
-    const { status, UserGetConnected, AuthLoginGoogle } = UseFetch();
-    const router = useRouter()
+    const { status, UserGetConnected, AuthLoginGoogle } = UseAuth();
+    const router = useRouter();
 
 
 

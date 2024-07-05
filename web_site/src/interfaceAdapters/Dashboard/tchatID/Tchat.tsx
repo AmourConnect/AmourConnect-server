@@ -1,7 +1,9 @@
 import { GetMessageDto } from "@/entities/GetMessageDto";
 import { AuthStatus } from "@/entities/AuthStatus";
 import Loader1 from "@/app/components/Loading/Loader1";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseMessage } from "@/interfaceAdapters/Hook/UseMessage";
+import { UseUser } from "@/interfaceAdapters/Hook/UseUser";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -11,12 +13,15 @@ import { Button_1Loading } from '@/app/components/Button/Button_1';
 import { LoaderCustombg } from '@/app/components/ui/LoaderCustombg';
 import Image from 'next/image';
 import Link from 'next/link';
+import { SetMessageDto } from "@/entities/SetMessageDto";
 
 const Tchat = () => {
 
     const [messageContent, setMessageContent] = useState('');
     const [isLoaderVisible, setIsLoaderVisible] = useState(false);
-    const { userIDDto, status, UserGetConnected, SendMessage, GetTchatID, UserGetUserID, userDto, messageDto } = UseFetch();
+    const { SendMessage, GetTchatID, messageDto } = UseMessage();
+    const { userIDDto, UserGetUserID } = UseUser();
+    const { status, UserGetConnected, UserAuthDto } = UseAuth();
     const router = useRouter();
     const { id } = router.query;
     const idNumber = Number(id);
@@ -48,15 +53,19 @@ const Tchat = () => {
         return () => clearTimeout(timer);
     }, [status, GetTchatID, idNumber]);
 
+    const messageObject: SetMessageDto = {
+        idUserReceiver: idNumber,
+        messageContent: messageContent
+    }
 
     const handleSendMessage = () => {
-        SendMessage(idNumber, messageContent);
+        SendMessage(messageObject);
         setMessageContent('');
     };
 
     const handleSendMessage2 = () => {
         setIsLoaderVisible(true);
-        SendMessage(idNumber, messageContent);
+        SendMessage(messageObject);
         setMessageContent('');
         setTimeout(() => {
             setIsLoaderVisible(false);
@@ -92,26 +101,26 @@ const Tchat = () => {
                                 .map((messagedto: GetMessageDto) => (
                                     <div
                                         key={messagedto.id_Message}
-                                        className={`flex items-center p-2 ${messagedto.idUserIssuer === userDto?.id_User
+                                        className={`flex items-center p-2 ${messagedto.idUserIssuer === UserAuthDto?.id_User
                                             ? 'justify-end'
                                             : 'justify-start'
                                             }`}
                                     >
                                         <div
-                                            className={`mx-2 max-w-[70%] p-2 rounded-lg ${messagedto.idUserIssuer === userDto?.id_User
+                                            className={`mx-2 max-w-[70%] p-2 rounded-lg ${messagedto.idUserIssuer === UserAuthDto?.id_User
                                                 ? 'bg-pink-400 text-white'
                                                 : 'bg-gray-200'
                                                 }`}
                                         >
                                             <a
-                                                href={`/profil-details/${messagedto.idUserIssuer === userDto?.id_User 
-                                                    ? userDto?.id_User 
+                                                href={`/profil-details/${messagedto.idUserIssuer === UserAuthDto?.id_User 
+                                                    ? UserAuthDto?.id_User 
                                                     : messagedto.idUserIssuer }`}
                                             >
                                                 <p>
                                                     <strong>
-                                                        {messagedto.idUserIssuer === userDto?.id_User
-                                                            ? userDto?.pseudo
+                                                        {messagedto.idUserIssuer === UserAuthDto?.id_User
+                                                            ? UserAuthDto?.pseudo
                                                             : messagedto.userIssuerPseudo}
                                                     </strong>
                                                 </p>
@@ -142,7 +151,6 @@ const Tchat = () => {
                                 }
                               }}
                             className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none"
-                            placeholder="ecrire un message"
                         />
                         <Button_1Loading
                             onClick={() => {

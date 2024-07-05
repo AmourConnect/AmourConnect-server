@@ -1,7 +1,8 @@
 import { GetRequestFriendsDto } from "@/entities/GetRequestFriendsDto";
 import { AuthStatus } from "@/entities/AuthStatus";
 import Loader1 from "@/app/components/Loading/Loader1";
-import { UseFetch } from "@/interfaceAdapters/Hook/UseFetch";
+import { UseRequestFriends } from "@/interfaceAdapters/Hook/UseRequestFriends";
+import { UseAuth } from "@/interfaceAdapters/Hook/UseAuth";
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react';
@@ -16,7 +17,8 @@ const RequestMatch = () => {
 
 
 
-    const { requestFriendsDto, status, userDto, GetRequestFriends, UserGetConnected, AcceptRequestFriends } = UseFetch();
+    const { requestFriendsDto,  AcceptRequestFriends, GetRequestFriends } = UseRequestFriends();
+    const { status, UserAuthDto, UserGetConnected } = UseAuth();
     const router = useRouter();
 
 
@@ -61,9 +63,9 @@ const RequestMatch = () => {
             const received: GetRequestFriendsDto[] = [];
             const friendsList: GetRequestFriendsDto[] = [];
             requestFriendsDto.forEach((item: GetRequestFriendsDto) => {
-                if (item.idUserIssuer === userDto?.id_User && item.status === 0) {
+                if (item.idUserIssuer === UserAuthDto?.id_User && item.status === 0) {
                     sent.push(item);
-                } else if (item.id_UserReceiver === userDto?.id_User && item.status === 0) {
+                } else if (item.id_UserReceiver === UserAuthDto?.id_User && item.status === 0) {
                     received.push(item);
                 } else if (item.status === 1) {
                     friendsList.push(item);
@@ -73,7 +75,7 @@ const RequestMatch = () => {
             setReceivedRequests(received);
             setFriends(friendsList);
         }
-    }, [requestFriendsDto, userDto]);
+    }, [requestFriendsDto, UserAuthDto]);
 
 
 
@@ -195,22 +197,22 @@ const RequestMatch = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                                 <div className="ml-4">
-                                    <Link href={`/profil-details/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
-                                        <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === userDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
+                                    <Link href={`/profil-details/${item.idUserIssuer === UserAuthDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                        <div className="text-sm font-medium text-gray-900">{item.userIssuerPseudo === UserAuthDto?.pseudo ? item.userReceiverPseudo : item.userIssuerPseudo}</div>
                                         <div className="mb-4 sm:mb-0">
-                                            {item.idUserIssuer !== userDto?.id_User && item.userIssuerSex === 'F' && !item.userIssuerPictureProfile && (
+                                            {item.idUserIssuer !== UserAuthDto?.id_User && item.userIssuerSex === 'F' && !item.userIssuerPictureProfile && (
                                                 <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
                                             )}
-                                            {item.idUserIssuer !== userDto?.id_User && item.userIssuerSex === 'M' && !item.userIssuerPictureProfile && (
+                                            {item.idUserIssuer !== UserAuthDto?.id_User && item.userIssuerSex === 'M' && !item.userIssuerPictureProfile && (
                                                 <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-blue-500" />
                                             )}
                                             {item.userIssuerPictureProfile && (
                                                 <Image src={`data:image/jpeg;base64,${item.userIssuerPictureProfile}`} width="50" height="50" alt={item.userIssuerPseudo} className="rounded-full border-4 border-pink-500" />
                                             )}
-                                            {item.id_UserReceiver !== userDto?.id_User && item.userReceiverSex === 'F' && !item.userReceiverPictureProfile && (
+                                            {item.id_UserReceiver !== UserAuthDto?.id_User && item.userReceiverSex === 'F' && !item.userReceiverPictureProfile && (
                                                 <Image src="/assets/images/femme_anonyme.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-pink-500" />
                                             )}
-                                            {item.id_UserReceiver !== userDto?.id_User && item.userReceiverSex === 'M' && !item.userReceiverPictureProfile && (
+                                            {item.id_UserReceiver !== UserAuthDto?.id_User && item.userReceiverSex === 'M' && !item.userReceiverPictureProfile && (
                                                 <Image src="/assets/images/homme_bg.png" width="50" height="50" alt={item.userReceiverPseudo} className="rounded-full border-4 border-blue-500" />
                                             )}
                                             {item.userReceiverPictureProfile && (
@@ -218,7 +220,7 @@ const RequestMatch = () => {
                                             )}
                                         </div>
                                     </Link>
-                                    <Link href={`/tchat/${item.idUserIssuer === userDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
+                                    <Link href={`/tchat/${item.idUserIssuer === UserAuthDto?.id_User ? item.id_UserReceiver : item.idUserIssuer}`}>
                                         <Image
                                             src="/assets/svg/tchat_icon.svg"
                                             alt="Tchater"

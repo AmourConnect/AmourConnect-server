@@ -1,4 +1,4 @@
-import LoginGoogle from '@/interfaceAdapters/ComponentsPages/Login/LoginGoogle';
+import LoginGoogle from '@/interfaceAdapters/Dashboard/Login/LoginGoogle';
 
 const Login = () => 
 {

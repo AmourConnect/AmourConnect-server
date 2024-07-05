@@ -1,5 +1,5 @@
 import Footer from "./components/Footer/footer";
-import { SpotlightPreview } from "@/interfaceAdapters/ComponentsPages/Home/sparklesBanner";
+import { SpotlightPreview } from "@/interfaceAdapters/Dashboard/Home/sparklesBanner";
 
 const Home = () => {
   return (
