@@ -1,4 +1,4 @@
-name: NodeJS, .NET Core Audit and Docker Push Image
+name: .NET Core Audit and Docker Push Image
 
 on:
   push:
@@ -16,17 +16,6 @@ jobs:
     steps:
     - name: Checkout librairies
       uses: actions/checkout@v4
-
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Install dependencies and run audit in Web Site folder
-      run: |
-        cd web_site
-        npm install
-        npm audit
     
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
@@ -35,7 +24,6 @@ jobs:
 
     - name: Restore dependencies and run audit in Api Server folder
       run: |
-        cd server_api
         dotnet restore
         dotnet list package --vulnerable
 
@@ -54,39 +42,22 @@ jobs:
 
       - name: Create .env file DataBase
         run: |
-          touch server_api/DataBase/.env
-          echo "${{ secrets.DATABASE_ENV_PROD }}" > server_api/DataBase/.env
+          touch DataBase/.env
+          echo "${{ secrets.DATABASE_ENV_PROD }}" > DataBase/.env
 
       - name: Build image Database
         run: |
-          cd server_api/DataBase
+          cd DataBase
           docker compose -f compose.yaml up -d
-
-
-      - name: Create .env file WebSite
-        run: |
-          touch web_site/.env
-          echo "${{ secrets.WEBSITE_ENV_PROD }}" > web_site/.env
-
-      - name: Build image Web Site and Push
-        run: |
-           cd web_site/
-           docker compose -f compose.yaml up -d
-           CONTAINER_ID=$(docker ps -q --filter "name=frontamourconnect")
-           IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
-           docker container commit $CONTAINER_ID $IMAGE_NAME_REPOSITORY
-           docker tag $IMAGE_NAME_REPOSITORY $IMAGE_NAME_REPOSITORY:FrontAmourConnect
-           docker push $IMAGE_NAME_REPOSITORY:FrontAmourConnect
 
 
       - name: Create .env file Server Api
         run: |
-            touch server_api/.env
-            echo "${{ secrets.SERVER_ENV_PROD }}" > server_api/.env
+            touch .env
+            echo "${{ secrets.SERVER_ENV_PROD }}" > .env
       
       - name: Build image Server Api and Push
         run: |
-            cd server_api/
             docker compose -f compose.yaml up -d
             CONTAINER_ID=$(docker ps -q --filter "name=apiamourconnect")
             IMAGE_NAME_REPOSITORY=amourconnect/test_prod_amourconnect
