@@ -6,8 +6,6 @@ on:
       - main
       - test_before_prod
   pull_request:
-    branches:
-      - main
 
 jobs:
 
