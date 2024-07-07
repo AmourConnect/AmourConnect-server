@@ -21,17 +21,20 @@ namespace AmourConnect.App.UseCases.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> ValidateGoogleLoginAsync()
+        public async Task<(bool success, string message)> ValidateGoogleLoginAsync()
         {
             var response = await _httpContextAccessor.HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (response?.Principal == null) return false;
+            if (response?.Principal == null || !response.Succeeded)
+            {
+                return (false, "redirect login");
+            }
 
             var EmailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
             var userIdGoogle = response.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(EmailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return false;
+                return (false, "redirect login");
             }
 
             int? Id_User = await _userRepository.GetUserIdWithGoogleIdAsync(EmailGoogle, userIdGoogle);
@@ -39,11 +42,11 @@ namespace AmourConnect.App.UseCases.Controllers
             if (Id_User > 0)
             {
                 await CreateSessionLoginAsync(Id_User.Value);
-                return true;
+                return (true, "redirect welcome");
             }
 
             CookieUtils.CreateCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
-            return false;
+            return (false, "redirect register");
         }
 
 

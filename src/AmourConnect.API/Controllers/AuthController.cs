@@ -33,12 +33,19 @@ namespace AmourConnect.API.Controllers
         [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleLogin()
         {
-            if (await _authCase.ValidateGoogleLoginAsync())
-            {
-                return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
-            }
+                var result = await _authCase.ValidateGoogleLoginAsync();
 
-            return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
+                if (result.success == true && result.message == "redirect welcome")
+                {
+                    return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
+                }
+
+                if (result.success == false && result.message == "redirect login")
+                {
+                    return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/login");
+                }
+
+                return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
         }
 
 

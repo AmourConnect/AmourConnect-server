@@ -44,6 +44,15 @@ builder.Services.AddAuthentication(options =>
 {
     options.ClientId = Env.GetString("ClientId");
     options.ClientSecret = Env.GetString("ClientSecret");
+    options.Events = new Microsoft.AspNetCore.Authentication.OAuth.OAuthEvents
+    {
+        OnRemoteFailure = context =>
+        {
+            context.Response.Redirect(Env.GetString("IP_NOW_FRONTEND") + "/login");
+            context.HandleResponse();
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
