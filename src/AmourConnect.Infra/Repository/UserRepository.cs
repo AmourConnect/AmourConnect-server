@@ -15,7 +15,7 @@ namespace AmourConnect.Infra.Repository
         {
             return await _context.User
             .Where(u =>
-                u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
+            //    u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
                 u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
                 u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
                     dataUserNowConnect.date_of_birth.AddYears(-10) :
