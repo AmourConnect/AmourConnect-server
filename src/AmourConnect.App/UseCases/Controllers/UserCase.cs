@@ -5,7 +5,7 @@ using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Infra.Interfaces;
-using AmourConnect.Infra.Mappers;
+using AmourConnect.Domain.Mappers;
 
 namespace AmourConnect.App.UseCases.Controllers
 {

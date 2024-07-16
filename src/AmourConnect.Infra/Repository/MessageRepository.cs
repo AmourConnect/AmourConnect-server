@@ -3,7 +3,7 @@ using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using AmourConnect.Infra.Persistence;
 using Microsoft.EntityFrameworkCore;
-using AmourConnect.Infra.Mappers;
+using AmourConnect.Domain.Mappers;
 
 namespace AmourConnect.Infra.Repository
 {
