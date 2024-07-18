@@ -5,7 +5,7 @@ using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using AmourConnect.Infra.Persistence;
-using AmourConnect.Infra.Mappers;
+using AmourConnect.Domain.Mappers;
 using System.Text;
 namespace AmourConnect.Infra.Repository
 {

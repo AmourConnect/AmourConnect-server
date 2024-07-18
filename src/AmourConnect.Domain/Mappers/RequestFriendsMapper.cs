@@ -1,7 +1,7 @@
 ﻿using AmourConnect.Domain.Entities;
 using AmourConnect.Domain.Dtos.GetDtos;
 
-namespace AmourConnect.Infra.Mappers
+namespace AmourConnect.Domain.Mappers
 {
     public static class RequestFriendsMapper
     {
