@@ -1,5 +1,4 @@
-﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.GetDtos;
+﻿using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
 using Microsoft.AspNetCore.Mvc;
 using AmourConnect.API.Filters;
@@ -27,10 +26,7 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-
-            ICollection<GetUserDto> AllUsers = await _userCase.GetUsersToMach(token_session_user);
-
+            ICollection<GetUserDto> AllUsers = await _userCase.GetUsersToMach();
             return Ok(AllUsers);
         }
 
@@ -43,9 +39,7 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-
-            GetUserDto userDto = await _userCase.GetUserOnly(token_session_user);
+            GetUserDto userDto = await _userCase.GetUserOnly();
 
             return Ok(userDto);
         }
@@ -57,9 +51,7 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-
-            await _userCase.UpdateUser(setUserUpdateDto, token_session_user);
+            await _userCase.UpdateUser(setUserUpdateDto);
 
             return NoContent();
         }

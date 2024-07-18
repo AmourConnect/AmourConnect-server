@@ -6,19 +6,25 @@ using AmourConnect.Domain.Entities;
 using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Infra.Interfaces;
 using AmourConnect.Domain.Mappers;
+using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
     internal class UserCase : IUserCase
     {
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private string token_session_user;
 
-        public UserCase(IUserRepository userRepository)
+
+        public UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+            token_session_user = CookieUtils.GetCookieUser(_httpContextAccessor.HttpContext);
         }
 
-        public async Task<ICollection<GetUserDto>> GetUsersToMach(string token_session_user)
+        public async Task<ICollection<GetUserDto>> GetUsersToMach()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -27,7 +33,7 @@ namespace AmourConnect.App.UseCases.Controllers
             return users;
         }
 
-        public async Task<GetUserDto> GetUserOnly(string token_session_user)
+        public async Task<GetUserDto> GetUserOnly()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -36,7 +42,7 @@ namespace AmourConnect.App.UseCases.Controllers
             return userDto;
         }
 
-        public async Task UpdateUser(SetUserUpdateDto setUserUpdateDto, string token_session_user)
+        public async Task UpdateUser(SetUserUpdateDto setUserUpdateDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 

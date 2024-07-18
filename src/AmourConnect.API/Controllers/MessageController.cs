@@ -1,5 +1,4 @@
-﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.GetDtos;
+﻿using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Domain.Dtos.AppLayerDtos;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +26,7 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-
-            var result = await _messageCase.SendMessageAsync(token_session_user, setmessageDto);
+            var result = await _messageCase.SendMessageAsync(setmessageDto);
 
             if (result.success)
             {
@@ -53,18 +50,11 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-
-            var result = await _messageCase.GetUserMessagesAsync(token_session_user, Id_UserReceiver);
+            var result = await _messageCase.GetUserMessagesAsync(Id_UserReceiver);
 
             if (result.success)
             {
                 return Ok(result.messages);
-            }
-
-            if (result.message == "There must be validation of the friend request to chat")
-            {
-                return Conflict(new ApiResponseDto { message = result.message, succes = false });
             }
 
             return Conflict(new ApiResponseDto { message = result.message, succes = false });

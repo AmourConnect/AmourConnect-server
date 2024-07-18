@@ -3,6 +3,7 @@ using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
@@ -10,14 +11,19 @@ namespace AmourConnect.App.UseCases.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private string token_session_user;
 
-        public RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository)
+
+        public RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _requestFriendsRepository = requestFriendsRepository;
+            _httpContextAccessor = httpContextAccessor;
+            token_session_user = CookieUtils.GetCookieUser(_httpContextAccessor.HttpContext);
         }
 
-        public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync(string token_session_user)
+        public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -44,7 +50,7 @@ namespace AmourConnect.App.UseCases.Controllers
             return (true, "Request friends retrieved successfully", requestFriends);
         }
 
-        public async Task<(bool success, string message)> AcceptFriendRequestAsync(string token_session_user, int IdUserIssuer)
+        public async Task<(bool success, string message)> AcceptFriendRequestAsync(int IdUserIssuer)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -64,7 +70,7 @@ namespace AmourConnect.App.UseCases.Controllers
             return (true, "Request match accepted");
         }
 
-        public async Task<(bool success, string message)> RequestFriendsAsync(string token_session_user, int IdUserReceiver)
+        public async Task<(bool success, string message)> RequestFriendsAsync(int IdUserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 

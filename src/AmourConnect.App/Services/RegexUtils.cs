@@ -24,13 +24,13 @@ namespace AmourConnect.API.Services
                 return (false, "Invalid sex value or length");
 
             if (!CheckCity(setUserRegistrationDto.city))
-                return (false, "Invalid city format or length" );
+                return (false, "Invalid city or length" );
 
             if (!CheckPseudo(setUserRegistrationDto.Pseudo))
-                return (false, "Invalid pseudo format or length");
+                return (false, "Invalid pseudo or length");
 
             if (!CheckDescription(setUserRegistrationDto.Description))
-                return (false, "Invalid description format or length");
+                return (false, "Invalid description or length");
 
             return (true, string.Empty);
         }
