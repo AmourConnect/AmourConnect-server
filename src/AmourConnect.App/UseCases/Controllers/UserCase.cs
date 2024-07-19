@@ -21,30 +21,45 @@ namespace AmourConnect.App.UseCases.Controllers
         {
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
-            token_session_user = CookieUtils.GetCookieUser(_httpContextAccessor.HttpContext);
+            token_session_user = CookieUtils.GetValueClaimsCookieUser(_httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
         }
 
-        public async Task<ICollection<GetUserDto>> GetUsersToMach()
+        public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if (dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected", null);
+            }
 
             ICollection<GetUserDto> users = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
 
-            return users;
+            return (true, "yes good", users);
         }
 
-        public async Task<GetUserDto> GetUserOnly()
+        public async Task<(bool succes, string message, GetUserDto UserToMatch)> GetUserOnly()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if (dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected", null);
+            }
 
             GetUserDto userDto = dataUserNowConnect.ToGetUserDto();
 
-            return userDto;
+            return (true, "yes good", userDto);
         }
 
-        public async Task UpdateUser(SetUserUpdateDto setUserUpdateDto)
+        public async Task<(bool succes, string message)> UpdateUser(SetUserUpdateDto setUserUpdateDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if (dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected");
+            }
 
             var imageData = await MessUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
 
@@ -78,20 +93,29 @@ namespace AmourConnect.App.UseCases.Controllers
             dataUserNowConnect.date_of_birth = newsValues.date_of_birth;
 
             await _userRepository.UpdateUserAsync(dataUserNowConnect.Id_User, dataUserNowConnect);
+
+            return (true, "yes good");
         }
 
-        public async Task<GetUserDto> GetUser(int Id_User)
+        public async Task<(bool succes, string message, GetUserDto userID)> GetUser(int Id_User)
         {
+            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if (dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected", null);
+            }
+
             User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
             if (user == null) 
             {
-                return null;
+                return (false, "no found :/", null);
             }
 
             GetUserDto userDto = user.ToGetUserDto();
 
-            return userDto;
+            return (true, "found", userDto);
         }
     }
 }

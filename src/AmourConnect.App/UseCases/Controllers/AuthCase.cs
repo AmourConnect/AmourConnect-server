@@ -53,7 +53,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
         public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
         {
-            var claims = CookieUtils.GetJWTFromCookie(_httpContextAccessor.HttpContext.Request, CookieUtils.nameCookieGoogle, false);
+            var claims = CookieUtils.GetClaimsFromCookieJWT(_httpContextAccessor.HttpContext, CookieUtils.nameCookieGoogle);
 
             string emailGoogle = claims?.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
             string userIdGoogle = claims?.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;

@@ -25,6 +25,11 @@ namespace AmourConnect.API.Controllers
         {
             var result = await _requestFriendsCase.GetRequestFriendsAsync();
 
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
             if (result.success)
             {
                 return Ok(result.requestFriends);
@@ -42,6 +47,11 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _requestFriendsCase.RequestFriendsAsync(IdUserReceiver);
+
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             if (result.success)
             {
@@ -64,6 +74,11 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _requestFriendsCase.AcceptFriendRequestAsync(IdUserIssuer);
+
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             if (result.success)
             {

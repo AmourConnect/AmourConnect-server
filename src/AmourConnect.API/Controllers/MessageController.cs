@@ -28,6 +28,11 @@ namespace AmourConnect.API.Controllers
 
             var result = await _messageCase.SendMessageAsync(setmessageDto);
 
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
             if (result.success)
             {
                 return Ok(new ApiResponseDto { message = result.message, succes = true });
@@ -52,10 +57,16 @@ namespace AmourConnect.API.Controllers
 
             var result = await _messageCase.GetUserMessagesAsync(Id_UserReceiver);
 
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
             if (result.success)
             {
                 return Ok(result.messages);
             }
+
 
             return Conflict(new ApiResponseDto { message = result.message, succes = false });
         }

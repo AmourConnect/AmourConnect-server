@@ -26,8 +26,14 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            ICollection<GetUserDto> AllUsers = await _userCase.GetUsersToMach();
-            return Ok(AllUsers);
+            var AllUsers = await _userCase.GetUsersToMach();
+
+            if (AllUsers.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
+            return Ok(AllUsers.UsersToMatch);
         }
 
 
@@ -39,9 +45,14 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            GetUserDto userDto = await _userCase.GetUserOnly();
+            var userDto = await _userCase.GetUserOnly();
 
-            return Ok(userDto);
+            if (userDto.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
+            return Ok(userDto.UserToMatch);
         }
 
 
@@ -51,7 +62,12 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            await _userCase.UpdateUser(setUserUpdateDto);
+            var result = await _userCase.UpdateUser(setUserUpdateDto);
+
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             return NoContent();
         }
@@ -64,14 +80,19 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            GetUserDto userDto = await _userCase.GetUser(Id_User);
+            var userDto = await _userCase.GetUser(Id_User);
 
-            if (userDto == null)
+            if (userDto.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
+            if (userDto.message == "no found :/")
             {
                 return NotFound();
             }
 
-            return Ok(userDto);
+            return Ok(userDto.userID);
         }
     }
 }

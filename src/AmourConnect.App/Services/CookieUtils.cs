@@ -14,13 +14,13 @@ namespace AmourConnect.App.Services
         public static string nameCookieUserConnected = "User-AmourConnect";
         private static SymmetricSecurityKey _securityKey = new(Encoding.UTF8.GetBytes(Env.GetString("SecretKeyJWT")));
 
-        public static string GetCookieUser(HttpContext httpContext)
+        public static string GetValueClaimsCookieUser(HttpContext httpContext, string nameOfCookie)
         {
-            var claims = GetJWTFromCookie(httpContext.Request, nameCookieUserConnected, false);
+            var claims = GetClaimsFromCookieJWT(httpContext, nameCookieUserConnected);
 
             string userC = claims?.FirstOrDefault(c => c.Type == "userConnected")?.Value;
 
-            if (userC == null) 
+            if (userC == null)
             {
                 return null;
             }
@@ -89,50 +89,38 @@ namespace AmourConnect.App.Services
         }
 
 
-        public static IEnumerable<Claim> GetJWTFromCookie(HttpRequest Request, string nameOfCookie,bool WeForceTheJwtReading)
+        public static IEnumerable<Claim> GetClaimsFromCookieJWT(HttpContext httpContext, string nameOfCookie)
         {
             string jwt;
 
-            if (!Request.Cookies.TryGetValue(nameOfCookie, out jwt))
+            if (!httpContext.Request.Cookies.TryGetValue(nameOfCookie, out jwt))
             {
                 return null;
             }
 
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = _securityKey,
-                ValidateIssuer = true,
-                ValidIssuer = Env.GetString("IP_NOW_FRONTEND"),
-                ValidateAudience = true,
-                ValidAudience = Env.GetString("IP_NOW_BACKENDAPI"),
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
+            var handler = new JwtSecurityTokenHandler();
 
             try
             {
-                var handler = new JwtSecurityTokenHandler();
-                if(!WeForceTheJwtReading)
+                var tokenValidationParameters = new TokenValidationParameters
                 {
-                    var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
-                    var claims = principal.Claims;
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = _securityKey,
+                    ValidateIssuer = true,
+                    ValidIssuer = Env.GetString("IP_NOW_FRONTEND"),
+                    ValidateAudience = true,
+                    ValidAudience = Env.GetString("IP_NOW_BACKENDAPI"),
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
 
-                    if (claims == null)
-                        return null;
+                var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
+                var claims = principal.Claims;
 
-                    return claims;
-                }
+                if (claims == null)
+                    return null;
 
-                else
-                {
-                    var jwtToken = handler.ReadJwtToken(jwt);
-                    var claims2 = jwtToken.Claims;
-                    if (claims2 == null)
-                        return null;
-
-                    return claims2;
-                }
+                return claims;
             }
             catch
             {
@@ -142,19 +130,17 @@ namespace AmourConnect.App.Services
 
         public static void SetSessionUser(HttpResponse Response, SessionUserDto SessionUserDto)
         {
-            DateTime expirationJWTSessionUser = DateTime.UtcNow.AddMinutes(15);
-
             var claims = new[]
 {
                 new Claim("userConnected", SessionUserDto.token_session_user),
             };
 
-            string jwt = SetJWTSession(claims, expirationJWTSessionUser);
+            string jwt = SetJWTSession(claims, SessionUserDto.date_token_session_expiration);
 
             SessionUserDto sessionData = new()
             {
                 token_session_user = jwt,
-                date_token_session_expiration = expirationJWTSessionUser,
+                date_token_session_expiration = SessionUserDto.date_token_session_expiration,
             };
 
             SetSessionCookie(Response, nameCookieUserConnected, sessionData);

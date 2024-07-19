@@ -23,12 +23,17 @@ namespace AmourConnect.App.UseCases.Controllers
             _requestFriendsRepository = RequestFriendsRepository;
             _messageRepository = MessageRepository;
             _httpContextAccessor = httpContextAccessor;
-            token_session_user = CookieUtils.GetCookieUser(_httpContextAccessor.HttpContext);
+            token_session_user = CookieUtils.GetValueClaimsCookieUser(_httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
         }
 
         public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if(dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected");
+            }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, setmessageDto.IdUserReceiver);
 
@@ -62,6 +67,11 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool success, string message, IEnumerable<GetMessageDto> messages)> GetUserMessagesAsync(int Id_UserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+
+            if(dataUserNowConnect == null)
+            {
+                return (false, "user JWT deconnected", null);
+            }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
 
