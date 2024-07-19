@@ -46,14 +46,17 @@ namespace AmourConnect.App.UseCases.Controllers
                 return (true, Env.GetString("IP_NOW_FRONTEND") + "/welcome");
             }
 
-            CookieUtils.CreateCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
+            CookieUtils.SetCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
             return (false, Env.GetString("IP_NOW_FRONTEND") + "/register");
         }
 
 
         public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
         {
-            var (userIdGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(_httpContextAccessor.HttpContext.Request);
+            var claims = CookieUtils.GetJWTFromCookie(_httpContextAccessor.HttpContext.Request, CookieUtils.nameCookieGoogle, false);
+
+            string emailGoogle = claims?.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
+            string userIdGoogle = claims?.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
@@ -95,7 +98,7 @@ namespace AmourConnect.App.UseCases.Controllers
         private async Task CreateSessionLoginAsync(int Id_User)
         {
             SessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
-            CookieUtils.CreateSessionCookie(_httpContextAccessor.HttpContext.Response, sessionData);
+            CookieUtils.SetSessionUser(_httpContextAccessor.HttpContext.Response, sessionData);
         }
     }
 }

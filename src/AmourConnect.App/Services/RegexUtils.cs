@@ -12,9 +12,6 @@ namespace AmourConnect.API.Services
 
         private static readonly Regex DescriptionRegex = new(@"^.{1,100}$", RegexOptions.Compiled);
 
-        private static readonly Regex CookieSessionRegex = new(@"^[a-zA-Z0-9_]{1,64}$", RegexOptions.Compiled);
-
-
         public static (bool success, string message) CheckBodyAuthRegister(SetUserRegistrationDto setUserRegistrationDto)
         {
             if (!CheckDate(setUserRegistrationDto.date_of_birth))
@@ -64,17 +61,6 @@ namespace AmourConnect.API.Services
                 return false;
 
             if (!CityRegex.IsMatch(city))
-                return false;
-
-            return true;
-        }
-
-        public static bool CheckCookieSession(string cookie)
-        {
-            if (string.IsNullOrEmpty(cookie))
-                return false;
-
-            if (!CookieSessionRegex.IsMatch(cookie))
                 return false;
 
             return true;

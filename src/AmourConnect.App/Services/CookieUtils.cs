@@ -4,34 +4,39 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
 using System.Text;
-using AmourConnect.API.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.Services
 {
     public static class CookieUtils
     {
+        public static string nameCookieGoogle = "GoogleUser-AmourConnect";
+        public static string nameCookieUserConnected = "User-AmourConnect";
+        private static SymmetricSecurityKey _securityKey = new(Encoding.UTF8.GetBytes(Env.GetString("SecretKeyJWT")));
+
         public static string GetCookieUser(HttpContext httpContext)
         {
-            var cookie = httpContext.Request.Cookies["User-AmourConnect"];
+            var claims = GetJWTFromCookie(httpContext.Request, nameCookieUserConnected, false);
 
-            if (cookie == null || !RegexUtils.CheckCookieSession(cookie))
+            string userC = claims?.FirstOrDefault(c => c.Type == "userConnected")?.Value;
+
+            if (userC == null) 
             {
-                return string.Empty;
+                return null;
             }
-            return cookie;
+
+            return userC;
         }
 
 
-
-        public static void CreateSessionCookie(HttpResponse Response, SessionUserDto sessionData)
+        private static void SetSessionCookie(HttpResponse Response, string nameOfCookie, SessionUserDto sessionData)
         {
             DateTimeOffset dateExpiration = sessionData.date_token_session_expiration;
             DateTimeOffset currentDate = DateTimeOffset.UtcNow;
             TimeSpan maxAge = dateExpiration - currentDate;
 
             Response.Cookies.Append(
-                "User-AmourConnect",
+                nameOfCookie,
                 sessionData.token_session_user,
                 new CookieOptions
                 {
@@ -44,68 +49,63 @@ namespace AmourConnect.App.Services
             );
         }
 
-
-        public static void CreateCookieToSaveIdGoogle(HttpResponse Response, string userIdGoogle, string EmailGoogle)
+        private static string SetJWTSession(Claim[] claims, DateTime expirationValue)
         {
-            var issuer = Env.GetString("IP_NOW_FRONTEND");
-            var audience = Env.GetString("IP_NOW_BACKENDAPI");
+            var credentials = new SigningCredentials(_securityKey, SecurityAlgorithms.HmacSha256);
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Env.GetString("SecretKeyJWT")));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                Env.GetString("IP_NOW_FRONTEND"),
+                Env.GetString("IP_NOW_BACKENDAPI"),
+                claims,
+                expires: expirationValue,
+                signingCredentials: credentials
+            );
+
+            string jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
+
+        public static void SetCookieToSaveIdGoogle(HttpResponse Response, string userIdGoogle, string EmailGoogle)
+        {
+            DateTime expirationCookieGoogle = DateTime.UtcNow.AddHours(1);
 
             var claims = new[]
             {
                 new Claim("userIdGoogle", userIdGoogle),
                 new Claim("EmailGoogle", EmailGoogle)
             };
+            
+            string jwt = SetJWTSession(claims, expirationCookieGoogle);
 
-            var token = new JwtSecurityToken(
-                issuer,
-                audience,
-                claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
-            );
+            SessionUserDto sessionData = new()
+            {
+                token_session_user = jwt,
+                date_token_session_expiration = expirationCookieGoogle,
+            };
 
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            Response.Cookies.Append(
-                "GoogleUser-AmourConnect",
-                jwt,
-                new CookieOptions
-                {
-                    Path = "/",
-                    MaxAge = TimeSpan.FromHours(1),
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Strict,
-                    Secure = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production"
-                }
-            );
+            SetSessionCookie(Response, nameCookieGoogle, sessionData);
         }
 
 
-        public static (string IdGoogle, string EmailGoogle) GetGoogleUserFromCookie(HttpRequest Request)
+        public static IEnumerable<Claim> GetJWTFromCookie(HttpRequest Request, string nameOfCookie,bool WeForceTheJwtReading)
         {
-            string cookieName = "GoogleUser-AmourConnect";
             string jwt;
 
-            if (!Request.Cookies.TryGetValue(cookieName, out jwt))
+            if (!Request.Cookies.TryGetValue(nameOfCookie, out jwt))
             {
-                return (null, null);
+                return null;
             }
 
-            var issuer = Env.GetString("IP_NOW_FRONTEND");
-            var audience = Env.GetString("IP_NOW_BACKENDAPI");
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Env.GetString("SecretKeyJWT")));
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = securityKey,
+                IssuerSigningKey = _securityKey,
                 ValidateIssuer = true,
-                ValidIssuer = issuer,
+                ValidIssuer = Env.GetString("IP_NOW_FRONTEND"),
                 ValidateAudience = true,
-                ValidAudience = audience,
+                ValidAudience = Env.GetString("IP_NOW_BACKENDAPI"),
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
@@ -113,18 +113,51 @@ namespace AmourConnect.App.Services
             try
             {
                 var handler = new JwtSecurityTokenHandler();
-                var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
-                var claims = principal.Claims;
+                if(!WeForceTheJwtReading)
+                {
+                    var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
+                    var claims = principal.Claims;
 
-                string userIdGoogle = claims.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;
-                string EmailGoogle = claims.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
+                    if (claims == null)
+                        return null;
 
-                return (userIdGoogle, EmailGoogle);
+                    return claims;
+                }
+
+                else
+                {
+                    var jwtToken = handler.ReadJwtToken(jwt);
+                    var claims2 = jwtToken.Claims;
+                    if (claims2 == null)
+                        return null;
+
+                    return claims2;
+                }
             }
             catch
             {
-                return (null, null);
+                return null;
             }
+        }
+
+        public static void SetSessionUser(HttpResponse Response, SessionUserDto SessionUserDto)
+        {
+            DateTime expirationJWTSessionUser = DateTime.UtcNow.AddMinutes(15);
+
+            var claims = new[]
+{
+                new Claim("userConnected", SessionUserDto.token_session_user),
+            };
+
+            string jwt = SetJWTSession(claims, expirationJWTSessionUser);
+
+            SessionUserDto sessionData = new()
+            {
+                token_session_user = jwt,
+                date_token_session_expiration = expirationJWTSessionUser,
+            };
+
+            SetSessionCookie(Response, nameCookieUserConnected, sessionData);
         }
     }
 }
