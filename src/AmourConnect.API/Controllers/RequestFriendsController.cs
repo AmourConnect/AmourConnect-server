@@ -1,5 +1,4 @@
-﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.AppLayerDtos;
+﻿using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.GetDtos;
 using Microsoft.AspNetCore.Mvc;
 using AmourConnect.API.Filters;
@@ -24,8 +23,12 @@ namespace AmourConnect.API.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<ICollection<GetRequestFriendsDto>>))]
         public async Task<IActionResult> GetRequestFriends()
         {
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            var result = await _requestFriendsCase.GetRequestFriendsAsync(token_session_user);
+            var result = await _requestFriendsCase.GetRequestFriendsAsync();
+
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             if (result.success)
             {
@@ -43,9 +46,12 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            var result = await _requestFriendsCase.RequestFriendsAsync(IdUserReceiver);
 
-            var result = await _requestFriendsCase.RequestFriendsAsync(token_session_user, IdUserReceiver);
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             if (result.success)
             {
@@ -55,11 +61,6 @@ namespace AmourConnect.API.Controllers
             if (result.message == "User receiver does not exist")
             {
                 return BadRequest(new ApiResponseDto { message = result.message, succes = false });
-            }
-
-            if (result.message == "A friend request is already pending between these users")
-            {
-                return Conflict(new ApiResponseDto { message = result.message, succes = false });
             }
 
             return Conflict(new ApiResponseDto { message = result.message, succes = false });
@@ -72,8 +73,12 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
-            var result = await _requestFriendsCase.AcceptFriendRequestAsync(token_session_user, IdUserIssuer);
+            var result = await _requestFriendsCase.AcceptFriendRequestAsync(IdUserIssuer);
+
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             if (result.success)
             {

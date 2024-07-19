@@ -1,32 +1,28 @@
 ﻿using AmourConnect.App.Interfaces.Filters;
 using AmourConnect.App.Services;
-using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Filters
 {
     internal class AuthorizeUserCase : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
     {
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthorizeUserCase(IUserRepository userRepository)
+        public AuthorizeUserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var cookieValue = CookieUtils.GetCookieUser(context.HttpContext);
-            User user = await _userRepository.GetUserWithCookieAsync(cookieValue);
-            if (string.IsNullOrEmpty(cookieValue) || user == null)
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-            DateTime expirationDate = DateTime.UtcNow;
-            if (user.date_token_session_expiration < expirationDate)
+            var cookieValueJWT = CookieUtils.GetValueClaimsCookieUser(context.HttpContext, CookieUtils.nameCookieUserConnected);
+
+            if (cookieValueJWT == null)
             {
                 context.Result = new UnauthorizedResult();
                 return;

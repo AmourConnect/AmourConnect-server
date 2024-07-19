@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using AmourConnect.API.Services;
 using AmourConnect.Domain.Dtos.SetDtos;
+using DotNetEnv;
 namespace AmourConnect.App.UseCases.Controllers
 {
     internal class AuthCase : IAuthCase
@@ -26,7 +27,7 @@ namespace AmourConnect.App.UseCases.Controllers
             var response = await _httpContextAccessor.HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (response?.Principal == null || !response.Succeeded)
             {
-                return (false, "redirect login");
+                return (false, Env.GetString("IP_NOW_FRONTEND") + "/login");
             }
 
             var EmailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
@@ -34,7 +35,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             if (string.IsNullOrEmpty(EmailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return (false, "redirect login");
+                return (false, Env.GetString("IP_NOW_FRONTEND") + "/login");
             }
 
             int? Id_User = await _userRepository.GetUserIdWithGoogleIdAsync(EmailGoogle, userIdGoogle);
@@ -42,16 +43,21 @@ namespace AmourConnect.App.UseCases.Controllers
             if (Id_User > 0)
             {
                 await CreateSessionLoginAsync(Id_User.Value);
-                return (true, "redirect welcome");
+                return (true, Env.GetString("IP_NOW_FRONTEND") + "/welcome");
             }
 
-            CookieUtils.CreateCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
-            return (false, "redirect register");
+            CookieUtils.SetCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
+            return (false, Env.GetString("IP_NOW_FRONTEND") + "/register");
         }
 
 
-        public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto, string userIdGoogle, string emailGoogle)
+        public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
         {
+            var claims = CookieUtils.GetClaimsFromCookieJWT(_httpContextAccessor.HttpContext, CookieUtils.nameCookieGoogle);
+
+            string emailGoogle = claims?.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
+            string userIdGoogle = claims?.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;
+
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
                 return (false, "Please login with Google before register");
@@ -77,11 +83,11 @@ namespace AmourConnect.App.UseCases.Controllers
                 return (true, "User already exists, logged in");
             }
 
-            int? id_user2 = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
+            int? Newid_user = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
 
-            if (id_user2.HasValue)
+            if (Newid_user.HasValue)
             {
-                await CreateSessionLoginAsync(id_user2.Value);
+                await CreateSessionLoginAsync(Newid_user.Value);
                 await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
                 return (true, "Register finish");
             }
@@ -92,7 +98,7 @@ namespace AmourConnect.App.UseCases.Controllers
         private async Task CreateSessionLoginAsync(int Id_User)
         {
             SessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
-            CookieUtils.CreateSessionCookie(_httpContextAccessor.HttpContext.Response, sessionData);
+            CookieUtils.SetSessionUser(_httpContextAccessor.HttpContext.Response, sessionData);
         }
     }
 }

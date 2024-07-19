@@ -5,9 +5,9 @@ namespace AmourConnect.App.Interfaces.Controllers
 {
     public interface IUserCase
     {
-        Task<ICollection<GetUserDto>> GetUsersToMach(string token_session_user);
-        Task<GetUserDto> GetUserOnly(string token_session_user);
-        Task UpdateUser(SetUserUpdateDto setUserUpdateDto, string token_session_user);
-        Task<GetUserDto> GetUser(int Id_User);
+        Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach();
+        Task<(bool succes, string message, GetUserDto UserToMatch)> GetUserOnly();
+        Task<(bool succes, string message)> UpdateUser(SetUserUpdateDto setUserUpdateDto);
+        Task<(bool succes, string message, GetUserDto userID)> GetUser(int Id_User);
     }
 }

@@ -33,7 +33,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// OAuth Google
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -72,12 +71,6 @@ if (app.Environment.IsDevelopment())
         var seeder = scope.ServiceProvider.GetRequiredService<IUserSeeder>();
         await seeder.Seed();
     }
-}
-
-
-if (app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
 }
 
 app.UseAuthentication();

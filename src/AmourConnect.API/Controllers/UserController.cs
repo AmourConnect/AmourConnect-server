@@ -1,5 +1,4 @@
-﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.GetDtos;
+﻿using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
 using Microsoft.AspNetCore.Mvc;
 using AmourConnect.API.Filters;
@@ -27,11 +26,14 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            var AllUsers = await _userCase.GetUsersToMach();
 
-            ICollection<GetUserDto> AllUsers = await _userCase.GetUsersToMach(token_session_user);
+            if (AllUsers.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
-            return Ok(AllUsers);
+            return Ok(AllUsers.UsersToMatch);
         }
 
 
@@ -43,11 +45,14 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            var userDto = await _userCase.GetUserOnly();
 
-            GetUserDto userDto = await _userCase.GetUserOnly(token_session_user);
+            if (userDto.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
-            return Ok(userDto);
+            return Ok(userDto.UserToMatch);
         }
 
 
@@ -57,9 +62,12 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            string token_session_user = CookieUtils.GetCookieUser(HttpContext);
+            var result = await _userCase.UpdateUser(setUserUpdateDto);
 
-            await _userCase.UpdateUser(setUserUpdateDto, token_session_user);
+            if (result.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
 
             return NoContent();
         }
@@ -72,14 +80,19 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            GetUserDto userDto = await _userCase.GetUser(Id_User);
+            var userDto = await _userCase.GetUser(Id_User);
 
-            if (userDto == null)
+            if (userDto.message == "user JWT deconnected")
+            {
+                return Unauthorized();
+            }
+
+            if (userDto.message == "no found :/")
             {
                 return NotFound();
             }
 
-            return Ok(userDto);
+            return Ok(userDto.userID);
         }
     }
 }

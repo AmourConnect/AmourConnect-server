@@ -1,5 +1,4 @@
-﻿using AmourConnect.App.Services;
-using AmourConnect.Domain.Dtos.AppLayerDtos;
+﻿using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication;
@@ -34,18 +33,7 @@ namespace AmourConnect.API.Controllers
         public async Task<IActionResult> GoogleLogin()
         {
                 var result = await _authCase.ValidateGoogleLoginAsync();
-
-                if (result.success == true && result.message == "redirect welcome")
-                {
-                    return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/welcome");
-                }
-
-                if (result.success == false && result.message == "redirect login")
-                {
-                    return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/login");
-                }
-
-                return Redirect(Env.GetString("IP_NOW_FRONTEND") + "/register");
+                return Redirect(result.message);
         }
 
 
@@ -56,9 +44,7 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (userIdGoogle, emailGoogle) = CookieUtils.GetGoogleUserFromCookie(Request);
-
-            var registrationResult = await _authCase.RegisterUserAsync(setuserRegistrationDto, userIdGoogle, emailGoogle);
+            var registrationResult = await _authCase.RegisterUserAsync(setuserRegistrationDto);
 
             if (registrationResult.success)
             {
