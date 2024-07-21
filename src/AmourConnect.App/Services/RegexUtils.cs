@@ -92,6 +92,15 @@ namespace AmourConnect.API.Services
             if (!DateRegex.IsMatch(dateString))
                 return false;
 
+            if (date.Value > DateTime.Now)
+                return false;
+
+            if (date.Value > DateTime.Now.AddYears(-18))
+                return false;
+
+            if (date.Value < DateTime.Now.AddYears(-70))
+                return false;
+
             return true;
         }
 
