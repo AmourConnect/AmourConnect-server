@@ -4,7 +4,7 @@ Dating site to match with a man VS woman and look for his love❤️
 
 # Schema DevOps
 
-![Schema DevOps](./shema_devops.jpg)
+![Schema DevOps](./InfraDeployementAmourConnect.drawio.png)
 
 # To start API
 
