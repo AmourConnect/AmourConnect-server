@@ -2,6 +2,10 @@
 
 Dating site to match with a man VS woman and look for his love❤️
 
+# Schema DevOps
+
+![Schema DevOps](./shema_devops.jpg)
+
 # To start API
 
 *⛔ Start the Database first before (in the folder server_api/DataBase)*
