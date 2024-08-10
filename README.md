@@ -6,6 +6,64 @@ Dating site to match with a man VS woman and look for his love❤️
 
 ![Schema DevOps](./InfraDeployementAmourConnect.drawio.png)
 
+# UML schéma
+```mermaid
+classDiagram
+
+class User {
+  <<class>>
+    + Id_User : int
+    + userIdGoogle : string
+    + Pseudo : string
+    + Description : string
+    + EmailGoogle : string
+    + Profile_picture : byte[]?
+    + date_token_session_expiration : DateTime?
+    + token_session_user : string?
+    + city : string
+    + sex : string
+    + date_of_birth : DateTime
+    + account_created_at : DateTime
+    + "virtual" ICollection<Message> MessagesSent
+    + "virtual" ICollection<Message> MessagesReceived
+    + "virtual" ICollection<RequestFriends> RequestsSent
+    + "virtual" ICollection<RequestFriends> RequestsReceived
+}
+
+class RequestFriends {
+  <<class>>
+    + Id_RequestFriends : int
+    + "[ForeignKey("UserIssuer")]" IdUserIssuer : int
+    + UserIssuer : User
+    + "[ForeignKey("UserReceiver")]" Id_UserReceiver : int
+    + UserReceiver : User
+    + Status : RequestStatus
+    + Date_of_request : DateTime
+}
+
+class RequestStatus {
+  <<enum>>
+    Accepted
+    Onhold
+}
+
+class Message {
+  <<class>>
+    + Id_Message : int
+    + "[ForeignKey("UserIssuer")]" IdUserIssuer : int
+    + UserIssuer : User
+    + "[ForeignKey("UserReceiver")]" Id_UserReceiver : int
+    + UserReceiver : User
+    + message_content : string
+    + Date_of_request : DateTime
+}
+
+RequestStatus --|> RequestFriends
+User "1" -- "*" RequestFriends : RequestsSent
+User "1" -- "*" RequestFriends : RequestsReceived
+User "1" -- "*" Message : MessagesSent
+User "1" -- "*" Message : MessagesReceived
+```
 # To start API
 
 *⛔ Start the Database first before (in the folder server_api/DataBase)*
