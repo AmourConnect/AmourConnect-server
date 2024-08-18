@@ -11,9 +11,9 @@ namespace AmourConnect.Infra.Repository
 {
     internal class UserRepository(AmourConnectDbContext _context) : IUserRepository
     {
-        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect)
-        {
-            return await _context.User
+        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect) =>
+           
+          await _context.User
             .Where(u =>
             //    u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
                 u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
@@ -29,17 +29,14 @@ namespace AmourConnect.Infra.Repository
                 r.Status == RequestStatus.Accepted))
             .Select(u => u.ToGetUserDto())
             .ToListAsync();
-        }
 
 
 
-        public async Task<int?> GetUserIdWithGoogleIdAsync(string EmailGoogle, string userIdGoogle)
-        {
-            return await _context.User
+        public async Task<int?> GetUserIdWithGoogleIdAsync(string EmailGoogle, string userIdGoogle) =>
+            await _context.User
                 .Where(u => u.EmailGoogle == EmailGoogle && u.userIdGoogle == userIdGoogle)
                 .Select(u => u.Id_User)
                 .FirstOrDefaultAsync();
-        }
 
 
 
@@ -101,15 +98,9 @@ namespace AmourConnect.Infra.Repository
 
 
 
-        public async Task<bool> GetUserByPseudoAsync(string Pseudo)
-        {
-            return await _context.User.AnyAsync(u => u.Pseudo.ToLower() == Pseudo.ToLower());
-        }
+        public async Task<bool> GetUserByPseudoAsync(string Pseudo) => await _context.User.AnyAsync(u => u.Pseudo.ToLower() == Pseudo.ToLower());
 
-        public async Task<User> GetUserWithCookieAsync(string token_session_user)
-        {
-            return await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
-        }
+        public async Task<User> GetUserWithCookieAsync(string token_session_user) => await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
 
         public async Task<bool> UpdateUserAsync(int Id_User, User user)
         {
@@ -133,19 +124,17 @@ namespace AmourConnect.Infra.Repository
 
 
 
-        public async Task<User> GetUserByIdUserAsync(int Id_User)
-        {
-            return await _context.User
+        public async Task<User> GetUserByIdUserAsync(int Id_User) =>
+            await _context.User
                 .Where(u => u.Id_User == Id_User)
                 .FirstOrDefaultAsync();
-        }
 
 
         private static string GeneratePassword(int length)
         {
             const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random rand = new Random();
-            StringBuilder password = new StringBuilder(length);
+            Random rand = new();
+            StringBuilder password = new(length);
 
             for (int i = 0; i < length; i++)
             {

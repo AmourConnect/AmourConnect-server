@@ -8,34 +8,22 @@ namespace AmourConnect.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthorizeUser))]
-    public class RequestFriendsController : Controller
+    public class RequestFriendsController(IRequestFriendsCase requestFriendsCase) : Controller
     {
-        private readonly IRequestFriendsCase _requestFriendsCase;
-
-        public RequestFriendsController(IRequestFriendsCase requestFriendsCase)
-        {
-            _requestFriendsCase = requestFriendsCase;
-        }
-
+        private readonly IRequestFriendsCase _requestFriendsCase = requestFriendsCase;
 
 
         [HttpGet("GetRequestFriends")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ICollection<GetRequestFriendsDto>>))]
         public async Task<IActionResult> GetRequestFriends()
         {
-            var result = await _requestFriendsCase.GetRequestFriendsAsync();
+            var (success, message, requestFriends) = await _requestFriendsCase.GetRequestFriendsAsync();
 
-            if (result.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
-            if (result.success)
-            {
-                return Ok(result.requestFriends);
-            }
-
-            return BadRequest(new ApiResponseDto { message = result.message, succes = false });
+            return success
+            ? Ok(requestFriends)
+            : BadRequest(new ApiResponseDto { message = message, succes = false });
         }
 
 
@@ -46,24 +34,15 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _requestFriendsCase.RequestFriendsAsync(IdUserReceiver);
+            var (success, message) = await _requestFriendsCase.RequestFriendsAsync(IdUserReceiver);
 
-            if (result.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
-            if (result.success)
-            {
-                return Ok(new ApiResponseDto { message = result.message, succes = true });
-            }
-
-            if (result.message == "User receiver does not exist")
-            {
-                return BadRequest(new ApiResponseDto { message = result.message, succes = false });
-            }
-
-            return Conflict(new ApiResponseDto { message = result.message, succes = false });
+            return message == "User receiver does not exist"
+            ? BadRequest(new ApiResponseDto { message = message, succes = false })
+            : success
+                ? Ok(new ApiResponseDto { message = message, succes = true })
+                : Conflict(new ApiResponseDto { message = message, succes = false });
         }
 
 
@@ -73,19 +52,21 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _requestFriendsCase.AcceptFriendRequestAsync(IdUserIssuer);
+            var (success, message) = await _requestFriendsCase.AcceptFriendRequestAsync(IdUserIssuer);
 
-            if (result.message == "user JWT deconnected")
-            {
+            JWTDeconnected(message);
+
+            return success
+            ? Ok(new ApiResponseDto { message = message, succes = true })
+            : NotFound(new ApiResponseDto { message = message, succes = false });
+        }
+
+        private IActionResult JWTDeconnected(string message)
+        {
+            if (message == "user JWT deconnected")
                 return Unauthorized();
-            }
 
-            if (result.success)
-            {
-                return Ok(new ApiResponseDto { message = result.message, succes = true });
-            }
-
-            return NotFound(new ApiResponseDto { message = result.message, succes = false });
+            return null;
         }
     }
 }

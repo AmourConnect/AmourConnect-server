@@ -17,16 +17,14 @@ namespace AmourConnect.Infra.Repository
         }
 
 
-        public async Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver)
-        {
-            return await _context.Message
+        public async Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver) =>
+            await _context.Message
                         .Include(m => m.UserIssuer)
                         .Include(m => m.UserReceiver)
                         .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
                                     (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
                         .Select(m => m.ToGetMessageDto())
                         .ToListAsync();
-        }
 
 
         public async Task<bool> DeleteMessageAsync(int id)

@@ -6,21 +6,15 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using AmourConnect.API.Services;
 using AmourConnect.Domain.Dtos.SetDtos;
 using DotNetEnv;
+using AmourConnect.App.Services.Email;
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class AuthCase : IAuthCase
+    internal class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) : IAuthCase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
-        {
-            _userRepository = userRepository;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task<(bool success, string message)> ValidateGoogleLoginAsync()
         {
@@ -88,7 +82,7 @@ namespace AmourConnect.App.UseCases.Controllers
             if (Newid_user.HasValue)
             {
                 await CreateSessionLoginAsync(Newid_user.Value);
-                await EmailUtils.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
+                await SendMail.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
                 return (true, "Register finish");
             }
 

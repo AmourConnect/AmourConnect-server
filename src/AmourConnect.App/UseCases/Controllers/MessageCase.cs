@@ -1,5 +1,4 @@
-﻿using AmourConnect.API.Services;
-using AmourConnect.App.Interfaces.Controllers;
+﻿using AmourConnect.App.Interfaces.Controllers;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
@@ -9,22 +8,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class MessageCase : IMessageCase
+    internal class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor) : IMessageCase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRequestFriendsRepository _requestFriendsRepository;
-        private readonly IMessageRepository _messageRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private string token_session_user;
-
-        public MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor)
-        {
-            _userRepository = userRepository;
-            _requestFriendsRepository = RequestFriendsRepository;
-            _messageRepository = MessageRepository;
-            _httpContextAccessor = httpContextAccessor;
-            token_session_user = CookieUtils.GetValueClaimsCookieUser(_httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IRequestFriendsRepository _requestFriendsRepository = RequestFriendsRepository;
+        private readonly IMessageRepository _messageRepository = MessageRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
 
         public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)
         {
@@ -99,6 +89,5 @@ namespace AmourConnect.App.UseCases.Controllers
             }
             return (false, "You have to match to talk together", null);
         }
-
     }
 }

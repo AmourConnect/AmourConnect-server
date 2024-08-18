@@ -12,10 +12,10 @@ namespace AmourConnect.Infra.Seeders
             {
                 if (!context.User.Any())
                 {
-                    Random random = new Random();
+                    Random random = new();
                     for (int i = 0; i < 300; i++)
                     {
-                        User newUser = new User
+                        User newUser = new()
                         {
                             Pseudo = _GenerateRandomName(),
                             Description = _GenerateRandomName() + _GenerateRandomPassword(),
@@ -35,35 +35,35 @@ namespace AmourConnect.Infra.Seeders
         private string _GenerateRandomName()
         {
             string[] names = { "John", "Jane", "Bob", "Alice", "Charlie", "Emma", "Oliver", "Sophia", "William", "Ava" };
-            Random rand = new Random();
+            Random rand = new();
             return names[rand.Next(names.Length)];
         }
 
         private string _GenerateRandomEmail()
         {
             string[] domains = { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com" };
-            Random rand = new Random();
+            Random rand = new();
             return $"{_GenerateRandomName().ToLower()}@{domains[rand.Next(domains.Length)]}";
         }
 
         private string _GenerateRandomPassword()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            Random rand = new Random();
+            Random rand = new();
             return new string(Enumerable.Repeat(chars, 8).Select(s => s[rand.Next(s.Length)]).ToArray());
         }
 
         private string _GenerateRandomCity()
         {
             string[] cities = { "Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille" };
-            Random rand = new Random();
+            Random rand = new();
             return cities[rand.Next(cities.Length)];
         }
 
         private string _GenerateRandomGender()
         {
             string[] genders = { "M", "F" };
-            Random rand = new Random();
+            Random rand = new();
             return genders[rand.Next(genders.Length)];
         }
     }

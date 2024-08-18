@@ -3,18 +3,10 @@ using AmourConnect.App.Interfaces.Filters;
 
 namespace AmourConnect.API.Filters
 {
-    internal class AuthorizeUser : Attribute, IAsyncAuthorizationFilter
+    internal class AuthorizeUser(IAuthorizeUserCase authorizeUserCase) : Attribute, IAsyncAuthorizationFilter
     {
-        private readonly IAuthorizeUserCase _authorizeUserCase;
+        private readonly IAuthorizeUserCase _authorizeUserCase = authorizeUserCase;
 
-        public AuthorizeUser(IAuthorizeUserCase authorizeUserCase)
-        {
-            _authorizeUserCase = authorizeUserCase;
-        }
-
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
-        {
-            await _authorizeUserCase.OnAuthorizationAsync(context);
-        }
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context) => await _authorizeUserCase.OnAuthorizationAsync(context);
     }
 }

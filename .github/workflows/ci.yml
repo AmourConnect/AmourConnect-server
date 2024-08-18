@@ -22,10 +22,18 @@ jobs:
       with:
         dotnet-version: '8.0'
 
-    - name: Restore dependencies and run audit in Api Server folder
+    - name: Restore dependencies and run audit in Api Server
       run: |
         dotnet restore
         dotnet list package --vulnerable
+
+    - name: Build Api Server
+      run: |
+        dotnet build
+
+    - name: Unity Test Api Server
+      run: |
+        dotnet test
 
   docker-push-image:
     runs-on: ubuntu-latest

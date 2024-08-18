@@ -8,15 +8,9 @@ namespace AmourConnect.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthorizeUser))]
-    public class UserController : Controller
+    public class UserController(IUserCase userCase) : Controller
     {
-        private readonly IUserCase _userCase;
-
-        public UserController(IUserCase userCase)
-        {
-            _userCase = userCase;
-        }
-
+        private readonly IUserCase _userCase = userCase;
 
 
         [HttpGet("GetUsersToMach")]
@@ -26,14 +20,11 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var AllUsers = await _userCase.GetUsersToMach();
+            var (succes, message, UsersToMatch) = await _userCase.GetUsersToMach();
 
-            if (AllUsers.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
-            return Ok(AllUsers.UsersToMatch);
+            return Ok(UsersToMatch);
         }
 
 
@@ -45,14 +36,11 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userDto = await _userCase.GetUserOnly();
+            var (succes, message, UserToMatch) = await _userCase.GetUserOnly();
 
-            if (userDto.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
-            return Ok(userDto.UserToMatch);
+            return Ok(UserToMatch);
         }
 
 
@@ -62,12 +50,9 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _userCase.UpdateUser(setUserUpdateDto);
+            var (succes, message) = await _userCase.UpdateUser(setUserUpdateDto);
 
-            if (result.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
             return NoContent();
         }
@@ -80,19 +65,21 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userDto = await _userCase.GetUser(Id_User);
+            var (succes, message, userID) = await _userCase.GetUser(Id_User);
 
-            if (userDto.message == "user JWT deconnected")
-            {
+            JWTDeconnected(message);
+
+            return message == "no found :/"
+            ? NotFound()
+            : Ok(userID);
+        }
+
+        private IActionResult JWTDeconnected(string message)
+        {
+            if (message == "user JWT deconnected")
                 return Unauthorized();
-            }
 
-            if (userDto.message == "no found :/")
-            {
-                return NotFound();
-            }
-
-            return Ok(userDto.userID);
+            return null;
         }
     }
 }

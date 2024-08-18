@@ -1,5 +1,6 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
 using AmourConnect.App.Services;
+using AmourConnect.App.Services.Email;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
@@ -7,21 +8,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class RequestFriendsCase : IRequestFriendsCase
+    internal class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor) : IRequestFriendsCase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IRequestFriendsRepository _requestFriendsRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private string token_session_user;
-
-
-        public RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor)
-        {
-            _userRepository = userRepository;
-            _requestFriendsRepository = requestFriendsRepository;
-            _httpContextAccessor = httpContextAccessor;
-            token_session_user = CookieUtils.GetValueClaimsCookieUser(_httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
 
         public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
         {
@@ -34,18 +26,12 @@ namespace AmourConnect.App.UseCases.Controllers
 
             ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
 
-            List<GetRequestFriendsDto> filteredRequestFriends = new List<GetRequestFriendsDto>();
+            List<GetRequestFriendsDto> filteredRequestFriends = new();
 
             foreach(GetRequestFriendsDto requestFriend in requestFriends)
             {
-                if (dataUserNowConnect.Id_User == requestFriend.Id_UserReceiver)
-                {
-                    requestFriend.UserReceiverPictureProfile = null;
-                }
-                else
-                {
-                    requestFriend.UserIssuerPictureProfile = null;
-                }
+                requestFriend.UserReceiverPictureProfile = dataUserNowConnect.Id_User == requestFriend.Id_UserReceiver ? null : requestFriend.UserReceiverPictureProfile;
+                requestFriend.UserIssuerPictureProfile = dataUserNowConnect.Id_User != requestFriend.Id_UserReceiver ? null : requestFriend.UserIssuerPictureProfile;
 
                 filteredRequestFriends.Add(requestFriend);
             }
@@ -75,7 +61,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
 
-            await EmailUtils.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
+            await SendMail.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
 
             return (true, "Request match accepted");
         }
@@ -123,7 +109,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
 
-            await EmailUtils.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
+            await SendMail.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
 
             return (true, "Your match request has been made successfully 💕");
         }

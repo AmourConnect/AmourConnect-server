@@ -9,32 +9,17 @@ namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController(IAuthCase authCase) : Controller
     {
-        private readonly IAuthCase _authCase;
-
-
-        public AuthController(IAuthCase authCase)
-        {
-            _authCase = authCase;
-        }
-
+        private readonly IAuthCase _authCase = authCase;
 
         [HttpGet("login")]
-        public IActionResult Login()
-        {
-            var props = new AuthenticationProperties { RedirectUri = Env.GetString("IP_NOW_BACKENDAPI") + "/api/Auth/signin-google" };
-            return Challenge(props, GoogleDefaults.AuthenticationScheme);
-        }
+        public IActionResult Login() => Challenge(new AuthenticationProperties { RedirectUri = Env.GetString("IP_NOW_BACKENDAPI") + "/api/Auth/signin-google" }, GoogleDefaults.AuthenticationScheme);
 
 
 
         [HttpGet("signin-google")]
-        public async Task<IActionResult> GoogleLogin()
-        {
-                var result = await _authCase.ValidateGoogleLoginAsync();
-                return Redirect(result.message);
-        }
+        public async Task<IActionResult> GoogleLogin() => Redirect((await _authCase.ValidateGoogleLoginAsync()).message);
 
 
 
@@ -44,14 +29,11 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var registrationResult = await _authCase.RegisterUserAsync(setuserRegistrationDto);
+            var (success, message) = await _authCase.RegisterUserAsync(setuserRegistrationDto);
 
-            if (registrationResult.success)
-            {
-                return Ok(new ApiResponseDto { message = registrationResult.message, succes = true });
-            }
-
-            return BadRequest(new ApiResponseDto { message = registrationResult.message, succes = false });
+            return (success)
+            ? Ok(new ApiResponseDto { message = message, succes = true })
+            : BadRequest(new ApiResponseDto { message = message, succes = false });
         }
     }
 }

@@ -16,14 +16,12 @@ namespace AmourConnect.App.Services
 
         public static string GetValueClaimsCookieUser(HttpContext httpContext, string nameOfCookie)
         {
-            var claims = GetClaimsFromCookieJWT(httpContext, nameCookieUserConnected);
+            var claims = GetClaimsFromCookieJWT(httpContext, nameOfCookie);
 
             string userC = claims?.FirstOrDefault(c => c.Type == "userConnected")?.Value;
 
             if (userC == null)
-            {
                 return null;
-            }
 
             return userC;
         }
@@ -131,7 +129,7 @@ namespace AmourConnect.App.Services
         public static void SetSessionUser(HttpResponse Response, SessionUserDto SessionUserDto)
         {
             var claims = new[]
-{
+            {
                 new Claim("userConnected", SessionUserDto.token_session_user),
             };
 
