@@ -9,16 +9,9 @@ namespace AmourConnect.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthorizeUser))]
-    public class MessageController : Controller
+    public class MessageController(IMessageCase MessageCase) : Controller
     {
-        private readonly IMessageCase _messageCase;
-
-        public MessageController(IMessageCase MessageCase)
-        {
-            _messageCase = MessageCase;
-        }
-
-
+        private readonly IMessageCase _messageCase = MessageCase;
 
         [HttpPost("SendMessage")]
         public async Task<IActionResult> SendMessage([FromBody] SetMessageDto setmessageDto)
@@ -26,24 +19,15 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _messageCase.SendMessageAsync(setmessageDto);
+            var (success, message) = await _messageCase.SendMessageAsync(setmessageDto);
 
-            if (result.message == "user JWT deconnected")
-            {
-                return Unauthorized();
-            }
+            JWTDeconnected(message);
 
-            if (result.success)
-            {
-                return Ok(new ApiResponseDto { message = result.message, succes = true });
-            }
-
-            if (result.message == "There must be validation of the friend request to chat")
-            {
-                return Conflict(new ApiResponseDto { message = result.message, succes = false });
-            }
-
-            return BadRequest(new ApiResponseDto { message = result.message, succes = false });
+            return message == "There must be validation of the friend request to chat"
+            ? Conflict(new ApiResponseDto { message = message, succes = false })
+            : success
+                ? Ok(new ApiResponseDto { message = message, succes = true })
+                : BadRequest(new ApiResponseDto { message = message, succes = false });
         }
 
 
@@ -55,20 +39,21 @@ namespace AmourConnect.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _messageCase.GetUserMessagesAsync(Id_UserReceiver);
+            var (success, message, messages) = await _messageCase.GetUserMessagesAsync(Id_UserReceiver);
 
-            if (result.message == "user JWT deconnected")
-            {
+            JWTDeconnected(message);
+
+            return success
+            ? Ok(messages) 
+            : Conflict(new ApiResponseDto { message = message, succes = false });
+        }
+
+        private IActionResult JWTDeconnected(string message)
+        {
+            if (message == "user JWT deconnected")
                 return Unauthorized();
-            }
 
-            if (result.success)
-            {
-                return Ok(result.messages);
-            }
-
-
-            return Conflict(new ApiResponseDto { message = result.message, succes = false });
+            return null;
         }
     }
 }

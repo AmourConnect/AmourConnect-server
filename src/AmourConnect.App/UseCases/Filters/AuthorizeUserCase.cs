@@ -7,26 +7,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Filters
 {
-    internal class AuthorizeUserCase : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
+    internal class AuthorizeUserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public AuthorizeUserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
-        {
-            _userRepository = userRepository;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var cookieValueJWT = CookieUtils.GetValueClaimsCookieUser(context.HttpContext, CookieUtils.nameCookieUserConnected);
 
             if (cookieValueJWT == null)
-            {
                 context.Result = new UnauthorizedResult();
                 return;
-            }
         }
     }
 }

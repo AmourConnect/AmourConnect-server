@@ -1,5 +1,4 @@
-﻿using AmourConnect.API.Services;
-using AmourConnect.App.Interfaces.Controllers;
+﻿using AmourConnect.App.Interfaces.Controllers;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
@@ -10,19 +9,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class UserCase : IUserCase
+    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) : IUserCase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private string token_session_user;
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
 
-
-        public UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
-        {
-            _userRepository = userRepository;
-            _httpContextAccessor = httpContextAccessor;
-            token_session_user = CookieUtils.GetValueClaimsCookieUser(_httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
-        }
 
         public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
         {

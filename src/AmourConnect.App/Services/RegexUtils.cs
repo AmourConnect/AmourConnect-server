@@ -1,7 +1,7 @@
 ﻿using AmourConnect.Domain.Dtos.SetDtos;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
-namespace AmourConnect.API.Services
+namespace AmourConnect.App.Services
 {
     public static class RegexUtils
     {
@@ -21,7 +21,7 @@ namespace AmourConnect.API.Services
                 return (false, "Invalid sex value or length");
 
             if (!CheckCity(setUserRegistrationDto.city))
-                return (false, "Invalid city or length" );
+                return (false, "Invalid city or length");
 
             if (!CheckPseudo(setUserRegistrationDto.Pseudo))
                 return (false, "Invalid pseudo or length");
