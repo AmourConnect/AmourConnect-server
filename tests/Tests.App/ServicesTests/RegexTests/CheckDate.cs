@@ -2,8 +2,10 @@
 
 namespace Tests.App.ServicesTests.RegexTests
 {
-    public class RegexDateTests
+    public class CheckDate
     {
+        private static readonly RegexUtils regexUtils = new();
+
         [Theory]
         [InlineData("2000-01-01", true)]
         [InlineData("2000-1-1", true)]
@@ -15,9 +17,19 @@ namespace Tests.App.ServicesTests.RegexTests
         {
             DateTime? dateTime = DateTime.Parse(date);
 
-            bool result = RegexUtils.CheckDate(dateTime);
+            bool result = regexUtils.CheckDate(dateTime);
 
             Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void CheckDate_ShouldReturnNull() 
+        {
+            DateTime? dateTime = null;
+
+            bool result = regexUtils.CheckDate(dateTime);
+            
+            Assert.False(result);
         }
     }
 }

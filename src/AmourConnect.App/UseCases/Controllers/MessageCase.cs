@@ -1,4 +1,5 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
+using AmourConnect.App.Interfaces.Services;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Dtos.SetDtos;
@@ -8,13 +9,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor) : IMessageCase
+    internal class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IMessageCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = RequestFriendsRepository;
         private readonly IMessageRepository _messageRepository = MessageRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly IRegexUtils _regexUtils = regexUtils;
 
         public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)
         {
@@ -34,7 +36,7 @@ namespace AmourConnect.App.UseCases.Controllers
                     return (false, "There must be validation of the match request to chat");
                 }
 
-                if (!RegexUtils.CheckMessage(setmessageDto.MessageContent))
+                if (!_regexUtils.CheckMessage(setmessageDto.MessageContent))
                 {
                     return (false, "Message no valid");
                 }
