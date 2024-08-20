@@ -1,16 +1,19 @@
-﻿using AmourConnect.Domain.Entities;
+﻿using AmourConnect.App.Interfaces.Services.Email;
+using AmourConnect.Domain.Entities;
 
 namespace AmourConnect.App.Services.Email
 {
-    internal class SendMail : ConfigEmail
+    public class SendMail(IConfigEmail cEmail) : ISendMail
     {
-        public static async Task MailRegisterAsync(string email, string pseudo)
-        => await _configMail(email, "Bienvenu chez AmourConnect ❤️", BodyEmail._emailBodyRegister(pseudo));
+        private readonly IConfigEmail _cEmail = cEmail;
 
-        public static async Task RequestFriendMailAsync(User dataUserReceiver, User dataUserIssuer)
-        => await _configMail(dataUserReceiver.EmailGoogle, "Demande de match ❤️", BodyEmail._requestFriendBodyEmail(dataUserReceiver.Pseudo, dataUserIssuer));
+        public async Task MailRegisterAsync(string email, string pseudo)
+        => await _cEmail.configMail(email, BodyEmail.subjectRegister, BodyEmail._emailBodyRegister(pseudo));
 
-        public static async Task AcceptRequestFriendMailAsync(User dataUserReceiver, User dataUserIssuer) 
-        => await _configMail(dataUserReceiver.EmailGoogle, dataUserIssuer.Pseudo + " a accepté(e) le match ❤️", BodyEmail._acceptFriendBodyEmail(dataUserReceiver.Pseudo, dataUserIssuer));
+        public async Task RequestFriendMailAsync(User dataUserReceiver, User dataUserIssuer)
+        => await _cEmail.configMail(dataUserReceiver.EmailGoogle, BodyEmail.subjectRequestFriend, BodyEmail._requestFriendBodyEmail(dataUserReceiver.Pseudo, dataUserIssuer));
+
+        public async Task AcceptRequestFriendMailAsync(User dataUserReceiver, User dataUserIssuer) 
+        => await _cEmail.configMail(dataUserReceiver.EmailGoogle, dataUserIssuer.Pseudo + BodyEmail.subjectAcceptFriend, BodyEmail._acceptFriendBodyEmail(dataUserReceiver.Pseudo, dataUserIssuer));
     }
 }

@@ -1,13 +1,15 @@
 ﻿using System.Net.Mail;
+using AmourConnect.App.Interfaces.Services.Email;
 using DotNetEnv;
 namespace AmourConnect.App.Services.Email
 {
-    internal abstract class ConfigEmail
+    public class ConfigEmail() : IConfigEmail
     {
-        protected static async Task _configMail(string toEmail, string subject, string body)
+        public async Task configMail(string toEmail, string subject, string body)
         {
             MailMessage mail = new();
-            SmtpClient SmtpServer = new(Env.GetString("SERVICE"));
+
+            SmtpClient smtpClient = new(Env.GetString("SERVICE"));
 
             mail.From = new MailAddress(Env.GetString("EMAIL_USER"));
             mail.To.Add(toEmail);
@@ -15,13 +17,13 @@ namespace AmourConnect.App.Services.Email
             mail.Body = body;
             mail.IsBodyHtml = true;
 
-            SmtpServer.Port = int.Parse(Env.GetString("PORT_SMTP"));
-            SmtpServer.Credentials = new System.Net.NetworkCredential(Env.GetString("EMAIL_USER"), Env.GetString("EMAIL_MDP"));
-            SmtpServer.EnableSsl = true;
+            smtpClient.Port = int.Parse(Env.GetString("PORT_SMTP"));
+            smtpClient.Credentials = new System.Net.NetworkCredential(Env.GetString("EMAIL_USER"), Env.GetString("EMAIL_MDP"));
+            smtpClient.EnableSsl = true;
 
             try
             {
-                await SmtpServer.SendMailAsync(mail);
+                await smtpClient.SendMailAsync(mail);
             }
             catch (Exception ex)
             {

@@ -3,10 +3,14 @@ using DotNetEnv;
 
 namespace AmourConnect.App.Services.Email
 {
-    internal class BodyEmail
+    public class BodyEmail
     {
         private readonly static string _requestUrlPageRequest = $"{Env.GetString("IP_NOW_FRONTEND")}/request";
         private readonly static string _requestUrlWebSite = $"{Env.GetString("IP_NOW_FRONTEND")}";
+        public readonly static string subjectRegister = "Bienvenu chez AmourConnect ❤️";
+        public readonly static string subjectRequestFriend = "Demande de match ❤️";
+        public readonly static string subjectAcceptFriend = " a accepté(e) le match ❤️";
+
         public static string _emailBodyRegister(string pseudo) =>
             $@"
             <html>

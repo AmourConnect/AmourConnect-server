@@ -10,12 +10,13 @@ using AmourConnect.App.Interfaces.Services;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IUserCase
+    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils) : IUserCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
         private readonly IRegexUtils _regexUtils = regexUtils;
+        private readonly IMessUtils _messUtils = messUtils;
 
 
         public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
@@ -55,7 +56,7 @@ namespace AmourConnect.App.UseCases.Controllers
                 return (false, "user JWT deconnected");
             }
 
-            var imageData = await MessUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
+            var imageData = await _messUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
 
             var newsValues = new
             {
