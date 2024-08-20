@@ -74,7 +74,21 @@ User "1" -- "*" Message : MessagesReceived
 ```
 # To start API
 
-*⛔ Start the Database first before (in the folder DataBase)*
+## Deploy
+
+You can deploy AmourConnect using Docker containers on Windows, macOS, and Linux distributions.
+
+<p align="center">
+    <img src="https://i.imgur.com/SZc8JnH.png" alt="docker" />
+  </a>
+</p>
+
+### Requirements
+
+- [Docker](https://www.docker.com/community-edition#/download)
+- [Docker Compose](https://docs.docker.com/compose/install/) (already included with some Docker installations)
+
+### *⛔ Start the Database first before (in the folder DataBase)*
 
 
 *If you use Docker, update the .env config =>*
@@ -105,3 +119,11 @@ add-migration AmourConnectClass
 ```
 ConnectionDB="Host=postgresdbsqlamourconnect\;Port=5432\;Username=tchoulo\;Password=123tchoulo123\;Database=amourconnect_dev\;"
 ```
+
+## Contribute
+
+Code contributions are welcome! Please commit all pull requests to the "main" branch. Please also commit all your development code to the "dev" branch.
+
+Security audits and feedback are welcome. Please open an issue or email us privately if the report is sensitive. You can read our security policy in the [`SECURITY.md`](SECURITY.md) file.
+
+No grant of rights in AmourConnect's trademarks, service marks, or logos is granted (except as may be necessary to comply with applicable notice requirements).

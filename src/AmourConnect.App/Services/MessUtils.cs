@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AmourConnect.App.Interfaces.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.Services
 {
-    public static class MessUtils
+    public class MessUtils : IMessUtils
     {
-        public static async Task<byte[]> ConvertImageToByteArrayAsync(IFormFile image)
+        public async Task<byte[]> ConvertImageToByteArrayAsync(IFormFile image)
         {
             if (image == null)
                 return null;

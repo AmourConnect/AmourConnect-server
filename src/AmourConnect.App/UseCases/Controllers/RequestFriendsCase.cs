@@ -1,6 +1,6 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
+using AmourConnect.App.Interfaces.Services.Email;
 using AmourConnect.App.Services;
-using AmourConnect.App.Services.Email;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Infra.Interfaces;
@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor) : IRequestFriendsCase
+    internal class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail) : IRequestFriendsCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly ISendMail sendMail = sendMail;
 
         public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
         {
@@ -61,7 +62,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             await _requestFriendsRepository.UpdateStatusRequestFriendsAsync(friendRequest);
 
-            await SendMail.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
+            await sendMail.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
 
             return (true, "Request match accepted");
         }
@@ -109,7 +110,7 @@ namespace AmourConnect.App.UseCases.Controllers
 
             await _requestFriendsRepository.AddRequestFriendAsync(requestFriends);
 
-            await SendMail.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
+            await sendMail.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
 
             return (true, "Your match request has been made successfully 💕");
         }
