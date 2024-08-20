@@ -15,6 +15,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddCaseControllers();
 
+builder.Services.AddServicesControllers();
+
 builder.Services.AddInfrastructure();
 
 builder.Services.AddScoped<AuthorizeUser>();

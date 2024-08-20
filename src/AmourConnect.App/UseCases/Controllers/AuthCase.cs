@@ -9,12 +9,14 @@ using Microsoft.AspNetCore.Authentication;
 using AmourConnect.Domain.Dtos.SetDtos;
 using DotNetEnv;
 using AmourConnect.App.Services.Email;
+using AmourConnect.App.Interfaces.Services;
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) : IAuthCase
+    internal class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IAuthCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IRegexUtils _regexUtils = regexUtils;
 
         public async Task<(bool success, string message)> ValidateGoogleLoginAsync()
         {
@@ -57,7 +59,7 @@ namespace AmourConnect.App.UseCases.Controllers
                 return (false, "Please login with Google before register");
             }
 
-            var regexResult = RegexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
+            var regexResult = _regexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
 
             if (!regexResult.success)
             {

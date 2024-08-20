@@ -6,14 +6,16 @@ using AmourConnect.Domain.Dtos.SetDtos;
 using AmourConnect.Infra.Interfaces;
 using AmourConnect.Domain.Mappers;
 using Microsoft.AspNetCore.Http;
+using AmourConnect.App.Interfaces.Services;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor) : IUserCase
+    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IUserCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly IRegexUtils _regexUtils = regexUtils;
 
 
         public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
@@ -57,23 +59,23 @@ namespace AmourConnect.App.UseCases.Controllers
 
             var newsValues = new
             {
-                Profile_picture = RegexUtils.CheckPicture(setUserUpdateDto.Profile_picture)
+                Profile_picture = _regexUtils.CheckPicture(setUserUpdateDto.Profile_picture)
                 ? imageData
                                 : dataUserNowConnect.Profile_picture,
 
-                city = RegexUtils.CheckCity(setUserUpdateDto.city)
+                city = _regexUtils.CheckCity(setUserUpdateDto.city)
                 ? setUserUpdateDto.city
                           : dataUserNowConnect.city,
 
-                Description = RegexUtils.CheckDescription(setUserUpdateDto.Description)
+                Description = _regexUtils.CheckDescription(setUserUpdateDto.Description)
                           ? setUserUpdateDto.Description
                           : dataUserNowConnect.Description,
 
-                sex = RegexUtils.CheckSex(setUserUpdateDto.sex)
+                sex = _regexUtils.CheckSex(setUserUpdateDto.sex)
                 ? setUserUpdateDto.sex
                 : dataUserNowConnect.sex,
 
-                date_of_birth = RegexUtils.CheckDate(setUserUpdateDto.date_of_birth)
+                date_of_birth = _regexUtils.CheckDate(setUserUpdateDto.date_of_birth)
                             ? setUserUpdateDto.date_of_birth ?? DateTime.MinValue
                             : dataUserNowConnect.date_of_birth,
             };

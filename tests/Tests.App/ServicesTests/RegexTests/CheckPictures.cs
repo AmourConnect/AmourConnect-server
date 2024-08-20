@@ -4,8 +4,10 @@ using Moq;
 
 namespace Tests.App.ServicesTests.RegexTests
 {
-    public class RegexPicturesTests
+    public class CheckPictures
     {
+        private static readonly RegexUtils RegexUtils = new();
+
         [Fact]
         public void CheckPicture_ReturnsFalse_WhenProfilePictureIsNull()
         {

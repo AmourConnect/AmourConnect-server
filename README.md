@@ -1,12 +1,20 @@
-#Projet AmourConnect - BackEND - API in .NET Core
+# Projet AmourConnect - BackEND - API in ASP.NET Core C#
 
-Dating site to match with a man VS woman and look for his love❤️
+![Welcome Page](./assets/welcome_page.png)
+
+<p align="center">
+  <img src="./assets/logo_amourconnect.ico" width="50" height="50">
+</p>
+
+The AmourConnect Server project contains the APIs, database, and other basic infrastructure elements needed for the backend of all AmourConnect client applications.
+
+The server project is written in C# using .NET Core with ASP.NET Core.
 
 # Schema DevOps
 
-![Schema DevOps](./InfraDeployementAmourConnect.drawio.png)
+![Schema DevOps](./assets/InfraDeployementAmourConnect.drawio.png)
 
-# UML schéma
+# UML Class diagram
 ```mermaid
 classDiagram
 
@@ -66,7 +74,7 @@ User "1" -- "*" Message : MessagesReceived
 ```
 # To start API
 
-*⛔ Start the Database first before (in the folder server_api/DataBase)*
+*⛔ Start the Database first before (in the folder DataBase)*
 
 
 *If you use Docker, update the .env config =>*
@@ -75,7 +83,7 @@ User "1" -- "*" Message : MessagesReceived
 ConnectionDB="Host=postgresdbsqlamourconnect;Port=5432;Username=tchoulo;Password=123tchoulo123;Database=amourconnect_dev;"
 ```
 
-Start API .NET Core
+Start API .NET Core with Docker
 ```
 docker compose -f .\compose.yaml up -d
 ```
