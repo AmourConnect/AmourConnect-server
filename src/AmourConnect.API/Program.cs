@@ -5,6 +5,10 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using AmourConnect.App.Extensions;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AmourConnect.Domain.Utils;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +58,38 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
+});
+
+var key = Encoding.ASCII.GetBytes(Env.GetString("SecretKeyJWT"));
+
+var tokenValidationParameter = new TokenValidationParameters()
+{
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
+    ValidateLifetime = true,
+};
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    
+.AddJwtBearer(jwt =>
+{
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = tokenValidationParameter;
+});
+
+builder.Services.Configure<IJwtSecret>(options => 
+{
+    options.Ip_Now_Frontend = Env.GetString("IP_NOW_FRONTEND");
+    options.Ip_Now_Backend = Env.GetString("IP_NOW_BACKENDAPI");
+    options.Key = Env.GetString("SecretKeyJWT");
 });
 
 var app = builder.Build();

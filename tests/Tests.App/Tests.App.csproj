@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AmourConnect.App\AmourConnect.App.csproj" />
+    <ProjectReference Include="..\..\src\AmourConnect.Domain\AmourConnect.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

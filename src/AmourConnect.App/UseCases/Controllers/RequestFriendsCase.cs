@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail) : IRequestFriendsCase
+    internal sealed class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail) : IRequestFriendsCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
@@ -19,11 +19,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected", null);
-            }
 
             ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
 
@@ -46,11 +41,6 @@ namespace AmourConnect.App.UseCases.Controllers
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected");
-            }
-
             RequestFriends friendRequest = await _requestFriendsRepository.GetUserFriendRequestByIdAsync(dataUserNowConnect.Id_User, IdUserIssuer);
 
             if (friendRequest == null)
@@ -70,11 +60,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool success, string message)> RequestFriendsAsync(int IdUserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected");
-            }
 
             User userReceiver = await _userRepository.GetUserByIdUserAsync(IdUserReceiver);
 

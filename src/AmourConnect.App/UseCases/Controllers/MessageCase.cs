@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IMessageCase
+    internal sealed class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IMessageCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = RequestFriendsRepository;
@@ -21,11 +21,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if(dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected");
-            }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, setmessageDto.IdUserReceiver);
 
@@ -59,11 +54,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool success, string message, IEnumerable<GetMessageDto> messages)> GetUserMessagesAsync(int Id_UserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if(dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected", null);
-            }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
 

@@ -12,7 +12,7 @@ using AmourConnect.App.Interfaces.Services;
 using AmourConnect.App.Interfaces.Services.Email;
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail) : IAuthCase
+    internal sealed class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail) : IAuthCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
