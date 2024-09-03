@@ -66,8 +66,8 @@ var tokenValidationParameter = new TokenValidationParameters()
 {
     ValidateIssuerSigningKey = true,
     IssuerSigningKey = new SymmetricSecurityKey(key),
-    ValidateIssuer = true,
-    ValidateAudience = true,
+    ValidateIssuer = false, //for dev
+    ValidateAudience = false, //for dev
     RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
     ValidateLifetime = true,
 };
@@ -85,7 +85,7 @@ builder.Services.AddAuthentication(options =>
     jwt.TokenValidationParameters = tokenValidationParameter;
 });
 
-builder.Services.Configure<IJwtSecret>(options =>
+builder.Services.Configure<JwtSecret>(options =>
 {
     options.Ip_Now_Frontend = Env.GetString("IP_NOW_FRONTEND");
     options.Ip_Now_Backend = Env.GetString("IP_NOW_BACKENDAPI");

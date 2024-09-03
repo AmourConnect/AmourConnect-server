@@ -3,21 +3,25 @@ using System.Security.Claims;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Utils;
 using Moq;
+using Microsoft.Extensions.Options;
 namespace Tests.App.ServicesTests.JwtSession
 {
     public class JWTSessionUtilsTests
     {
-        private readonly Mock<IJwtSecret> _mockEnvSecret;
+        private readonly Mock<IOptions<JwtSecret>> _mockJwtSecretOptions;
         private readonly JWTSessionUtils _jwtSessionUtils;
 
         public JWTSessionUtilsTests()
         {
-            _mockEnvSecret = new Mock<IJwtSecret>();
-            _mockEnvSecret.SetupGet(x => x.Key).Returns("sdzwqsdcszedswqsazdfcdxswqszdcfg");
-            _mockEnvSecret.SetupGet(x => x.Ip_Now_Frontend).Returns("http://frontend");
-            _mockEnvSecret.SetupGet(x => x.Ip_Now_Backend).Returns("http://backend");
+            _mockJwtSecretOptions = new Mock<IOptions<JwtSecret>>();
+            _mockJwtSecretOptions.Setup(x => x.Value).Returns(new JwtSecret
+            {
+                Key = "sdzwqsdcszedswqsazdfcdxswqszdcfg",
+                Ip_Now_Frontend = "http://frontend",
+                Ip_Now_Backend = "http://backend"
+            });
 
-            _jwtSessionUtils = new JWTSessionUtils(_mockEnvSecret.Object);
+            _jwtSessionUtils = new JWTSessionUtils(_mockJwtSecretOptions.Object);
         }
 
         [Fact]

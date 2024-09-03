@@ -4,20 +4,22 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Security.Claims;
 using AmourConnect.App.Interfaces.Services;
-using DotNetEnv;
+using Microsoft.Extensions.Options;
 namespace AmourConnect.App.Services
 {
-    public sealed class JWTSessionUtils(IJwtSecret _JwtSecret) : IJWTSessionUtils
+    public sealed class JWTSessionUtils(IOptions<JwtSecret> jwtSecret) : IJWTSessionUtils
     {
-        // TODO FIX Dependance Injection Secret =>
-        private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(Env.GetString("SecretKeyJWT")));
+        private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(jwtSecret.Value.Key));
+        private readonly string ip_Now_Frontend = jwtSecret.Value.Ip_Now_Frontend;
+        private readonly string ip_Now_Backend = jwtSecret.Value.Ip_Now_Backend;
+
         public string GenerateJwtToken(Claim[] claims, DateTime expirationValue)
         {
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                Env.GetString("Ip_Now_Frontend"),
-                Env.GetString("Ip_Now_Backend"),
+                ip_Now_Frontend,
+                ip_Now_Backend,
                 claims,
                 expires: expirationValue,
                 signingCredentials: credentials
