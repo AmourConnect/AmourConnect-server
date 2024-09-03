@@ -85,7 +85,7 @@ builder.Services.AddAuthentication(options =>
     jwt.TokenValidationParameters = tokenValidationParameter;
 });
 
-builder.Services.Configure<IJwtSecret>(options => 
+builder.Services.Configure<IJwtSecret>(options =>
 {
     options.Ip_Now_Frontend = Env.GetString("IP_NOW_FRONTEND");
     options.Ip_Now_Backend = Env.GetString("IP_NOW_BACKENDAPI");

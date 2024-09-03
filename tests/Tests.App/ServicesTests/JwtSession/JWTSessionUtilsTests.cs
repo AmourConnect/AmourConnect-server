@@ -23,7 +23,6 @@ namespace Tests.App.ServicesTests.JwtSession
         [Fact]
         public void GenerateJwtToken_ShouldReturnValidToken()
         {
-            // Arrange
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, "test-user"),
@@ -31,10 +30,8 @@ namespace Tests.App.ServicesTests.JwtSession
             };
             var expirationValue = DateTime.UtcNow.AddMinutes(30);
 
-            // Act
             var token = _jwtSessionUtils.GenerateJwtToken(claims, expirationValue);
 
-            // Assert
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
 
