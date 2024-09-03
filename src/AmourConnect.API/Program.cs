@@ -60,18 +60,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var key = Encoding.ASCII.GetBytes(Env.GetString("SecretKeyJWT"));
-
-var tokenValidationParameter = new TokenValidationParameters()
-{
-    ValidateIssuerSigningKey = true,
-    IssuerSigningKey = new SymmetricSecurityKey(key),
-    ValidateIssuer = false, //for dev
-    ValidateAudience = false, //for dev
-    RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
-    ValidateLifetime = true,
-};
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -81,8 +69,18 @@ builder.Services.AddAuthentication(options =>
     
 .AddJwtBearer(jwt =>
 {
+    var key = Encoding.ASCII.GetBytes(Env.GetString("SecretKeyJWT"));
+
     jwt.SaveToken = true;
-    jwt.TokenValidationParameters = tokenValidationParameter;
+    jwt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = builder.Environment.IsProduction(),
+        ValidateAudience = builder.Environment.IsProduction(),
+        RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
+        ValidateLifetime = true,
+    };
 });
 
 builder.Services.Configure<JwtSecret>(options =>

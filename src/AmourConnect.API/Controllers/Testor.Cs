@@ -20,7 +20,10 @@ namespace AmourConnect.API.Controllers
                 new Claim("userIdGoogle", "userIdGoogle"),
                 new Claim("EmailGoogle", "EmailGoogle")
             };
-            string jwt = _iJWTSessionUtils.GenerateJwtToken(claims, new DateTime());
+
+            DateTime dtm = DateTime.UtcNow.AddHours(1);
+
+            string jwt = _iJWTSessionUtils.GenerateJwtToken(claims, dtm);
             return Ok(jwt);
         }
     }
