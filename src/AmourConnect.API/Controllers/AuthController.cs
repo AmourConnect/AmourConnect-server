@@ -9,7 +9,7 @@ namespace AmourConnect.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthCase authCase) : Controller
+    public class AuthController(IAuthCase authCase) : ControllerBase
     {
         private readonly IAuthCase _authCase = authCase;
 

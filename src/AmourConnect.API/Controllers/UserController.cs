@@ -8,7 +8,7 @@ namespace AmourConnect.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthorizeUser))]
-    public class UserController(IUserCase userCase) : Controller
+    public class UserController(IUserCase userCase) : ControllerBase
     {
         private readonly IUserCase _userCase = userCase;
 
@@ -21,8 +21,6 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             var (succes, message, UsersToMatch) = await _userCase.GetUsersToMach();
-
-            JWTDeconnected(message);
 
             return Ok(UsersToMatch);
         }
@@ -38,8 +36,6 @@ namespace AmourConnect.API.Controllers
 
             var (succes, message, UserToMatch) = await _userCase.GetUserOnly();
 
-            JWTDeconnected(message);
-
             return Ok(UserToMatch);
         }
 
@@ -51,8 +47,6 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             var (succes, message) = await _userCase.UpdateUser(setUserUpdateDto);
-
-            JWTDeconnected(message);
 
             return NoContent();
         }
@@ -67,19 +61,9 @@ namespace AmourConnect.API.Controllers
 
             var (succes, message, userID) = await _userCase.GetUser(Id_User);
 
-            JWTDeconnected(message);
-
             return message == "no found :/"
             ? NotFound()
             : Ok(userID);
-        }
-
-        private IActionResult JWTDeconnected(string message)
-        {
-            if (message == "user JWT deconnected")
-                return Unauthorized();
-
-            return null;
         }
     }
 }

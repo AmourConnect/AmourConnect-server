@@ -1,5 +1,4 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
-using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Domain.Dtos.SetDtos;
@@ -10,11 +9,11 @@ using AmourConnect.App.Interfaces.Services;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils) : IUserCase
+    internal sealed class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils) : IUserCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly IRegexUtils _regexUtils = regexUtils;
         private readonly IMessUtils _messUtils = messUtils;
 
@@ -22,11 +21,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected", null);
-            }
 
             ICollection<GetUserDto> users = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
 
@@ -37,11 +31,6 @@ namespace AmourConnect.App.UseCases.Controllers
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected", null);
-            }
-
             GetUserDto userDto = dataUserNowConnect.ToGetUserDto();
 
             return (true, "yes good", userDto);
@@ -50,11 +39,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool succes, string message)> UpdateUser(SetUserUpdateDto setUserUpdateDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected");
-            }
 
             var imageData = await _messUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
 
@@ -95,11 +79,6 @@ namespace AmourConnect.App.UseCases.Controllers
         public async Task<(bool succes, string message, GetUserDto userID)> GetUser(int Id_User)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
-            if (dataUserNowConnect == null)
-            {
-                return (false, "user JWT deconnected", null);
-            }
 
             User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 

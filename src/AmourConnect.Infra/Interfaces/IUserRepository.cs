@@ -9,7 +9,7 @@ namespace AmourConnect.Infra.Interfaces
         Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect);
         Task<int?> GetUserIdWithGoogleIdAsync(string EmailGoogle, string userIdGoogle);
         Task<int?> CreateUserAsync(string userIdGoogle, string EmailGoogle, SetUserRegistrationDto setUserRegistrationDto);
-        Task<SessionUserDto> UpdateSessionUserAsync(int Id_User);
+        Task UpdateSessionUserAsync(int Id_User, SessionUserDto JWTGenerate);
         Task<bool> GetUserByPseudoAsync(string Pseudo);
         Task<bool> UpdateUserAsync(int Id_User, User user);
         Task<User> GetUserByIdUserAsync(int Id_User);

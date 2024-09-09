@@ -6,7 +6,6 @@ using AmourConnect.Infra.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using AmourConnect.Infra.Persistence;
 using AmourConnect.Domain.Mappers;
-using System.Text;
 namespace AmourConnect.Infra.Repository
 {
     internal class UserRepository(AmourConnectDbContext _context) : IUserRepository
@@ -66,34 +65,17 @@ namespace AmourConnect.Infra.Repository
 
 
 
-        public async Task<SessionUserDto> UpdateSessionUserAsync(int Id_User)
+        public async Task UpdateSessionUserAsync(int Id_User, SessionUserDto JwtGenerate)
         {
-            string newSessionToken;
-            DateTime expirationDate;
-
-            do
-            {
-                newSessionToken = GeneratePassword(64);
-                expirationDate = DateTime.UtcNow.AddDays(7);
-
-            } while (await _context.User.AnyAsync(u => u.token_session_user == newSessionToken));
-
-
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id_User == Id_User);
 
             if (user != null)
             {
-                user.token_session_user = newSessionToken;
-                user.date_token_session_expiration = expirationDate;
+                user.token_session_user = JwtGenerate.token_session_user;
+                user.date_token_session_expiration = JwtGenerate.date_token_session_expiration;
 
                 await _context.SaveChangesAsync();
             }
-
-            return new SessionUserDto
-            {
-                token_session_user = newSessionToken,
-                date_token_session_expiration = expirationDate
-            };
         }
 
 
@@ -128,20 +110,5 @@ namespace AmourConnect.Infra.Repository
             await _context.User
                 .Where(u => u.Id_User == Id_User)
                 .FirstOrDefaultAsync();
-
-
-        private static string GeneratePassword(int length)
-        {
-            const string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random rand = new();
-            StringBuilder password = new(length);
-
-            for (int i = 0; i < length; i++)
-            {
-                password.Append(allowedChars[rand.Next(allowedChars.Length)]);
-            }
-
-            return password.ToString();
-        }
     }
 }

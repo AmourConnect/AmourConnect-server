@@ -1,5 +1,4 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
-using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.AppLayerDtos;
 using AmourConnect.Infra.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -12,12 +11,13 @@ using AmourConnect.App.Interfaces.Services;
 using AmourConnect.App.Interfaces.Services.Email;
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail) : IAuthCase
+    internal sealed class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils) : IAuthCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IRegexUtils _regexUtils = regexUtils;
         private readonly ISendMail sendMail = sendMail;
+        private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
 
         public async Task<(bool success, string message)> ValidateGoogleLoginAsync()
         {
@@ -43,14 +43,14 @@ namespace AmourConnect.App.UseCases.Controllers
                 return (true, Env.GetString("IP_NOW_FRONTEND") + "/welcome");
             }
 
-            CookieUtils.SetCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
+            SetCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
             return (false, Env.GetString("IP_NOW_FRONTEND") + "/register");
         }
 
 
         public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
         {
-            var claims = CookieUtils.GetClaimsFromCookieJWT(_httpContextAccessor.HttpContext, CookieUtils.nameCookieGoogle);
+            var claims = _jWTSessions.GetClaimsFromCookieJWT(_httpContextAccessor.HttpContext, _jWTSessions.NameCookieUserGoogle);
 
             string emailGoogle = claims?.FirstOrDefault(c => c.Type == "EmailGoogle")?.Value;
             string userIdGoogle = claims?.FirstOrDefault(c => c.Type == "userIdGoogle")?.Value;
@@ -94,8 +94,28 @@ namespace AmourConnect.App.UseCases.Controllers
 
         private async Task CreateSessionLoginAsync(int Id_User)
         {
-            SessionUserDto sessionData = await _userRepository.UpdateSessionUserAsync(Id_User);
-            CookieUtils.SetSessionUser(_httpContextAccessor.HttpContext.Response, sessionData);
+            var claims = new[]
+{
+                new Claim("userAmourConnected", Id_User.ToString(), ClaimValueTypes.String),
+            };
+            SessionUserDto JWTGenerate = _jWTSessions.GenerateJwtToken(claims, DateTime.UtcNow.AddDays(7));
+            await _userRepository.UpdateSessionUserAsync(Id_User, JWTGenerate);
+            _jWTSessions.SetSessionCookie(_httpContextAccessor.HttpContext.Response, _jWTSessions.NameCookieUserConnected, JWTGenerate);
+        }
+
+        private void SetCookieToSaveIdGoogle(HttpResponse Response, string userIdGoogle, string EmailGoogle)
+        {
+            DateTime expirationCookieGoogle = DateTime.UtcNow.AddHours(1);
+
+            var claims = new[]
+            {
+                new Claim("userIdGoogle", userIdGoogle),
+                new Claim("EmailGoogle", EmailGoogle)
+            };
+
+            SessionUserDto sessionDataJWT = _jWTSessions.GenerateJwtToken(claims, expirationCookieGoogle);
+
+            _jWTSessions.SetSessionCookie(Response, _jWTSessions.NameCookieUserGoogle, sessionDataJWT);
         }
     }
 }

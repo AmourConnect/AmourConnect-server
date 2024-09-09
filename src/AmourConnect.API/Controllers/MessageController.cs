@@ -9,7 +9,7 @@ namespace AmourConnect.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ServiceFilter(typeof(AuthorizeUser))]
-    public class MessageController(IMessageCase MessageCase) : Controller
+    public class MessageController(IMessageCase MessageCase) : ControllerBase
     {
         private readonly IMessageCase _messageCase = MessageCase;
 
@@ -20,8 +20,6 @@ namespace AmourConnect.API.Controllers
                 return BadRequest(ModelState);
 
             var (success, message) = await _messageCase.SendMessageAsync(setmessageDto);
-
-            JWTDeconnected(message);
 
             return message == "There must be validation of the friend request to chat"
             ? Conflict(new ApiResponseDto { message = message, succes = false })
@@ -41,19 +39,9 @@ namespace AmourConnect.API.Controllers
 
             var (success, message, messages) = await _messageCase.GetUserMessagesAsync(Id_UserReceiver);
 
-            JWTDeconnected(message);
-
             return success
             ? Ok(messages) 
             : Conflict(new ApiResponseDto { message = message, succes = false });
-        }
-
-        private IActionResult JWTDeconnected(string message)
-        {
-            if (message == "user JWT deconnected")
-                return Unauthorized();
-
-            return null;
         }
     }
 }
