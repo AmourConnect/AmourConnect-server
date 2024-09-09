@@ -9,13 +9,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal sealed class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils) : IMessageCase
+    internal sealed class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IJWTSessionUtils jWTSessionUtils) : IMessageCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = RequestFriendsRepository;
         private readonly IMessageRepository _messageRepository = MessageRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly IRegexUtils _regexUtils = regexUtils;
 
         public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)

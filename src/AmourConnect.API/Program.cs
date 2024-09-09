@@ -5,9 +5,6 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using AmourConnect.App.Extensions;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using AmourConnect.Domain.Utils;
 
 
@@ -60,28 +57,28 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
     
-.AddJwtBearer(jwt =>
-{
-    var key = Encoding.ASCII.GetBytes(Env.GetString("SecretKeyJWT"));
+//.AddJwtBearer(jwt =>
+//{
+//    var key = Encoding.ASCII.GetBytes(Env.GetString("SecretKeyJWT"));
 
-    jwt.SaveToken = true;
-    jwt.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = builder.Environment.IsProduction(),
-        ValidateAudience = builder.Environment.IsProduction(),
-        RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
-        ValidateLifetime = true,
-    };
-});
+//    jwt.SaveToken = true;
+//    jwt.TokenValidationParameters = new TokenValidationParameters()
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(key),
+//        ValidateIssuer = builder.Environment.IsProduction(),
+//        ValidateAudience = builder.Environment.IsProduction(),
+//        RequireExpirationTime = false, //needs refresh token to set up at TRUE (TODO)
+//        ValidateLifetime = true,
+//    };
+//});
 
 builder.Services.Configure<JwtSecret>(options =>
 {

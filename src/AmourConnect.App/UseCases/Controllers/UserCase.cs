@@ -1,5 +1,4 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
-using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
 using AmourConnect.Domain.Entities;
 using AmourConnect.Domain.Dtos.SetDtos;
@@ -10,11 +9,11 @@ using AmourConnect.App.Interfaces.Services;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal sealed class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils) : IUserCase
+    internal sealed class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils) : IUserCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly IRegexUtils _regexUtils = regexUtils;
         private readonly IMessUtils _messUtils = messUtils;
 

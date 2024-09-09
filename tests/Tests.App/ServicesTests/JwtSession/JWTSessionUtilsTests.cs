@@ -4,6 +4,8 @@ using AmourConnect.App.Services;
 using AmourConnect.Domain.Utils;
 using Moq;
 using Microsoft.Extensions.Options;
+using AmourConnect.Domain.Dtos.AppLayerDtos;
+using Microsoft.AspNetCore.Http;
 namespace Tests.App.ServicesTests.JwtSession
 {
     public class JWTSessionUtilsTests
@@ -34,16 +36,34 @@ namespace Tests.App.ServicesTests.JwtSession
             };
             var expirationValue = DateTime.UtcNow.AddMinutes(30);
 
-            var token = _jwtSessionUtils.GenerateJwtToken(claims, expirationValue);
+            SessionUserDto token = _jwtSessionUtils.GenerateJwtToken(claims, expirationValue);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var jwtToken = tokenHandler.ReadJwtToken(token.token_session_user);
 
             Assert.Equal("test-user", jwtToken.Claims.First(c => c.Type == ClaimTypes.Name).Value);
             Assert.Equal("admin", jwtToken.Claims.First(c => c.Type == ClaimTypes.Role).Value);
             Assert.Equal("http://frontend", jwtToken.Issuer);
             Assert.Equal("http://backend", jwtToken.Audiences.Single());
             Assert.True(jwtToken.ValidTo > DateTime.UtcNow);
+        }
+
+        [Fact]
+        public void SetSessionCookie_ShouldAppendCookieWithCorrectOptions()
+        {
+            var response = new Mock<HttpResponse>();
+            var cookieCollection = new Mock<IResponseCookies>();
+            var sessionData = new SessionUserDto
+            {
+                token_session_user = "testToken",
+                date_token_session_expiration = DateTime.UtcNow.AddDays(1)
+            };
+
+            response.Setup(r => r.Cookies).Returns(cookieCollection.Object);
+
+            _jwtSessionUtils.SetSessionCookie(response.Object, "testCookie", sessionData);
+
+            cookieCollection.Verify(c => c.Append("testCookie", "testToken", It.IsAny<CookieOptions>()), Times.Once);
         }
     }
 }

@@ -5,15 +5,21 @@ using System.Text;
 using System.Security.Claims;
 using AmourConnect.App.Interfaces.Services;
 using Microsoft.Extensions.Options;
+using AmourConnect.Domain.Dtos.AppLayerDtos;
+using Microsoft.AspNetCore.Http;
 namespace AmourConnect.App.Services
 {
     public sealed class JWTSessionUtils(IOptions<JwtSecret> jwtSecret) : IJWTSessionUtils
     {
+        public string NameCookieUserConnected { get; } = "User-AmourConnect";
+        public string NameCookieUserGoogle { get; } = "GoogleUser-AmourConnect";
+
+
         private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(jwtSecret.Value.Key));
         private readonly string ip_Now_Frontend = jwtSecret.Value.Ip_Now_Frontend;
         private readonly string ip_Now_Backend = jwtSecret.Value.Ip_Now_Backend;
 
-        public string GenerateJwtToken(Claim[] claims, DateTime expirationValue)
+        public SessionUserDto GenerateJwtToken(Claim[] claims, DateTime expirationValue)
         {
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -27,6 +33,87 @@ namespace AmourConnect.App.Services
 
             string jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
+            return new SessionUserDto()
+            {
+                token_session_user = jwt,
+                date_token_session_expiration = expirationValue,
+            };
+        }
+
+        public void SetSessionCookie(HttpResponse Response, string nameOfCookie, SessionUserDto sessionData)
+        {
+            DateTimeOffset dateExpiration = sessionData.date_token_session_expiration;
+            DateTimeOffset currentDate = DateTimeOffset.UtcNow;
+            TimeSpan maxAge = dateExpiration - currentDate;
+
+            Response.Cookies.Append(
+                nameOfCookie,
+                sessionData.token_session_user,
+                new CookieOptions
+                {
+                    Path = "/",
+                    MaxAge = maxAge,
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production"
+                }
+            );
+        }
+
+        public IEnumerable<Claim> GetClaimsFromCookieJWT(HttpContext httpContext, string nameOfCookie)
+        {
+            string jwt = GetCookie(httpContext, nameOfCookie);
+
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production",
+                    ValidateAudience = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production",
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true,
+                };
+
+                var principal = handler.ValidateToken(jwt, tokenValidationParameters, out var validatedToken);
+                var claims = principal.Claims;
+
+                if (claims == null)
+                    return null;
+
+                return claims;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string GetValueClaimsCookieUser(HttpContext httpContext)
+        {
+            var claims = GetClaimsFromCookieJWT(httpContext, NameCookieUserConnected);
+
+            string userC = claims?.FirstOrDefault(c => c.Type == "userAmourConnected")?.Value;
+
+            if (userC == null)
+                return null;
+
+            string cookieValue = GetCookie(httpContext, NameCookieUserConnected);
+
+            return cookieValue;
+        }
+
+        public string GetCookie(HttpContext httpContext, string nameOfCookie)
+        {
+            string jwt;
+
+            if (!httpContext.Request.Cookies.TryGetValue(nameOfCookie, out jwt))
+            {
+                return null;
+            }
             return jwt;
         }
     }

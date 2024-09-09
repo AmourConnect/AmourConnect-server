@@ -1,4 +1,5 @@
 ﻿using AmourConnect.App.Interfaces.Controllers;
+using AmourConnect.App.Interfaces.Services;
 using AmourConnect.App.Interfaces.Services.Email;
 using AmourConnect.App.Services;
 using AmourConnect.Domain.Dtos.GetDtos;
@@ -8,12 +9,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace AmourConnect.App.UseCases.Controllers
 {
-    internal sealed class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail) : IRequestFriendsCase
+    internal sealed class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils) : IRequestFriendsCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-        private readonly string token_session_user = CookieUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext, CookieUtils.nameCookieUserConnected);
+        private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly ISendMail sendMail = sendMail;
 
         public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
