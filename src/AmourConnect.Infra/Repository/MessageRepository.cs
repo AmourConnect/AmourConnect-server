@@ -23,6 +23,7 @@ namespace AmourConnect.Infra.Repository
                         .Include(m => m.UserReceiver)
                         .Where(m => (m.IdUserIssuer == idUserIssuer && m.Id_UserReceiver == idUserReceiver) ||
                                     (m.IdUserIssuer == idUserReceiver && m.Id_UserReceiver == idUserIssuer))
+                        .AsSplitQuery()
                         .Select(m => m.ToGetMessageDto())
                         .ToListAsync();
 

@@ -14,6 +14,7 @@ namespace AmourConnect.Infra.Repository
                 .Include(r => r.UserIssuer)
                 .Include(r => r.UserReceiver)
                 .Where(r => r.IdUserIssuer == Id_User || r.Id_UserReceiver == Id_User)
+                .AsSplitQuery()
                 .Select(r => r.ToGetRequestFriendsDto())
                 .ToListAsync();
 
@@ -35,6 +36,7 @@ namespace AmourConnect.Infra.Repository
             await _context.RequestFriends
         .Include(r => r.UserIssuer)
         .Include(r => r.UserReceiver)
+        .AsSplitQuery()
         .FirstOrDefaultAsync(r =>
             (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == Id_User && r.Status == RequestStatus.Onhold));
 
