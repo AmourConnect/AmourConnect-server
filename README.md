@@ -110,9 +110,9 @@ docker builder prune --force
 
 **Otherwise do this manually if you don't have Docker**
 
-*To play Migration (not necessary) in VS => Tools/Nuget Package Manager/ Package Manager Console. After select AmourConnect.Infra*
+*To play Migration (not necessary) in VS => Tools/Nuget Package Manager/ Package Manager Console.*
 ```
-add-migration AmourConnectClass
+Add-Migration BackendClass -Project Infrastructure
 ```
 
 *In prod, when you setup the secrets in Github Action, don't forget to set the connection DB escape special characters in your connection strings to prevent them from being interpreted as command separators in the shell*
