@@ -54,10 +54,8 @@ namespace Application.UseCases.Controllers
             throw new ExceptionAPI(true, "yes good", null);
         }
 
-        public async Task GetUser(int Id_User)
+        public async Task GetUserById(int Id_User)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
-
             User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
             if (user == null) 

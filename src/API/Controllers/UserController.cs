@@ -66,16 +66,16 @@ namespace API.Controllers
 
         [HttpGet("GetUser/{Id_User}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
-        public async Task<IActionResult> GetUser([FromRoute] int Id_User)
+        public async Task<IActionResult> GetUserId([FromRoute] int Id_User)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            ApiResponseDto<int> _responseApi = null;
+            ApiResponseDto<GetUserDto> _responseApi = null;
 
-            try { await _userUseCase.GetUser(Id_User); }
+            try { await _userUseCase.GetUserById(Id_User); }
 
-            catch(ExceptionAPI e) { var objt = e.ManageApiMessage<int>(); _responseApi = objt; }
+            catch(ExceptionAPI e) { var objt = e.ManageApiMessage<GetUserDto>(); _responseApi = objt; }
 
             return _responseApi.Message == "no found :/"
             ? NotFound()

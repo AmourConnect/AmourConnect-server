@@ -7,6 +7,6 @@ namespace Application.Interfaces.Controllers
         Task GetUsersToMach();
         Task GetUserConnected();
         Task UpdateUser(SetUserUpdateDto setUserUpdateDto);
-        Task GetUser(int Id_User);
+        Task GetUserById(int Id_User);
     }
 }
