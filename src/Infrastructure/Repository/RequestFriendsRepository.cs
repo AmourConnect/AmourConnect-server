@@ -3,10 +3,10 @@ using Domain.Entities;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Domain.Mappers;
-
+using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class RequestFriendsRepository(Persistence.BackendDbContext _context) : IRequestFriendsRepository
+    internal sealed class RequestFriendsRepository(BackendDbContext _context) : IRequestFriendsRepository
     {
         public async Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User) =>
             await _context.RequestFriends

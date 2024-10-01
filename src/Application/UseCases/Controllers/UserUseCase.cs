@@ -6,10 +6,11 @@ using Infrastructure.Interfaces;
 using Domain.Mappers;
 using Microsoft.AspNetCore.Http;
 using Application.Interfaces.Services;
+using Application.Services;
 
 namespace Application.UseCases.Controllers
 {
-    internal sealed class UserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils) : IUserCase
+    internal sealed class UserUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils) : IUserUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -18,52 +19,29 @@ namespace Application.UseCases.Controllers
         private readonly IMessUtils _messUtils = messUtils;
 
 
-        public async Task<(bool succes, string message, IEnumerable<GetUserDto> UsersToMatch)> GetUsersToMach()
+        public async Task GetUsersToMach()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
             ICollection<GetUserDto> users = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
 
-            return (true, "yes good", users);
+            throw new ExceptionAPI(true, "yes good", users );
         }
 
-        public async Task<(bool succes, string message, GetUserDto UserToMatch)> GetUserOnly()
+        public async Task GetUserConnected()
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
             GetUserDto userDto = dataUserNowConnect.ToGetUserMapper();
 
-            return (true, "yes good", userDto);
+            throw new ExceptionAPI(true, "yes good", userDto);
         }
 
-        public async Task<(bool succes, string message)> UpdateUser(SetUserUpdateDto setUserUpdateDto)
+        public async Task UpdateUser(SetUserUpdateDto setUserUpdateDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-            var imageData = await _messUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture);
-
-            var newsValues = new
-            {
-                Profile_picture = _regexUtils.CheckPicture(setUserUpdateDto.Profile_picture)
-                ? imageData
-                                : dataUserNowConnect.Profile_picture,
-
-                city = _regexUtils.CheckCity(setUserUpdateDto.city)
-                ? setUserUpdateDto.city
-                          : dataUserNowConnect.city,
-
-                Description = _regexUtils.CheckDescription(setUserUpdateDto.Description)
-                          ? setUserUpdateDto.Description
-                          : dataUserNowConnect.Description,
-
-                sex = _regexUtils.CheckSex(setUserUpdateDto.sex)
-                ? setUserUpdateDto.sex
-                : dataUserNowConnect.sex,
-
-                date_of_birth = _regexUtils.CheckDate(setUserUpdateDto.date_of_birth)
-                            ? setUserUpdateDto.date_of_birth ?? DateTime.MinValue
-                            : dataUserNowConnect.date_of_birth,
-            };
+            var newsValues = UpdatingCheckUser(setUserUpdateDto, await _messUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture), dataUserNowConnect);
 
             dataUserNowConnect.Profile_picture = newsValues.Profile_picture;
             dataUserNowConnect.city = newsValues.city;
@@ -73,23 +51,42 @@ namespace Application.UseCases.Controllers
 
             await _userRepository.UpdateUserAsync(dataUserNowConnect.Id_User, dataUserNowConnect);
 
-            return (true, "yes good");
+            throw new ExceptionAPI(true, "yes good", null);
         }
 
-        public async Task<(bool succes, string message, GetUserDto userID)> GetUser(int Id_User)
+        public async Task GetUser(int Id_User)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
             User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
             if (user == null) 
-            {
-                return (false, "no found :/", null);
-            }
+                throw new ExceptionAPI(false, "no found :/", null);
 
             GetUserDto userDto = user.ToGetUserMapper();
 
-            return (true, "found", userDto);
+            throw new ExceptionAPI(true, "found", userDto);
+        }
+
+        private User UpdatingCheckUser(SetUserUpdateDto setUserUpdateDto, byte[] imageData, User dataUserNowConnect)
+        {
+            return new User
+            {
+                   Profile_picture = _regexUtils.CheckPicture(setUserUpdateDto.Profile_picture)
+                    ? imageData: dataUserNowConnect.Profile_picture,
+
+                   city = _regexUtils.CheckCity(setUserUpdateDto.city) 
+                   ? setUserUpdateDto.city : dataUserNowConnect.city,
+
+                   Description = _regexUtils.CheckDescription(setUserUpdateDto.Description)
+                   ? setUserUpdateDto.Description : dataUserNowConnect.Description,
+
+                   sex = _regexUtils.CheckSex(setUserUpdateDto.sex)
+                    ? setUserUpdateDto.sex : dataUserNowConnect.sex,
+
+                   date_of_birth = _regexUtils.CheckDate(setUserUpdateDto.date_of_birth)
+                   ? setUserUpdateDto.date_of_birth ?? DateTime.MinValue : dataUserNowConnect.date_of_birth,
+            };
         }
     }
 }

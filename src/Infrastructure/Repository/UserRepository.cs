@@ -5,15 +5,16 @@ using Domain.Entities;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Domain.Mappers;
+using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class UserRepository(Persistence.BackendDbContext _context) : IUserRepository
+    internal sealed class UserRepository(BackendDbContext _context) : IUserRepository
     {
         public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect) =>
            
           await _context.User
             .Where(u =>
-            //    u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
+                u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
                 u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
                 u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
                     dataUserNowConnect.date_of_birth.AddYears(-10) :

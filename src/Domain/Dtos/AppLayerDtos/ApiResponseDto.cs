@@ -1,8 +1,9 @@
 ﻿namespace Domain.Dtos.AppLayerDtos
 {
-    public class ApiResponseDto
+    public record ApiResponseDto<T>
     {
-        public bool succes { get; set; }
-        public string message { get; set; }
+        public string Message { get; init; }
+        public bool Success { get; init; }
+        public T Result { get; init; }
     }
 }

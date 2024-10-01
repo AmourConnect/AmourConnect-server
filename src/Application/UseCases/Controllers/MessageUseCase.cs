@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.UseCases.Controllers
 {
-    internal sealed class MessageCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IJWTSessionUtils jWTSessionUtils) : IMessageCase
+    internal sealed class MessageUseCase(IUserRepository userRepository, IRequestFriendsRepository RequestFriendsRepository, IMessageRepository MessageRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IJWTSessionUtils jWTSessionUtils) : IMessageUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = RequestFriendsRepository;
@@ -18,7 +18,7 @@ namespace Application.UseCases.Controllers
         private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly IRegexUtils _regexUtils = regexUtils;
 
-        public async Task<(bool success, string message)> SendMessageAsync(SetMessageDto setmessageDto)
+        public async Task SendMessageAsync(SetMessageDto setmessageDto)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -28,12 +28,12 @@ namespace Application.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "There must be validation of the match request to chat");
+                    throw new ExceptionAPI(false, "There must be validation of the match request to chat", null);
                 }
 
                 if (!_regexUtils.CheckMessage(setmessageDto.MessageContent))
                 {
-                    return (false, "Message no valid");
+                    throw new ExceptionAPI(false, "Message no valid", null);
                 }
 
                 var message = new Message
@@ -46,12 +46,12 @@ namespace Application.UseCases.Controllers
 
                 await _messageRepository.AddMessageAsync(message);
 
-                return (true, "Message send succes");
+                throw new ExceptionAPI(true, "Message send succes", null);
             }
-            return (false, "You have to match to talk together");
+            throw new ExceptionAPI(false, "You have to match to talk together", null);
         }
 
-        public async Task<(bool success, string message, IEnumerable<GetMessageDto> messages)> GetUserMessagesAsync(int Id_UserReceiver)
+        public async Task GetUserMessagesAsync(int Id_UserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
@@ -61,7 +61,7 @@ namespace Application.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "There must be validation of the match request to chat", null);
+                    throw new ExceptionAPI(false, "There must be validation of the match request to chat", null);
                 }
 
                 ICollection<GetMessageDto> msg = await _messageRepository.GetMessagesAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
@@ -77,9 +77,9 @@ namespace Application.UseCases.Controllers
                     }
                 }
 
-                return (true, "Messages retrieved successfully", msg);
+                throw new ExceptionAPI(true, "Messages retrieved successfully", msg);
             }
-            return (false, "You have to match to talk together", null);
+            throw new ExceptionAPI(false, "You have to match to talk together", null);
         }
     }
 }

@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces.Controllers;
 using Microsoft.AspNetCore.Authentication.Google;
+using Application.Services;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthCase authCase) : ControllerBase
+    public class AuthController(IAuthUseCase authUseCase) : ControllerBase
     {
-        private readonly IAuthCase _authCase = authCase;
+        private readonly IAuthUseCase _authUseCase = authUseCase;
 
         [HttpGet("login")]
         public IActionResult Login() => Challenge(new AuthenticationProperties { RedirectUri = Env.GetString("IP_NOW_BACKENDAPI") + "/api/Auth/signin-google" }, GoogleDefaults.AuthenticationScheme);
@@ -19,8 +20,16 @@ namespace API.Controllers
 
 
         [HttpGet("signin-google")]
-        public async Task<IActionResult> GoogleLogin() => Redirect((await _authCase.ValidateGoogleLoginAsync()).message);
+        public async Task<IActionResult> GoogleLogin()
+        {
+            ApiResponseDto<string> _responseApi = null;
 
+            try { await _authUseCase.ValidateGoogleLoginAsync(); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<string>(); _responseApi = objt; }
+
+            return Redirect(_responseApi.Message);
+        }
 
 
         [HttpPost("register")]
@@ -29,11 +38,15 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (success, message) = await _authCase.RegisterUserAsync(setuserRegistrationDto);
+            ApiResponseDto<string> _responseApi = null;
 
-            return (success)
-            ? Ok(new ApiResponseDto { message = message, succes = true })
-            : BadRequest(new ApiResponseDto { message = message, succes = false });
+            try { await _authUseCase.RegisterUserAsync(setuserRegistrationDto); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<string>(); _responseApi = objt; }
+
+            return (_responseApi.Success)
+            ? Ok(_responseApi)
+            : BadRequest(_responseApi);
         }
     }
 }
