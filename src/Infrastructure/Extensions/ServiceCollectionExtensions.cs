@@ -9,11 +9,16 @@ namespace Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddInfrastructure(this IServiceCollection services, string ConnectionDB)
+        public static void AddInfrastructure(this IServiceCollection services, string ConnexionDB, string ConnexionRedis)
         {
             services.AddDbContext<BackendDbContext>(options => 
             {
-                options.UseNpgsql(ConnectionDB);
+                options.UseNpgsql(ConnexionDB);
+            });
+
+            services.AddStackExchangeRedisCache(rediosOptions =>
+            {
+                rediosOptions.Configuration = (ConnexionRedis);
             });
 
             services.AddScoped<IUserSeeder, UserSeeder>();

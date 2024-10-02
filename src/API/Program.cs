@@ -20,7 +20,7 @@ builder.Services.AddCaseControllers();
 
 builder.Services.AddServicesControllers();
 
-builder.Services.AddInfrastructure(Env.GetString("ConnectionDB"));
+builder.Services.AddInfrastructure(Env.GetString("ConnexionDB"), Env.GetString("ConnexionRedis"));
 
 builder.Services.AddScoped<AuthorizeUser>();
 
