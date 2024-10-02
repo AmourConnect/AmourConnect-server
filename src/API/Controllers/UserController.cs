@@ -5,6 +5,7 @@ using API.Filters;
 using Application.Interfaces.Controllers;
 using Application.Services;
 using Domain.Dtos.AppLayerDtos;
+using Domain.Entities;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
@@ -51,16 +52,19 @@ namespace API.Controllers
 
 
         [HttpPatch("UpdateUser")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
         public async Task<IActionResult> UpdateUser([FromForm] SetUserUpdateDto setUserUpdateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            ApiResponseDto<GetUserDto> _responseApi = null; 
+
             try { await _userUseCase.UpdateUser(setUserUpdateDto); }
 
-            catch (ExceptionAPI) { }
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<GetUserDto>(); _responseApi = objt; }
             
-            return NoContent();
+            return Ok(_responseApi);
         }
 
 

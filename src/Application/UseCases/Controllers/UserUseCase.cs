@@ -51,7 +51,9 @@ namespace Application.UseCases.Controllers
 
             await _userRepository.UpdateUserAsync(dataUserNowConnect.Id_User, dataUserNowConnect);
 
-            throw new ExceptionAPI(true, "yes good", null);
+            GetUserDto UserDtoNewValues = newsValues.ToGetUserMapper();
+
+            throw new ExceptionAPI(true, "yes good", UserDtoNewValues);
         }
 
         public async Task GetUserById(int Id_User)
