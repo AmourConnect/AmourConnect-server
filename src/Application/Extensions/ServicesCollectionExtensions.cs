@@ -15,7 +15,8 @@ namespace Application.Extensions
             services.AddScoped<IMessUtils, MessUtils>();
             services.AddScoped<IConfigEmail, ConfigEmail>();
             services.AddScoped<IJWTSessionUtils, JWTSessionUtils>();
-            services.AddScoped<IJwtSecret, JwtSecret>();
+            services.AddScoped<ISecretEnv, SecretEnv>();
+            services.AddScoped<IBodyEmail, BodyEmail>();
         }
     }
 }

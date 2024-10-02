@@ -1,17 +1,29 @@
 ﻿using Domain.Entities;
-using DotNetEnv;
-
+using Application.Interfaces.Services.Email;
+using Domain.Utils;
+using Microsoft.Extensions.Options;
 namespace Application.Services.Email
 {
-    public class BodyEmail
+    public class BodyEmail(IOptions<SecretEnv> SecretEnv) : IBodyEmail
     {
-        private readonly static string _requestUrlPageRequest = $"{Env.GetString("IP_NOW_FRONTEND")}/request";
-        private readonly static string _requestUrlWebSite = $"{Env.GetString("IP_NOW_FRONTEND")}";
-        public readonly static string subjectRegister = "Bienvenu chez AmourConnect ❤️";
-        public readonly static string subjectRequestFriend = "Demande de match ❤️";
-        public readonly static string subjectAcceptFriend = " a accepté(e) le match ❤️";
+        private readonly string _requestUrlPageRequest = $"{SecretEnv.Value.Ip_Now_Frontend}/request";
+        private readonly string _requestUrlWebSite = $"{SecretEnv.Value.Ip_Now_Frontend}";
+        public string subjectRegister
+        {
+            get { return "Bienvenu chez AmourConnect ❤️"; }
+        }
 
-        public static string _emailBodyRegister(string pseudo) =>
+        public string subjectRequestFriend
+        {
+            get { return "Demande de match ❤️"; }
+        }
+
+        public string subjectAcceptFriend 
+        {
+            get { return " a accepté(e) le match ❤️"; }
+        }
+
+        public string _emailBodyRegister(string pseudo) =>
             $@"
             <html>
             <head>
@@ -28,7 +40,7 @@ namespace Application.Services.Email
             </html>
             ";
 
-        public static string _requestFriendBodyEmail(string pseudoReceiver, User dataUserIssuer) =>
+        public string _requestFriendBodyEmail(string pseudoReceiver, User dataUserIssuer) =>
             $@"
             <html>
             <head>
@@ -47,7 +59,7 @@ namespace Application.Services.Email
             </html>
             ";
 
-        public static string _acceptFriendBodyEmail(string pseudoReceiver, User dataUserIssuer) =>
+        public string _acceptFriendBodyEmail(string pseudoReceiver, User dataUserIssuer) =>
             $@"
                 <html>
                 <head>

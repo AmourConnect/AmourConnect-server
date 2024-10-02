@@ -10,15 +10,15 @@ namespace Tests.Application.ServicesTests.JwtSession
 {
     public class JWTSessionUtilsTests
     {
-        private readonly Mock<IOptions<JwtSecret>> _mockJwtSecretOptions;
+        private readonly Mock<IOptions<SecretEnv>> _mockJwtSecretOptions;
         private readonly JWTSessionUtils _jwtSessionUtils;
 
         public JWTSessionUtilsTests()
         {
-            _mockJwtSecretOptions = new Mock<IOptions<JwtSecret>>();
-            _mockJwtSecretOptions.Setup(x => x.Value).Returns(new JwtSecret
+            _mockJwtSecretOptions = new Mock<IOptions<SecretEnv>>();
+            _mockJwtSecretOptions.Setup(x => x.Value).Returns(new SecretEnv
             {
-                Key = "sdzwqsdcszedswqsazdfcdxswqszdcfg",
+                SecretKeyJWT = "sdzwqsdcszedswqsazdfcdxswqszdcfg",
                 Ip_Now_Frontend = "http://frontend",
                 Ip_Now_Backend = "http://backend"
             });

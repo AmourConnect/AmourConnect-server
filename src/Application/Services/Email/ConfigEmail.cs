@@ -1,24 +1,27 @@
 ﻿using System.Net.Mail;
 using Application.Interfaces.Services.Email;
-using DotNetEnv;
+using Domain.Utils;
+using Microsoft.Extensions.Options;
 namespace Application.Services.Email
 {
-    public class ConfigEmail() : IConfigEmail
+    public class ConfigEmail(IOptions<SecretEnv> SecretEnv) : IConfigEmail
     {
+        private readonly IOptions<SecretEnv> secretEnv = SecretEnv;
+
         public async Task configMail(string toEmail, string subject, string body)
         {
             MailMessage mail = new();
 
-            SmtpClient smtpClient = new(Env.GetString("SERVICE"));
+            SmtpClient smtpClient = new(SecretEnv.Value.SERVICE);
 
-            mail.From = new MailAddress(Env.GetString("EMAIL_USER"));
+            mail.From = new MailAddress(SecretEnv.Value.EMAIL_USER);
             mail.To.Add(toEmail);
             mail.Subject = subject;
             mail.Body = body;
             mail.IsBodyHtml = true;
 
-            smtpClient.Port = int.Parse(Env.GetString("PORT_SMTP"));
-            smtpClient.Credentials = new System.Net.NetworkCredential(Env.GetString("EMAIL_USER"), Env.GetString("EMAIL_MDP"));
+            smtpClient.Port = int.Parse(SecretEnv.Value.PORT_SMTP);
+            smtpClient.Credentials = new System.Net.NetworkCredential(SecretEnv.Value.EMAIL_USER, SecretEnv.Value.EMAIL_MDP);
             smtpClient.EnableSsl = true;
 
             try

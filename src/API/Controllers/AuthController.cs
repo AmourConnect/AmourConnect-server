@@ -1,21 +1,22 @@
 ﻿using Domain.Dtos.AppLayerDtos;
 using Domain.Dtos.SetDtos;
-using DotNetEnv;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Application.Interfaces.Controllers;
 using Microsoft.AspNetCore.Authentication.Google;
 using Application.Services;
+using Domain.Utils;
+using Microsoft.Extensions.Options;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IAuthUseCase authUseCase) : ControllerBase
+    public class AuthController(IAuthUseCase authUseCase, IOptions<SecretEnv> SecretEnv) : ControllerBase
     {
         private readonly IAuthUseCase _authUseCase = authUseCase;
 
         [HttpGet("login")]
-        public IActionResult Login() => Challenge(new AuthenticationProperties { RedirectUri = Env.GetString("IP_NOW_BACKENDAPI") + "/api/Auth/signin-google" }, GoogleDefaults.AuthenticationScheme);
+        public IActionResult Login() => Challenge(new AuthenticationProperties { RedirectUri = SecretEnv.Value.Ip_Now_Backend + "/api/Auth/signin-google" }, GoogleDefaults.AuthenticationScheme);
 
 
 

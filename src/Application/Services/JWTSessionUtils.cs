@@ -9,13 +9,13 @@ using Domain.Dtos.AppLayerDtos;
 using Microsoft.AspNetCore.Http;
 namespace Application.Services
 {
-    public sealed class JWTSessionUtils(IOptions<JwtSecret> jwtSecret) : IJWTSessionUtils
+    public sealed class JWTSessionUtils(IOptions<SecretEnv> jwtSecret) : IJWTSessionUtils
     {
         public string NameCookieUserConnected { get; } = "User-AmourConnect";
         public string NameCookieUserGoogle { get; } = "GoogleUser-AmourConnect";
 
 
-        private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(jwtSecret.Value.Key));
+        private readonly SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(jwtSecret.Value.SecretKeyJWT));
         private readonly string ip_Now_Frontend = jwtSecret.Value.Ip_Now_Frontend;
         private readonly string ip_Now_Backend = jwtSecret.Value.Ip_Now_Backend;
 

@@ -1,6 +1,5 @@
 ﻿using Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Seeders;
 using Infrastructure.Interfaces;
@@ -10,13 +9,11 @@ namespace Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddInfrastructure(this IServiceCollection services)
+        public static void AddInfrastructure(this IServiceCollection services, string ConnectionDB)
         {
-            Env.Load();
-            Env.TraversePath().Load();
             services.AddDbContext<BackendDbContext>(options => 
             {
-                options.UseNpgsql(Env.GetString("ConnectionDB"));
+                options.UseNpgsql(ConnectionDB);
             });
 
             services.AddScoped<IUserSeeder, UserSeeder>();
