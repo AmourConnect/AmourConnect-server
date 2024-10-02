@@ -32,19 +32,13 @@ class User {
     + sex : string
     + date_of_birth : DateTime
     + account_created_at : DateTime
-    + "virtual" ICollection<Message> MessagesSent
-    + "virtual" ICollection<Message> MessagesReceived
-    + "virtual" ICollection<RequestFriends> RequestsSent
-    + "virtual" ICollection<RequestFriends> RequestsReceived
 }
 
 class RequestFriends {
   <<class>>
     + Id_RequestFriends : int
-    + "[ForeignKey("UserIssuer")]" IdUserIssuer : int
-    + UserIssuer : User
-    + "[ForeignKey("UserReceiver")]" Id_UserReceiver : int
-    + UserReceiver : User
+    + IdUserIssuer : int
+    + Id_UserReceiver : int
     + Status : RequestStatus
     + Date_of_request : DateTime
 }
@@ -58,10 +52,8 @@ class RequestStatus {
 class Message {
   <<class>>
     + Id_Message : int
-    + "[ForeignKey("UserIssuer")]" IdUserIssuer : int
-    + UserIssuer : User
-    + "[ForeignKey("UserReceiver")]" Id_UserReceiver : int
-    + UserReceiver : User
+    + IdUserIssuer : int
+    + Id_UserReceiver : int
     + message_content : string
     + Date_of_request : DateTime
 }
