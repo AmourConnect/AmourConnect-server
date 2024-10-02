@@ -58,7 +58,7 @@ namespace Application.UseCases.Controllers
             throw new ExceptionAPI(true, "Request match accepted", null);
         }
 
-        public async Task RequestFriendsAsync(int IdUserReceiver)
+        public async Task AddRequestFriendsAsync(int IdUserReceiver)
         {
             User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
 

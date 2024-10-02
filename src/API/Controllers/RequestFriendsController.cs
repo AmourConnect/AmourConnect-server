@@ -39,7 +39,7 @@ namespace API.Controllers
 
             ApiResponseDto<string> _responseApi = null;
 
-            try { await _requestFriendsUseCase.RequestFriendsAsync(IdUserReceiver); }
+            try { await _requestFriendsUseCase.AddRequestFriendsAsync(IdUserReceiver); }
 
             catch (ExceptionAPI e) { var objt = e.ManageApiMessage<string>(); _responseApi = objt; }
 

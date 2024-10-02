@@ -4,6 +4,6 @@
     {
         Task GetRequestFriendsAsync();
         Task AcceptFriendRequestAsync(int IdUserIssuer);
-        Task RequestFriendsAsync(int IdUserReceiver);
+        Task AddRequestFriendsAsync(int IdUserReceiver);
     }
 }
