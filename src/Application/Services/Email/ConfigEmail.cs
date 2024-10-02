@@ -6,8 +6,6 @@ namespace Application.Services.Email
 {
     public class ConfigEmail(IOptions<SecretEnv> SecretEnv) : IConfigEmail
     {
-        private readonly IOptions<SecretEnv> secretEnv = SecretEnv;
-
         public async Task configMail(string toEmail, string subject, string body)
         {
             MailMessage mail = new();

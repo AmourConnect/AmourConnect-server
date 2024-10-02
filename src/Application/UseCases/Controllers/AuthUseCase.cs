@@ -20,7 +20,6 @@ namespace Application.UseCases.Controllers
         private readonly IRegexUtils _regexUtils = regexUtils;
         private readonly ISendMail sendMail = sendMail;
         private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
-        private readonly IOptions<SecretEnv> _secretEnv = SecretEnv;
 
         public async Task ValidateGoogleLoginAsync()
         {
@@ -63,11 +62,11 @@ namespace Application.UseCases.Controllers
                 throw new ExceptionAPI(false, "Please login with Google before register", null);
             }
 
-            var regexResult = _regexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
+            var (success, message) = _regexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
 
-            if (!regexResult.success)
+            if (!success)
             {
-                throw new ExceptionAPI(regexResult.success, regexResult.message, null);
+                throw new ExceptionAPI(success, message, null);
             }
 
             if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
