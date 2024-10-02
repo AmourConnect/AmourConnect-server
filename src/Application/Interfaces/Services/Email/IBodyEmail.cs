@@ -8,8 +8,8 @@ namespace Application.Interfaces.Services.Email
         string _requestFriendBodyEmail(string pseudoReceiver, User dataUserIssuer);
         string _emailBodyRegister(string pseudo);
 
-        string subjectAcceptFriend { get; }
-        string subjectRequestFriend { get; }
-        string subjectRegister { get; }
+        public string subjectAcceptFriend { get; }
+        public string subjectRequestFriend { get; }
+        public string subjectRegister { get; }
     }
 }
