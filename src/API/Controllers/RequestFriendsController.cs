@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUser))]
+    [ServiceFilter(typeof(AuthorizeAuth))]
     public class RequestFriendsController(IRequestFriendsUseCase requestFriendsUseCase) : ControllerBase
     {
         private readonly IRequestFriendsUseCase _requestFriendsUseCase = requestFriendsUseCase;

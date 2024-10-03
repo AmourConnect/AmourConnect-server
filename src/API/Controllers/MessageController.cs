@@ -9,7 +9,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUser))]
+    [ServiceFilter(typeof(AuthorizeAuth))]
     public class MessageController(IMessageUseCase MessageUseCase) : ControllerBase
     {
         private readonly IMessageUseCase _messageUseCase = MessageUseCase;

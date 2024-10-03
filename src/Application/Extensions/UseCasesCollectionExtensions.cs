@@ -9,7 +9,7 @@ namespace Application.Extensions
     {
         public static void AddCaseControllers(this IServiceCollection services)
         {
-            services.AddScoped<IAuthorizeUserCase, AuthorizeUserCase>();
+            services.AddScoped<IAuthorizeAuthUseCase, AuthorizeAuthUseCase>();
             services.AddScoped<IAuthUseCase, AuthUseCase>();
             services.AddScoped<IUserUseCase, UserUseCase>();
             services.AddScoped<IMessageUseCase, MessageUseCase>();

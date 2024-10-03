@@ -7,12 +7,11 @@ using Application.Interfaces.Services;
 using Domain.Entities;
 namespace Application.UseCases.Filters
 {
-    internal class AuthorizeUserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils) : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
+    internal class AuthorizeAuthUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils) : Attribute, IAuthorizeAuthUseCase, IAsyncAuthorizationFilter
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
-
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var cookieValueJWT = _jWTSessions.GetValueClaimsCookieUser(context.HttpContext);

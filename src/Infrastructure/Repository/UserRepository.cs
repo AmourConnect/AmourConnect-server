@@ -8,26 +8,41 @@ using Domain.Mappers;
 using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class UserRepository(BackendDbContext _context) : IUserRepository
+    internal sealed class UserRepository(BackendDbContext _context, IRedisCacheService RedisCacheService) : IUserRepository
     {
-        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect) =>
+        private readonly IRedisCacheService _redisCacheService = RedisCacheService;
+        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect)
+        {
+            List<GetUserDto> UsersCache = await _redisCacheService.GetAsync<List<GetUserDto>>(dataUserNowConnect.Id_User.ToString());
+
+            if (UsersCache == null) 
+            {
+                List<GetUserDto> getUserDto = await _context.User
+                  .Where(u =>
+                      u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
+                      u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
+                      u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
+                          dataUserNowConnect.date_of_birth.AddYears(-10) :
+                          dataUserNowConnect.date_of_birth.AddYears(-1)) &&
+                      u.date_of_birth <= (dataUserNowConnect.sex == "M" ?
+                          dataUserNowConnect.date_of_birth.AddYears(10) :
+                          dataUserNowConnect.date_of_birth.AddYears(1)) &&
+                  !_context.RequestFriends.Any(r =>
+                      ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == dataUserNowConnect.Id_User) ||
+                      (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == dataUserNowConnect.Id_User)) &&
+                      r.Status == RequestStatus.Accepted))
+                  .Select(u => u.ToGetUserMapper())
+                  .ToListAsync();
+
+                await _redisCacheService.SetAsync(dataUserNowConnect.Id_User.ToString(), getUserDto, TimeSpan.FromSeconds(60));
+
+                return getUserDto;
+            }
+
+            return UsersCache;
+        }
            
-          await _context.User
-            .Where(u =>
-                u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
-                u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
-                u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
-                    dataUserNowConnect.date_of_birth.AddYears(-10) :
-                    dataUserNowConnect.date_of_birth.AddYears(-1)) &&
-                u.date_of_birth <= (dataUserNowConnect.sex == "M" ?
-                    dataUserNowConnect.date_of_birth.AddYears(10) :
-                    dataUserNowConnect.date_of_birth.AddYears(1)) &&
-            !_context.RequestFriends.Any(r =>
-                ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == dataUserNowConnect.Id_User) ||
-                (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == dataUserNowConnect.Id_User)) &&
-                r.Status == RequestStatus.Accepted))
-            .Select(u => u.ToGetUserMapper())
-            .ToListAsync();
+
 
 
 
@@ -82,7 +97,21 @@ namespace Infrastructure.Repository
 
         public async Task<bool> GetUserByPseudoAsync(string Pseudo) => await _context.User.AnyAsync(u => u.Pseudo.ToLower() == Pseudo.ToLower());
 
-        public async Task<User> GetUserWithCookieAsync(string token_session_user) => await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
+        public async Task<User> GetUserWithCookieAsync(string token_session_user)
+        {
+            User userCache = await _redisCacheService.GetAsync<User>(token_session_user);
+            if (userCache == null) 
+            {
+                User user = await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
+
+                await _redisCacheService.SetAsync(token_session_user, user, TimeSpan.FromSeconds(15));
+
+                return user;
+            }
+            return userCache;
+        }
+
+
 
         public async Task<bool> UpdateUserAsync(int Id_User, User user)
         {

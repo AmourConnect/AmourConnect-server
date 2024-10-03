@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUser))]
+    [ServiceFilter(typeof(AuthorizeAuth))]
     public class UserController(IUserUseCase userUseCase) : ControllerBase
     {
         private readonly IUserUseCase _userUseCase = userUseCase;

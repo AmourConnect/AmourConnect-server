@@ -26,6 +26,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IRequestFriendsRepository, RequestFriendsRepository>();
+            services.AddTransient<IRedisCacheService, RedisCacheService>();
         }
     }
 }
