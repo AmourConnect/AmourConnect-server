@@ -38,7 +38,9 @@ class RequestFriends {
   <<class>>
     + Id_RequestFriends : int
     + IdUserIssuer : int
+    + UserIssuer : User
     + Id_UserReceiver : int
+    + UserReceiver : User
     + Status : RequestStatus
     + Date_of_request : DateTime
 }
@@ -53,7 +55,9 @@ class Message {
   <<class>>
     + Id_Message : int
     + IdUserIssuer : int
+    + UserIssuer : User
     + Id_UserReceiver : int
+    + UserReceiver : User
     + message_content : string
     + Date_of_request : DateTime
 }
