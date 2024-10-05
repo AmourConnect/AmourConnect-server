@@ -15,7 +15,7 @@ namespace Infrastructure.DistributedCaching
             {
                 ICollection<GetRequestFriendsDto> getRequestFriendsDtosR = await _requestFriendsRepository.GetRequestFriendsAsync(Id_User);
 
-                await _cacheService.SetAsync(Id_User.ToString() + "GetRequestFriends", getRequestFriendsDtosR, TimeSpan.FromSeconds(10));
+                await _cacheService.SetAsync(Id_User.ToString() + "GetRequestFriends", getRequestFriendsDtosR, TimeSpan.FromSeconds(30));
 
                 return getRequestFriendsDtosR;
             }

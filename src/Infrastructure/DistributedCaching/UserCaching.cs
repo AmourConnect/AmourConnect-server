@@ -10,12 +10,12 @@ namespace Infrastructure.DistributedCaching
         private readonly ICacheService _cacheService = CacheService;
         public async Task<User> GetUserWithCookieAsync(string token_session_user)
         {
-            User userCache = await _cacheService.GetAsync<User>(token_session_user.ToString() + "GetUserWithCookie");
+            User userCache = await _cacheService.GetAsync<User>(token_session_user.ToString());
             if (userCache is null)
             {
                 User user = await _userRepository.GetUserWithCookieAsync(token_session_user.ToString());
 
-                await _cacheService.SetAsync(token_session_user.ToString() + "GetUserWithCookie", user, TimeSpan.FromSeconds(5));
+                await _cacheService.SetAsync(token_session_user.ToString(), user, TimeSpan.FromSeconds(30));
 
                 return user;
             }
