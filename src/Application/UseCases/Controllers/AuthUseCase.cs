@@ -6,12 +6,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Domain.Dtos.SetDtos;
-using DotNetEnv;
 using Application.Interfaces.Services;
 using Application.Interfaces.Services.Email;
+using Application.Services;
+using Domain.Utils;
+using Microsoft.Extensions.Options;
 namespace Application.UseCases.Controllers
 {
-    internal sealed class AuthCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils) : IAuthCase
+    internal sealed class AuthUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils, IOptions<SecretEnv> SecretEnv) : IAuthUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -19,12 +21,12 @@ namespace Application.UseCases.Controllers
         private readonly ISendMail sendMail = sendMail;
         private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
 
-        public async Task<(bool success, string message)> ValidateGoogleLoginAsync()
+        public async Task ValidateGoogleLoginAsync()
         {
             var response = await _httpContextAccessor.HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             if (response?.Principal == null || !response.Succeeded)
             {
-                return (false, Env.GetString("IP_NOW_FRONTEND") + "/login");
+                throw new ExceptionAPI(false, SecretEnv.Value.Ip_Now_Frontend + "/login", null);
             }
 
             var EmailGoogle = response.Principal.FindFirstValue(ClaimTypes.Email);
@@ -32,7 +34,7 @@ namespace Application.UseCases.Controllers
 
             if (string.IsNullOrEmpty(EmailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return (false, Env.GetString("IP_NOW_FRONTEND") + "/login");
+                throw new ExceptionAPI(false, SecretEnv.Value.Ip_Now_Frontend + "/login", null);
             }
 
             int? Id_User = await _userRepository.GetUserIdWithGoogleIdAsync(EmailGoogle, userIdGoogle);
@@ -40,15 +42,15 @@ namespace Application.UseCases.Controllers
             if (Id_User > 0)
             {
                 await CreateSessionLoginAsync(Id_User.Value);
-                return (true, Env.GetString("IP_NOW_FRONTEND") + "/welcome");
+                throw new ExceptionAPI(true, SecretEnv.Value.Ip_Now_Frontend + "/welcome", null);
             }
 
             SetCookieToSaveIdGoogle(_httpContextAccessor.HttpContext.Response, userIdGoogle, EmailGoogle);
-            return (false, Env.GetString("IP_NOW_FRONTEND") + "/register");
+            throw new ExceptionAPI(false, SecretEnv.Value.Ip_Now_Frontend + "/register", null);
         }
 
 
-        public async Task<(bool success, string message)> RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
+        public async Task RegisterUserAsync(SetUserRegistrationDto setuserRegistrationDto)
         {
             var claims = _jWTSessions.GetClaimsFromCookieJWT(_httpContextAccessor.HttpContext, _jWTSessions.NameCookieUserGoogle);
 
@@ -57,19 +59,19 @@ namespace Application.UseCases.Controllers
 
             if (string.IsNullOrEmpty(emailGoogle) || string.IsNullOrEmpty(userIdGoogle))
             {
-                return (false, "Please login with Google before register");
+                throw new ExceptionAPI(false, "Please login with Google before register", null);
             }
 
-            var regexResult = _regexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
+            var (success, message) = _regexUtils.CheckBodyAuthRegister(setuserRegistrationDto);
 
-            if (!regexResult.success)
+            if (!success)
             {
-                return regexResult;
+                throw new ExceptionAPI(success, message, null);
             }
 
             if (await _userRepository.GetUserByPseudoAsync(setuserRegistrationDto.Pseudo))
             {
-                return (false, "Pseudo Already use");
+                throw new ExceptionAPI(false, "Pseudo Already use", null);
             }
 
             int? id_user = await _userRepository.GetUserIdWithGoogleIdAsync(emailGoogle, userIdGoogle);
@@ -77,7 +79,7 @@ namespace Application.UseCases.Controllers
             if (id_user > 0)
             {
                 await CreateSessionLoginAsync(id_user.Value);
-                return (true, "User already exists, logged in");
+                throw new ExceptionAPI(true, "User already exists, logged in", null);
             }
 
             int? Newid_user = await _userRepository.CreateUserAsync(userIdGoogle, emailGoogle, setuserRegistrationDto);
@@ -86,10 +88,10 @@ namespace Application.UseCases.Controllers
             {
                 await CreateSessionLoginAsync(Newid_user.Value);
                 await sendMail.MailRegisterAsync(emailGoogle, setuserRegistrationDto.Pseudo);
-                return (true, "Register finish");
+                throw new ExceptionAPI(true, "Register finish", null);
             }
 
-            return (false, "Failed to create user");
+            throw new ExceptionAPI(false, "Failed to create user", null);
         }
 
         private async Task CreateSessionLoginAsync(int Id_User)

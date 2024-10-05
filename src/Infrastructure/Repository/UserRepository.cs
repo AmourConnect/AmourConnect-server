@@ -5,28 +5,31 @@ using Domain.Entities;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Domain.Mappers;
+using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class UserRepository(Persistence.BackendDbContext _context) : IUserRepository
+    internal sealed class UserRepository(BackendDbContext _context) : IUserRepository
     {
         public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect) =>
+                
+            await _context.User
+                  .Where(u =>
+                      u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
+                      u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
+                      u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
+                          dataUserNowConnect.date_of_birth.AddYears(-10) :
+                          dataUserNowConnect.date_of_birth.AddYears(-1)) &&
+                      u.date_of_birth <= (dataUserNowConnect.sex == "M" ?
+                          dataUserNowConnect.date_of_birth.AddYears(10) :
+                          dataUserNowConnect.date_of_birth.AddYears(1)) &&
+                  !_context.RequestFriends.Any(r =>
+                      ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == dataUserNowConnect.Id_User) ||
+                      (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == dataUserNowConnect.Id_User)) &&
+                      (r.Status == RequestStatus.Accepted || r.Status == RequestStatus.Onhold)))
+                  .Select(u => u.ToGetUserMapper())
+                  .ToListAsync();
            
-          await _context.User
-            .Where(u =>
-            //    u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
-                u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
-                u.date_of_birth >= (dataUserNowConnect.sex == "F" ?
-                    dataUserNowConnect.date_of_birth.AddYears(-10) :
-                    dataUserNowConnect.date_of_birth.AddYears(-1)) &&
-                u.date_of_birth <= (dataUserNowConnect.sex == "M" ?
-                    dataUserNowConnect.date_of_birth.AddYears(10) :
-                    dataUserNowConnect.date_of_birth.AddYears(1)) &&
-            !_context.RequestFriends.Any(r =>
-                ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == dataUserNowConnect.Id_User) ||
-                (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == dataUserNowConnect.Id_User)) &&
-                r.Status == RequestStatus.Accepted))
-            .Select(u => u.ToGetUserMapper())
-            .ToListAsync();
+
 
 
 
@@ -68,7 +71,7 @@ namespace Infrastructure.Repository
         {
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id_User == Id_User);
 
-            if (user != null)
+            if (user is not null)
             {
                 user.token_session_user = JwtGenerate.token_session_user;
                 user.date_token_session_expiration = JwtGenerate.date_token_session_expiration;
@@ -80,8 +83,8 @@ namespace Infrastructure.Repository
 
 
         public async Task<bool> GetUserByPseudoAsync(string Pseudo) => await _context.User.AnyAsync(u => u.Pseudo.ToLower() == Pseudo.ToLower());
-
         public async Task<User> GetUserWithCookieAsync(string token_session_user) => await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
+
 
         public async Task<bool> UpdateUserAsync(int Id_User, User user)
         {
@@ -91,6 +94,7 @@ namespace Infrastructure.Repository
             existingUser.sex = user.sex;
             existingUser.Profile_picture = user.Profile_picture;
             existingUser.city = user.city;
+            existingUser.Description = user.Description;
 
             _context.Entry(existingUser).State = EntityState.Modified;
             var rowsAffected = await _context.SaveChangesAsync();

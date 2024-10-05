@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.UseCases.Controllers
 {
-    internal sealed class RequestFriendsCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils) : IRequestFriendsCase
+    internal sealed class RequestFriendsUseCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils, IRequestFriendsCaching requestFriendsCaching) : IRequestFriendsUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly ISendMail sendMail = sendMail;
+        private readonly IRequestFriendsCaching _requestFriendsCaching = requestFriendsCaching;
 
-        public async Task<(bool success, string message, IEnumerable<GetRequestFriendsDto> requestFriends)> GetRequestFriendsAsync()
+        public async Task GetRequestFriendsAsync()
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
-            ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsRepository.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
+            ICollection<GetRequestFriendsDto> requestFriends = await _requestFriendsCaching.GetRequestFriendsAsync(dataUserNowConnect.Id_User);
 
             List<GetRequestFriendsDto> filteredRequestFriends = new();
 
@@ -35,18 +36,18 @@ namespace Application.UseCases.Controllers
 
             requestFriends = filteredRequestFriends;
 
-            return (true, "Request friends retrieved successfully", requestFriends);
+            throw new ExceptionAPI(true, "Request friends retrieved successfully", requestFriends);
         }
 
-        public async Task<(bool success, string message)> AcceptFriendRequestAsync(int IdUserIssuer)
+        public async Task AcceptFriendRequestAsync(int IdUserIssuer)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             RequestFriends friendRequest = await _requestFriendsRepository.GetUserFriendRequestByIdAsync(dataUserNowConnect.Id_User, IdUserIssuer);
 
             if (friendRequest == null)
             {
-                return (false, "Match request not found");
+                throw new ExceptionAPI(false, "Match request not found", null);
             }
 
             friendRequest.Status = RequestStatus.Accepted;
@@ -55,23 +56,23 @@ namespace Application.UseCases.Controllers
 
             await sendMail.AcceptRequestFriendMailAsync(friendRequest.UserIssuer, dataUserNowConnect);
 
-            return (true, "Request match accepted");
+            throw new ExceptionAPI(true, "Request match accepted", null);
         }
 
-        public async Task<(bool success, string message)> RequestFriendsAsync(int IdUserReceiver)
+        public async Task AddRequestFriendsAsync(int IdUserReceiver)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             User userReceiver = await _userRepository.GetUserByIdUserAsync(IdUserReceiver);
 
             if (userReceiver == null)
             {
-                return (false, "User receiver does not exist");
+                throw new ExceptionAPI(false, "User receiver does not exist", null);
             }
 
             if (dataUserNowConnect.Id_User == userReceiver.Id_User)
             {
-                return (false, "User cannot send a match request to themselves");
+                throw new ExceptionAPI(false, "User cannot send a match request to themselves", null);
             }
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
@@ -80,10 +81,10 @@ namespace Application.UseCases.Controllers
             {
                 if (existingRequest.Status == RequestStatus.Onhold)
                 {
-                    return (false, "A match request is already pending between these users");
+                    throw new ExceptionAPI(false, "A match request is already pending between these users", null);
                 }
 
-                return (false, "You have already matched with this user");
+                throw new ExceptionAPI(false, "You have already matched with this user", null);
             }
 
             RequestFriends requestFriends = new()
@@ -98,7 +99,9 @@ namespace Application.UseCases.Controllers
 
             await sendMail.RequestFriendMailAsync(userReceiver, dataUserNowConnect);
 
-            return (true, "Your match request has been made successfully 💕");
+            throw new ExceptionAPI(true, "Your match request has been made successfully 💕", null);
         }
+
+        private async Task<User> _GetDataUserConnected(string token_session_user) => await _userRepository.GetUserWithCookieAsync(token_session_user);
     }
 }

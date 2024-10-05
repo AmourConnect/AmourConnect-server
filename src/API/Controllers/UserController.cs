@@ -3,14 +3,17 @@ using Domain.Dtos.SetDtos;
 using Microsoft.AspNetCore.Mvc;
 using API.Filters;
 using Application.Interfaces.Controllers;
+using Application.Services;
+using Domain.Dtos.AppLayerDtos;
+using Domain.Entities;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUser))]
-    public class UserController(IUserCase userCase) : ControllerBase
+    [ServiceFilter(typeof(AuthorizeAuth))]
+    public class UserController(IUserUseCase userUseCase) : ControllerBase
     {
-        private readonly IUserCase _userCase = userCase;
+        private readonly IUserUseCase _userUseCase = userUseCase;
 
 
         [HttpGet("GetUsersToMach")]
@@ -20,50 +23,67 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (succes, message, UsersToMatch) = await _userCase.GetUsersToMach();
+            ApiResponseDto<IEnumerable<GetUserDto>> _responseApi = null;
 
-            return Ok(UsersToMatch);
+            try { await _userUseCase.GetUsersToMach(); }
+            
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<IEnumerable<GetUserDto>>(); _responseApi = objt; }
+
+            return Ok(_responseApi);
         }
 
 
 
         [HttpGet("GetUserConnected")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
-        public async Task<IActionResult> GetUserOnly()
+        public async Task<IActionResult> GetUserConnected()
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (succes, message, UserToMatch) = await _userCase.GetUserOnly();
+            ApiResponseDto<GetUserDto> _responseApi = null;
 
-            return Ok(UserToMatch);
+            try { await _userUseCase.GetUserConnected(); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<GetUserDto>(); _responseApi = objt; }
+
+            return Ok(_responseApi);
         }
 
 
         [HttpPatch("UpdateUser")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
         public async Task<IActionResult> UpdateUser([FromForm] SetUserUpdateDto setUserUpdateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (succes, message) = await _userCase.UpdateUser(setUserUpdateDto);
+            ApiResponseDto<GetUserDto> _responseApi = null; 
 
-            return NoContent();
+            try { await _userUseCase.UpdateUser(setUserUpdateDto); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<GetUserDto>(); _responseApi = objt; }
+            
+            return Ok(_responseApi);
         }
 
 
         [HttpGet("GetUser/{Id_User}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<GetUserDto>))]
-        public async Task<IActionResult> GetUser([FromRoute] int Id_User)
+        public async Task<IActionResult> GetUserId([FromRoute] int Id_User)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (succes, message, userID) = await _userCase.GetUser(Id_User);
+            ApiResponseDto<GetUserDto> _responseApi = null;
 
-            return message == "no found :/"
+            try { await _userUseCase.GetUserById(Id_User); }
+
+            catch(ExceptionAPI e) { var objt = e.ManageApiMessage<GetUserDto>(); _responseApi = objt; }
+
+            return _responseApi.Message == "no found :/"
             ? NotFound()
-            : Ok(userID);
+            : Ok(_responseApi);
         }
     }
 }

@@ -2,23 +2,21 @@
 
 namespace Application.Services
 {
-    public class ExceptionAPI(string message, bool success, string result) : Exception(message)
+    public class ExceptionAPI(bool success, string message, object result) : Exception(message)
     {
-        private readonly string _message = message;
-        private readonly bool _success = success;
+        public bool Success { get; } = success;
+        public object Result { get; } = result;
 
-        //public ApiResponseDto ManageApiMessage()
-        //{
-        //    if(_success == true)
-        //    {
-        //        var apiResponse = new ApiResponseDto() 
-        //        {
-        //            message = _message,
-        //            succes = _success,
-        //        };
+        public string Message {  get; } = message;
 
-        //        return apiResponse;
-        //    }
-        //}
+        public ApiResponseDto<T> ManageApiMessage<T>()
+        {
+            return new ApiResponseDto<T>
+            {
+                Message = Message,
+                Success = Success,
+                Result = (T)Result
+            };
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Application.Interfaces.Filters
 {
-    public interface IAuthorizeUserCase
+    public interface IAuthorizeAuthUseCase
     {
         Task OnAuthorizationAsync(AuthorizationFilterContext context);
     }

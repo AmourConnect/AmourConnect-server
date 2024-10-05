@@ -3,10 +3,10 @@ using Domain.Entities;
 using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Domain.Mappers;
-
+using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class MessageRepository(Persistence.BackendDbContext _context) : IMessageRepository
+    internal sealed class MessageRepository(BackendDbContext _context) : IMessageRepository
     {
 
         public async Task AddMessageAsync(Message message)

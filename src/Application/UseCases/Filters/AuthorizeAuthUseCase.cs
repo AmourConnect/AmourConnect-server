@@ -7,11 +7,12 @@ using Application.Interfaces.Services;
 using Domain.Entities;
 namespace Application.UseCases.Filters
 {
-    internal class AuthorizeUserCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils) : Attribute, IAuthorizeUserCase, IAsyncAuthorizationFilter
+    internal sealed class AuthorizeAuthUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils, IUserCaching userCaching) : Attribute, IAuthorizeAuthUseCase, IAsyncAuthorizationFilter
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
+        private readonly IUserCaching _userCaching = userCaching;
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
@@ -25,7 +26,7 @@ namespace Application.UseCases.Filters
 
             string cookieValue = _jWTSessions.GetCookie(_httpContextAccessor.HttpContext, _jWTSessions.NameCookieUserConnected);
 
-            User user = await _userRepository.GetUserWithCookieAsync(cookieValue);
+            User user = await _userCaching.GetUserWithCookieAsync(cookieValue);
 
             DateTime expirationDate = DateTime.UtcNow;
             if (user == null)

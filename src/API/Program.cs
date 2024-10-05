@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Application.Extensions;
 using Domain.Utils;
 
+Env.Load();
+Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +20,9 @@ builder.Services.AddCaseControllers();
 
 builder.Services.AddServicesControllers();
 
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(Env.GetString("ConnexionDB"), Env.GetString("ConnexionRedis"));
 
-builder.Services.AddScoped<AuthorizeUser>();
+builder.Services.AddScoped<AuthorizeAuth>();
 
 builder.Services.AddCors(options =>
 {
@@ -57,11 +59,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.Configure<JwtSecret>(options =>
+builder.Services.Configure<SecretEnv>(options =>
 {
     options.Ip_Now_Frontend = Env.GetString("IP_NOW_FRONTEND");
     options.Ip_Now_Backend = Env.GetString("IP_NOW_BACKENDAPI");
-    options.Key = Env.GetString("SecretKeyJWT");
+    options.SecretKeyJWT = Env.GetString("SecretKeyJWT");
+    options.EMAIL_MDP = Env.GetString("EMAIL_MDP");
+    options.EMAIL_USER = Env.GetString("EMAIL_USER");
+    options.PORT_SMTP = Env.GetString("PORT_SMTP");
+    options.SERVICE = Env.GetString("SERVICE");
 });
 
 var app = builder.Build();

@@ -3,25 +3,30 @@ using Domain.Dtos.GetDtos;
 using Microsoft.AspNetCore.Mvc;
 using API.Filters;
 using Application.Interfaces.Controllers;
+using Application.Services;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ServiceFilter(typeof(AuthorizeUser))]
-    public class RequestFriendsController(IRequestFriendsCase requestFriendsCase) : ControllerBase
+    [ServiceFilter(typeof(AuthorizeAuth))]
+    public class RequestFriendsController(IRequestFriendsUseCase requestFriendsUseCase) : ControllerBase
     {
-        private readonly IRequestFriendsCase _requestFriendsCase = requestFriendsCase;
+        private readonly IRequestFriendsUseCase _requestFriendsUseCase = requestFriendsUseCase;
 
 
         [HttpGet("GetRequestFriends")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ICollection<GetRequestFriendsDto>>))]
         public async Task<IActionResult> GetRequestFriends()
         {
-            var (success, message, requestFriends) = await _requestFriendsCase.GetRequestFriendsAsync();
+            ApiResponseDto<ICollection<GetRequestFriendsDto>> _responseApi = null;
 
-            return success
-            ? Ok(requestFriends)
-            : BadRequest(new ApiResponseDto { message = message, succes = false });
+            try { await _requestFriendsUseCase.GetRequestFriendsAsync(); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<ICollection<GetRequestFriendsDto>>(); _responseApi = objt; }
+
+            return _responseApi.Success
+            ? Ok(_responseApi)
+            : BadRequest(_responseApi);
         }
 
 
@@ -32,13 +37,17 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (success, message) = await _requestFriendsCase.RequestFriendsAsync(IdUserReceiver);
+            ApiResponseDto<string> _responseApi = null;
 
-            return message == "User receiver does not exist"
-            ? BadRequest(new ApiResponseDto { message = message, succes = false })
-            : success
-                ? Ok(new ApiResponseDto { message = message, succes = true })
-                : Conflict(new ApiResponseDto { message = message, succes = false });
+            try { await _requestFriendsUseCase.AddRequestFriendsAsync(IdUserReceiver); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<string>(); _responseApi = objt; }
+
+            return _responseApi.Message == "User receiver does not exist"
+            ? BadRequest(_responseApi)
+            : _responseApi.Success
+                ? Ok(_responseApi)
+                : Conflict(_responseApi);
         }
 
 
@@ -48,11 +57,15 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (success, message) = await _requestFriendsCase.AcceptFriendRequestAsync(IdUserIssuer);
+            ApiResponseDto<string> _responseApi = null;
 
-            return success
-            ? Ok(new ApiResponseDto { message = message, succes = true })
-            : NotFound(new ApiResponseDto { message = message, succes = false });
+            try { await _requestFriendsUseCase.AcceptFriendRequestAsync(IdUserIssuer); }
+
+            catch (ExceptionAPI e) { var objt = e.ManageApiMessage<string>(); _responseApi = objt; }
+
+            return _responseApi.Success
+            ? Ok(_responseApi)
+            : NotFound(_responseApi);
         }
     }
 }
