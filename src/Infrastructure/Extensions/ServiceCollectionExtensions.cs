@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Infrastructure.Seeders;
 using Infrastructure.Interfaces;
 using Infrastructure.Repository;
+using Infrastructure.DistributedCaching;
 
 namespace Infrastructure.Extensions
 {
@@ -26,6 +27,8 @@ namespace Infrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IRequestFriendsRepository, RequestFriendsRepository>();
+            services.AddScoped<IUserCaching, UserCaching>();
+            services.AddScoped<IRequestFriendsCaching, RequestFriendsCaching>();
             services.AddTransient<IRedisCacheService, RedisCacheService>();
         }
     }

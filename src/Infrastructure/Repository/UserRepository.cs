@@ -8,16 +8,11 @@ using Domain.Mappers;
 using Infrastructure.Persistence;
 namespace Infrastructure.Repository
 {
-    internal sealed class UserRepository(BackendDbContext _context, IRedisCacheService RedisCacheService) : IUserRepository
+    internal sealed class UserRepository(BackendDbContext _context) : IUserRepository
     {
-        private readonly IRedisCacheService _redisCacheService = RedisCacheService;
-        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect)
-        {
-            List<GetUserDto> UsersCache = await _redisCacheService.GetAsync<List<GetUserDto>>(dataUserNowConnect.Id_User.ToString());
-
-            if (UsersCache == null) 
-            {
-                List<GetUserDto> getUserDto = await _context.User
+        public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect) =>
+                
+            await _context.User
                   .Where(u =>
                       u.city.ToLower() == dataUserNowConnect.city.ToLower() &&
                       u.sex == (dataUserNowConnect.sex == "M" ? "F" : "M") &&
@@ -30,17 +25,9 @@ namespace Infrastructure.Repository
                   !_context.RequestFriends.Any(r =>
                       ((r.IdUserIssuer == u.Id_User && r.Id_UserReceiver == dataUserNowConnect.Id_User) ||
                       (r.Id_UserReceiver == u.Id_User && r.IdUserIssuer == dataUserNowConnect.Id_User)) &&
-                      r.Status == RequestStatus.Accepted))
+                      (r.Status == RequestStatus.Accepted || r.Status == RequestStatus.Onhold)))
                   .Select(u => u.ToGetUserMapper())
                   .ToListAsync();
-
-                await _redisCacheService.SetAsync(dataUserNowConnect.Id_User.ToString(), getUserDto, TimeSpan.FromSeconds(60));
-
-                return getUserDto;
-            }
-
-            return UsersCache;
-        }
            
 
 
@@ -84,7 +71,7 @@ namespace Infrastructure.Repository
         {
             var user = await _context.User.FirstOrDefaultAsync(u => u.Id_User == Id_User);
 
-            if (user != null)
+            if (user is not null)
             {
                 user.token_session_user = JwtGenerate.token_session_user;
                 user.date_token_session_expiration = JwtGenerate.date_token_session_expiration;
@@ -96,21 +83,7 @@ namespace Infrastructure.Repository
 
 
         public async Task<bool> GetUserByPseudoAsync(string Pseudo) => await _context.User.AnyAsync(u => u.Pseudo.ToLower() == Pseudo.ToLower());
-
-        public async Task<User> GetUserWithCookieAsync(string token_session_user)
-        {
-            User userCache = await _redisCacheService.GetAsync<User>(token_session_user);
-            if (userCache == null) 
-            {
-                User user = await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
-
-                await _redisCacheService.SetAsync(token_session_user, user, TimeSpan.FromSeconds(15));
-
-                return user;
-            }
-            return userCache;
-        }
-
+        public async Task<User> GetUserWithCookieAsync(string token_session_user) => await _context.User.FirstOrDefaultAsync(u => u.token_session_user == token_session_user);
 
 
         public async Task<bool> UpdateUserAsync(int Id_User, User user)
@@ -121,6 +94,7 @@ namespace Infrastructure.Repository
             existingUser.sex = user.sex;
             existingUser.Profile_picture = user.Profile_picture;
             existingUser.city = user.city;
+            existingUser.Description = user.Description;
 
             _context.Entry(existingUser).State = EntityState.Modified;
             var rowsAffected = await _context.SaveChangesAsync();

@@ -20,7 +20,7 @@ namespace Application.UseCases.Controllers
 
         public async Task SendMessageAsync(SetMessageDto setmessageDto)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, setmessageDto.IdUserReceiver);
 
@@ -53,7 +53,7 @@ namespace Application.UseCases.Controllers
 
         public async Task GetUserMessagesAsync(int Id_UserReceiver)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, Id_UserReceiver);
 
@@ -81,5 +81,6 @@ namespace Application.UseCases.Controllers
             }
             throw new ExceptionAPI(false, "You have to match to talk together", null);
         }
+        private async Task<User> _GetDataUserConnected(string token_session_user) => await _userRepository.GetUserWithCookieAsync(token_session_user);
     }
 }

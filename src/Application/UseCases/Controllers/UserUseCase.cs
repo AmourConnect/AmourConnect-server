@@ -10,27 +10,28 @@ using Application.Services;
 
 namespace Application.UseCases.Controllers
 {
-    internal sealed class UserUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils) : IUserUseCase
+    internal sealed class UserUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IRegexUtils regexUtils, IMessUtils messUtils, IJWTSessionUtils jWTSessionUtils, IUserCaching userCaching) : IUserUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly IRegexUtils _regexUtils = regexUtils;
         private readonly IMessUtils _messUtils = messUtils;
+        private readonly IUserCaching _userCaching = userCaching;
 
 
         public async Task GetUsersToMach()
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
-            ICollection<GetUserDto> users = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
+            ICollection<GetUserDto> users = await _userCaching.GetUsersToMatchAsync(dataUserNowConnect);
 
             throw new ExceptionAPI(true, "yes good", users );
         }
 
         public async Task GetUserConnected()
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             GetUserDto userDto = dataUserNowConnect.ToGetUserMapper();
 
@@ -39,7 +40,7 @@ namespace Application.UseCases.Controllers
 
         public async Task UpdateUser(SetUserUpdateDto setUserUpdateDto)
         {
-            User dataUserNowConnect = await _userRepository.GetUserWithCookieAsync(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
 
             var newsValues = UpdatingCheckUser(setUserUpdateDto, await _messUtils.ConvertImageToByteArrayAsync(setUserUpdateDto.Profile_picture), dataUserNowConnect);
 
@@ -58,7 +59,7 @@ namespace Application.UseCases.Controllers
 
         public async Task GetUserById(int Id_User)
         {
-            User user = await _userRepository.GetUserByIdUserAsync(Id_User);
+            User user = await _userCaching.GetUserByIdUserAsync(Id_User);
 
             if (user == null) 
                 throw new ExceptionAPI(false, "no found :/", null);
@@ -88,5 +89,6 @@ namespace Application.UseCases.Controllers
                    ? setUserUpdateDto.date_of_birth ?? DateTime.MinValue : dataUserNowConnect.date_of_birth,
             };
         }
+        private async Task<User> _GetDataUserConnected(string token_session_user) => await _userCaching.GetUserWithCookieAsync(token_session_user);
     }
 }
