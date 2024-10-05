@@ -1,4 +1,4 @@
-# Projet AmourConnect - BackEND - API in ASP.NET Core C#
+# Projet AmourConnect - BackEND - API in ASP.NET Core
 
 ![Welcome Page](./assets/welcome_page.png)
 
@@ -84,7 +84,7 @@ You can deploy AmourConnect using Docker containers on Windows, macOS, and Linux
 - [Docker](https://www.docker.com/community-edition#/download)
 - [Docker Compose](https://docs.docker.com/compose/install/) (already included with some Docker installations)
 
-### *⛔ Start the Database first before (in the folder DataBase)*
+### *⛔ Start the Database And Cache first before (in the folder DataBase)*
 
 
 *If you use Docker, update the .env config =>*

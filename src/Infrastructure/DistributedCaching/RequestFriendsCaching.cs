@@ -3,19 +3,19 @@ using Infrastructure.Interfaces;
 
 namespace Infrastructure.DistributedCaching
 {
-    public class RequestFriendsCaching(IRequestFriendsRepository requestFriendsRepository, IRedisCacheService redisCacheService) : IRequestFriendsCaching
+    public class RequestFriendsCaching(IRequestFriendsRepository requestFriendsRepository, ICacheService CacheService) : IRequestFriendsCaching
     {
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
-        private readonly IRedisCacheService _redisCacheService = redisCacheService;
+        private readonly ICacheService _cacheService = CacheService;
 
         public async Task<ICollection<GetRequestFriendsDto>> GetRequestFriendsAsync(int Id_User)
         {
-            ICollection<GetRequestFriendsDto> getRequestFriendsDtos = await _redisCacheService.GetAsync<ICollection<GetRequestFriendsDto>>(Id_User.ToString());
+            ICollection<GetRequestFriendsDto> getRequestFriendsDtos = await _cacheService.GetAsync<ICollection<GetRequestFriendsDto>>(Id_User.ToString());
             if(getRequestFriendsDtos is null)
             {
                 ICollection<GetRequestFriendsDto> getRequestFriendsDtosR = await _requestFriendsRepository.GetRequestFriendsAsync(Id_User);
 
-                await _redisCacheService.SetAsync(Id_User.ToString(), getRequestFriendsDtosR, TimeSpan.FromSeconds(15));
+                await _cacheService.SetAsync(Id_User.ToString(), getRequestFriendsDtosR, TimeSpan.FromSeconds(15));
 
                 return getRequestFriendsDtosR;
             }
