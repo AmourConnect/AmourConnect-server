@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Application.Extensions;
 using Domain.Utils;
+using StackExchange.Redis;
 
 Env.Load();
 Env.TraversePath().Load();
@@ -76,6 +77,13 @@ using (var scope = app.Services.CreateScope())
 {
     var dataContext = scope.ServiceProvider.GetRequiredService<IBackendDbContext>();
     dataContext.Migrate();
+
+    var cacheDB = ConnectionMultiplexer.Connect(Env.GetString("ConnexionRedis"));
+    if (!cacheDB.IsConnected)
+    {
+        Console.WriteLine("Failed to connect to CacheDB, Exiting API :/");
+        Environment.Exit(1);
+    }
 }
 
 if (app.Environment.IsDevelopment())

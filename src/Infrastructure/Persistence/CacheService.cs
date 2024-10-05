@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Infrastructure.Persistence
 {
-    internal class RedisCacheService(IDistributedCache cache) : IRedisCacheService
+    internal class CacheService(IDistributedCache cache) : ICacheService
     {
         private readonly IDistributedCache _cache = cache;
 
