@@ -50,7 +50,7 @@ services:
         labels:
           - traefik.enable=false
         networks:
-          - database_amour_connect
+          - amour_connect
 
 
 volumes:
