@@ -27,26 +27,27 @@ namespace Infrastructure.Repository
                         .ToListAsync();
 
 
-        public async Task<bool> DeleteMessageAsync(int id)
+        public async Task<bool> DeleteMessagesAsync(List<int> messageIds)
         {
-            var message = await _context.Message.FirstOrDefaultAsync(m => m.Id_Message == id);
+            var messages = await _context.Message.Where(m => messageIds.Contains(m.Id_Message))
+                .ToListAsync();
 
-            if (message != null)
+            if (messages.Any())
             {
                 try
                 {
-                    _context.Message.Remove(message);
+                    _context.Message.RemoveRange(messages);
                     await _context.SaveChangesAsync();
                     return true;
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    _context.Entry(message).Reload();
-                    if (message == null)
+
+                    foreach (var message in messages) 
                     {
-                        return true;
+                        _context.Entry(message).Reload();
                     }
-                    return await DeleteMessageAsync(id);
+                    return await DeleteMessagesAsync(messageIds);
                 }
             }
 

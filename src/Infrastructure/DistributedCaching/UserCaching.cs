@@ -10,12 +10,14 @@ namespace Infrastructure.DistributedCaching
         private readonly ICacheService _cacheService = CacheService;
         public async Task<User> GetUserWithCookieAsync(string token_session_user)
         {
-            User userCache = await _cacheService.GetAsync<User>(token_session_user.ToString());
+            string keyU = token_session_user.ToString() + "GetUserWithCookie";
+
+            User userCache = await _cacheService.GetAsync<User>(keyU);
             if (userCache is null)
             {
-                User user = await _userRepository.GetUserWithCookieAsync(token_session_user.ToString());
+                User user = await _userRepository.GetUserWithCookieAsync(token_session_user);
 
-                await _cacheService.SetAsync(token_session_user.ToString(), user, TimeSpan.FromSeconds(30));
+                await _cacheService.SetAsync(keyU, user, TimeSpan.FromSeconds(30));
 
                 return user;
             }
@@ -24,13 +26,15 @@ namespace Infrastructure.DistributedCaching
 
         public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect)
         {
-            ICollection<GetUserDto> UsersCache = await _cacheService.GetAsync<ICollection<GetUserDto>>(dataUserNowConnect.Id_User.ToString() + "GetUsersToMatch");
+            string key = dataUserNowConnect.Id_User.ToString() + "GetUsersToMatch";
+
+            ICollection<GetUserDto> UsersCache = await _cacheService.GetAsync<ICollection<GetUserDto>>(key);
 
             if (UsersCache is null)
             {
                 ICollection<GetUserDto> getUserDto = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
 
-                await _cacheService.SetAsync(dataUserNowConnect.Id_User.ToString() + "GetUsersToMatch", getUserDto, TimeSpan.FromSeconds(15));
+                await _cacheService.SetAsync(key, getUserDto, TimeSpan.FromSeconds(30));
 
                 return getUserDto;
             }
@@ -40,12 +44,14 @@ namespace Infrastructure.DistributedCaching
 
         public async Task<User> GetUserByIdUserAsync(int Id_User)
         {
-            User userCache = await _cacheService.GetAsync<User>(Id_User.ToString() + "GetUserByIdUser");
+            string key = Id_User.ToString() + "GetUserByIdUser";
+
+            User userCache = await _cacheService.GetAsync<User>(key);
             if(userCache is null)
             {
                 User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
-                await _cacheService.SetAsync(Id_User.ToString() + "GetUserByIdUser", user, TimeSpan.FromSeconds(30));
+                await _cacheService.SetAsync(key, user, TimeSpan.FromSeconds(30));
 
                 return user;
             }

@@ -29,6 +29,7 @@ namespace Infrastructure.Extensions
             services.AddScoped<IRequestFriendsRepository, RequestFriendsRepository>();
             services.AddScoped<IUserCaching, UserCaching>();
             services.AddScoped<IRequestFriendsCaching, RequestFriendsCaching>();
+            services.AddScoped<IMessageCaching, MessageCaching>();
             services.AddTransient<ICacheService, CacheService>();
         }
     }

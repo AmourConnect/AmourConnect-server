@@ -4,6 +4,7 @@ using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Domain.Mappers;
 using Infrastructure.Persistence;
+using Domain.Dtos.AppLayerDtos;
 namespace Infrastructure.Repository
 {
     internal sealed class RequestFriendsRepository(BackendDbContext _context) : IRequestFriendsRepository
@@ -17,10 +18,11 @@ namespace Infrastructure.Repository
                 .Select(r => r.ToGetRequestFriendsMapper())
                 .ToListAsync();
 
-        public async Task<RequestFriends> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver) =>
+        public async Task<RequestFriendForGetMessageDto> GetRequestFriendByIdAsync(int IdUserIssuer, int IdUserReceiver) =>
             await _context.RequestFriends
                     .Where(r => (r.IdUserIssuer == IdUserIssuer && r.Id_UserReceiver == IdUserReceiver)
                         || (r.IdUserIssuer == IdUserReceiver && r.Id_UserReceiver == IdUserIssuer))
+                        .Select(r => r.ToGetRequestFriendsForGetMessageMapper())
                         .FirstOrDefaultAsync();
 
 

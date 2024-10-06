@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Dtos.GetDtos;
+using Domain.Dtos.AppLayerDtos;
 
 namespace Domain.Mappers
 {
@@ -25,6 +26,19 @@ namespace Domain.Mappers
                 UserReceiverPictureProfile = requestFriends.UserReceiver.Profile_picture,
                 UserIssuerSex = requestFriends.UserIssuer.sex,
                 UserReceiverSex = requestFriends.UserReceiver.sex,
+            };
+        }
+
+        public static RequestFriendForGetMessageDto ToGetRequestFriendsForGetMessageMapper(this RequestFriends requestFriends)
+        {
+            if (requestFriends == null)
+            {
+                return null;
+            }
+
+            return new RequestFriendForGetMessageDto
+            {
+                Status = requestFriends.Status,
             };
         }
     }

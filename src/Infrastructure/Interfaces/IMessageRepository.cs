@@ -7,6 +7,6 @@ namespace Infrastructure.Interfaces
     {
         Task AddMessageAsync(Message Message);
         Task<ICollection<GetMessageDto>> GetMessagesAsync(int idUserIssuer, int idUserReceiver);
-        Task<bool> DeleteMessageAsync(int Id_Message);
+        Task<bool> DeleteMessagesAsync(List<int> Id_Message);
     }
 }
