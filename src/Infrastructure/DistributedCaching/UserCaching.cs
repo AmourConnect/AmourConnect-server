@@ -24,13 +24,13 @@ namespace Infrastructure.DistributedCaching
 
         public async Task<ICollection<GetUserDto>> GetUsersToMatchAsync(User dataUserNowConnect)
         {
-            ICollection<GetUserDto> UsersCache = await _cacheService.GetAsync<ICollection<GetUserDto>>(dataUserNowConnect.Id_User.ToString());
+            ICollection<GetUserDto> UsersCache = await _cacheService.GetAsync<ICollection<GetUserDto>>(dataUserNowConnect.Id_User.ToString() + "GetUsersToMatch");
 
             if (UsersCache is null)
             {
                 ICollection<GetUserDto> getUserDto = await _userRepository.GetUsersToMatchAsync(dataUserNowConnect);
 
-                await _cacheService.SetAsync(dataUserNowConnect.Id_User.ToString(), getUserDto, TimeSpan.FromSeconds(60));
+                await _cacheService.SetAsync(dataUserNowConnect.Id_User.ToString() + "GetUsersToMatch", getUserDto, TimeSpan.FromSeconds(15));
 
                 return getUserDto;
             }
@@ -40,12 +40,12 @@ namespace Infrastructure.DistributedCaching
 
         public async Task<User> GetUserByIdUserAsync(int Id_User)
         {
-            User userCache = await _cacheService.GetAsync<User>(Id_User.ToString());
+            User userCache = await _cacheService.GetAsync<User>(Id_User.ToString() + "GetUserByIdUser");
             if(userCache is null)
             {
                 User user = await _userRepository.GetUserByIdUserAsync(Id_User);
 
-                await _cacheService.SetAsync(Id_User.ToString(), user, TimeSpan.FromSeconds(15));
+                await _cacheService.SetAsync(Id_User.ToString() + "GetUserByIdUser", user, TimeSpan.FromSeconds(30));
 
                 return user;
             }

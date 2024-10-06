@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.UseCases.Controllers
 {
-    internal sealed class RequestFriendsUseCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils, IRequestFriendsCaching requestFriendsCaching) : IRequestFriendsUseCase
+    internal sealed class RequestFriendsUseCase(IUserRepository userRepository, IRequestFriendsRepository requestFriendsRepository, IHttpContextAccessor httpContextAccessor, ISendMail sendMail, IJWTSessionUtils jWTSessionUtils, IRequestFriendsCaching requestFriendsCaching, IUserCaching userCaching) : IRequestFriendsUseCase
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IRequestFriendsRepository _requestFriendsRepository = requestFriendsRepository;
@@ -17,6 +17,7 @@ namespace Application.UseCases.Controllers
         private readonly string token_session_user = jWTSessionUtils.GetValueClaimsCookieUser(httpContextAccessor.HttpContext);
         private readonly ISendMail sendMail = sendMail;
         private readonly IRequestFriendsCaching _requestFriendsCaching = requestFriendsCaching;
+        private readonly IUserCaching _userCaching = userCaching;
 
         public async Task GetRequestFriendsAsync()
         {
@@ -41,7 +42,7 @@ namespace Application.UseCases.Controllers
 
         public async Task AcceptFriendRequestAsync(int IdUserIssuer)
         {
-            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnectedWithDb(token_session_user);
 
             RequestFriends friendRequest = await _requestFriendsRepository.GetUserFriendRequestByIdAsync(dataUserNowConnect.Id_User, IdUserIssuer);
 
@@ -61,7 +62,7 @@ namespace Application.UseCases.Controllers
 
         public async Task AddRequestFriendsAsync(int IdUserReceiver)
         {
-            User dataUserNowConnect = await _GetDataUserConnected(token_session_user);
+            User dataUserNowConnect = await _GetDataUserConnectedWithDb(token_session_user);
 
             User userReceiver = await _userRepository.GetUserByIdUserAsync(IdUserReceiver);
 
@@ -102,6 +103,7 @@ namespace Application.UseCases.Controllers
             throw new ExceptionAPI(true, "Your match request has been made successfully 💕", null);
         }
 
-        private async Task<User> _GetDataUserConnected(string token_session_user) => await _userRepository.GetUserWithCookieAsync(token_session_user);
+        private async Task<User> _GetDataUserConnected(string token_session_user) => await _userCaching.GetUserWithCookieAsync(token_session_user);
+        private async Task<User> _GetDataUserConnectedWithDb(string token_session_user) => await _userRepository.GetUserWithCookieAsync(token_session_user);
     }
 }
