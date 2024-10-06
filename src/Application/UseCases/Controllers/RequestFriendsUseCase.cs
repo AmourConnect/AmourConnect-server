@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Application.Interfaces.Services.Email;
 using Application.Services;
+using Domain.Dtos.AppLayerDtos;
 using Domain.Dtos.GetDtos;
 using Domain.Entities;
 using Infrastructure.Interfaces;
@@ -76,7 +77,7 @@ namespace Application.UseCases.Controllers
                 throw new ExceptionAPI(false, "User cannot send a match request to themselves", null);
             }
 
-            RequestFriends existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
+            RequestFriendForGetMessageDto existingRequest = await _requestFriendsRepository.GetRequestFriendByIdAsync(dataUserNowConnect.Id_User, IdUserReceiver);
 
             if (existingRequest != null)
             {

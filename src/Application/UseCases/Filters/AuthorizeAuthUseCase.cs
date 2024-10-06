@@ -7,9 +7,8 @@ using Application.Interfaces.Services;
 using Domain.Entities;
 namespace Application.UseCases.Filters
 {
-    internal sealed class AuthorizeAuthUseCase(IUserRepository userRepository, IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils, IUserCaching userCaching) : Attribute, IAuthorizeAuthUseCase, IAsyncAuthorizationFilter
+    internal sealed class AuthorizeAuthUseCase(IHttpContextAccessor httpContextAccessor, IJWTSessionUtils jWTSessionUtils, IUserCaching userCaching) : Attribute, IAuthorizeAuthUseCase, IAsyncAuthorizationFilter
     {
-        private readonly IUserRepository _userRepository = userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IJWTSessionUtils _jWTSessions = jWTSessionUtils;
         private readonly IUserCaching _userCaching = userCaching;
